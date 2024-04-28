@@ -1,0 +1,41 @@
+DEFINITION MODULE FOR "C" Raylib;
+
+FROM SYSTEM IMPORT CARDINAL8, INTEGER32;
+
+EXPORT UNQUALIFIED
+  (* types *)
+  TColor,
+  (* constants *)
+  LIGHTGRAY, RAYWHITE,
+  (* functions *)
+  BeginDrawing, ClearBackground, CloseWindow, DrawText, EndDrawing, InitWindow, SetTargetFPS,
+  WindowShouldClose;
+
+TYPE
+  TColor = RECORD
+    R, G, B, A: CARDINAL8;
+  END;
+
+CONST
+  VERSION = "raylib 5.0 wrapper";
+
+  LIGHTGRAY = TColor{200, 200, 200, 255};
+  RAYWHITE = TColor{245, 245, 245, 255};
+
+(* Window related functions *)
+PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
+PROCEDURE CloseWindow;
+PROCEDURE WindowShouldClose(): BOOLEAN;
+
+(* Drawing related functions *)
+PROCEDURE ClearBackground(Color: TColor);
+PROCEDURE BeginDrawing;
+PROCEDURE EndDrawing;
+
+(* Timing related functions *)
+PROCEDURE SetTargetFPS(Fps: INTEGER32);
+
+(* Text drawing functions *)
+PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER32; Color: TColor);
+
+END Raylib.
