@@ -11,8 +11,8 @@ reasons for this.
    into your Modula-2 binaries. Which is done via the -static-libgm2 parameter
    in the makefiles. Without that your binaries will require the Modula-2 libs
    provided only by the gcc-gm2 package in most of the distributions.
-   Statically linking the runtime reduces the lib requirements down to the clib
-   and the libs you add on your own.
+   Statically linking the runtime reduces the lib requirements down to the clib,
+   cxxlib, gcclib and the libs you add on your own.
 3. In GCC 13 the gm2 frontend behaves a bit odd which makes using globing
    mechanisms in makefiles quite annoying.
 
@@ -22,3 +22,7 @@ will really try to stick to the ISO standard. I used to code quite a lot of
 Pascal in the old days so I will stick with a coding style more comparable to
 Free Pascal instead of the now odd looking Modula-2 styles used back in the
 days.
+
+raylib:
+Just some example code about how to use the really nice GNU Modula-2 clib
+interfacing mechanics to play around with the famous raylib.
