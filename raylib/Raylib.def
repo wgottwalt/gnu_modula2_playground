@@ -1,6 +1,6 @@
 DEFINITION MODULE FOR "C" Raylib;
 
-FROM SYSTEM IMPORT CARDINAL8, INTEGER32;
+FROM SYSTEM IMPORT CARDINAL8, CARDINAL32, INTEGER32;
 
 EXPORT UNQUALIFIED
   (* types *)
@@ -9,9 +9,24 @@ EXPORT UNQUALIFIED
   LIGHTGRAY, GRAY, DARKGRAY, YELLOW, GOLD, ORANGE, PINK, RED, MAROON, GREEN, LIME, DARKGREEN,
   SKYBLUE, BLUE, DARKBLUE, PURPLE, VIOLET, DARKPURPLE, BEIGE, BROWN, DARKBROWN, WHITE, BLACK, BLANK,
   MAGENTA, RAYWHITE,
+
+  KEY_ENTER,
+
+  GESTURE_TAP,
   (* functions *)
-  BeginDrawing, ClearBackground, CloseWindow, DrawText, EndDrawing, InitWindow, SetTargetFPS,
-  WindowShouldClose;
+  InitWindow, CloseWindow, WindowShouldClose,
+
+  ClearBackground, BeginDrawing, EndDrawing,
+
+  SetTargetFPS,
+
+  IsKeyPressed,
+
+  IsGestureDetected,
+
+  DrawRectangle,
+
+  DrawText;
 
 TYPE
   TColor = RECORD
@@ -21,6 +36,7 @@ TYPE
 CONST
   VERSION = "raylib 5.0 wrapper";
 
+  (* raylib color definitions *)
   LIGHTGRAY = TColor{200, 200, 200, 255};
   GRAY = TColor{130, 130, 130, 255};
   DARKGRAY = TColor{80, 80, 80, 255};
@@ -48,6 +64,12 @@ CONST
   MAGENTA = TColor{255, 0, 255, 255};
   RAYWHITE = TColor{245, 245, 245, 255};
 
+  (* raylib keyboard function keys *)
+  KEY_ENTER = 257;
+
+  (* raylib gesture keys *)
+  GESTURE_TAP = 1;
+
 (* Window related functions *)
 PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
 PROCEDURE CloseWindow;
@@ -58,8 +80,17 @@ PROCEDURE ClearBackground(Color: TColor);
 PROCEDURE BeginDrawing;
 PROCEDURE EndDrawing;
 
-(* Timing related functions *)
+(* timing functions *)
 PROCEDURE SetTargetFPS(Fps: INTEGER32);
+
+(* input functions: keyboard *)
+PROCEDURE IsKeyPressed(Key: INTEGER32): BOOLEAN;
+
+(* input functions: gestures and touch *)
+PROCEDURE IsGestureDetected(Gesture: CARDINAL32): BOOLEAN;
+
+(* basic shapes drawing functions *)
+PROCEDURE DrawRectangle(PosX, PosY, Width, Height: INTEGER32; Color: TColor);
 
 (* Text drawing functions *)
 PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER32; Color: TColor);
