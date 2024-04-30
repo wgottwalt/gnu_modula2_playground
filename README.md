@@ -3,7 +3,7 @@ This is my playground for the GNU Modula-2 GCC frontend introduced in GCC 13.
 This code is written against GCC 14 snapshot 20240421 and up. There are several
 reasons for this.
 1. The Modula-2 frontend in GCC 13 still has some odd issues which I
-   encountered during playing around with this. They are basically all fix in
+   encountered during playing around with this. They are basically all fixed in
    the GCC 14 snapshots.
 2. Most distribution, which provide a build of the gm2 compiler messed up
    packaging. Here I mean the Modula-2 runtime, which is a pain in the ass if
