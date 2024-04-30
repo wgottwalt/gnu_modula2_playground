@@ -24,7 +24,7 @@ BEGIN
   WHILE NOT Raylib.WindowShouldClose() DO
     CASE CurrentScreen OF
       LOGO:
-        FramesCounter := FramesCounter + 1;
+        INC(FramesCounter);
         IF FramesCounter > 120 THEN
           CurrentScreen := TITLE;
         END |
