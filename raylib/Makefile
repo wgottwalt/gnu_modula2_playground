@@ -1,7 +1,7 @@
 M2C = $(CROSS_COMPILE)gm2
 STRIP = $(CROSS_COMPILE)strip
 
-BINARIES = 000_basic_window 001_title_screen
+BINARIES = 000_basic_window 001_title_screen 002_2d_camera
 M2SOURCES = $(wildcard *.mod)
 SOURCES = $(filter-out $(addsuffix .mod, $(BINARIES)), $(M2SOURCES))
 OBJECTS = $(SOURCES:.mod=.o)
