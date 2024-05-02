@@ -1,0 +1,19 @@
+DEFINITION MODULE FOR "C" Rlgl;
+
+FROM SYSTEM IMPORT REAL32;
+
+EXPORT UNQUALIFIED
+  (* constants *)
+  VERSION,
+  (* functions *)
+  rlPushMatrix, rlPopMatrix, rlTranslatef, rlRotatef;
+
+CONST
+  VERSION = "rlgl 4.5 wrapper (raylib 5.0 wrapper)";
+
+PROCEDURE rlPushMatrix;
+PROCEDURE rlPopMatrix;
+PROCEDURE rlTranslatef(X, Y, Z: REAL32);
+PROCEDURE rlRotatef(Angle, X, Y, Z: REAL32);
+
+END Rlgl.

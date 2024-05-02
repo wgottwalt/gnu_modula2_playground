@@ -1,0 +1,18 @@
+DEFINITION MODULE FOR "C" Raymath;
+
+FROM SYSTEM IMPORT REAL32;
+FROM Raylib IMPORT TVector2;
+
+EXPORT UNQUALIFIED
+  (* constants *)
+  VERSION,
+  (* functions *)
+  Vector2Add, Vector2Scale;
+
+CONST
+  VERSION = "raymath 1.5 wrapper (raylib 5.0 wrapper)";
+
+PROCEDURE Vector2Add(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Scale(V: TVector2; Scale: REAL32): TVector2;
+
+END Raymath.
