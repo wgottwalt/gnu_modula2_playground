@@ -14,11 +14,15 @@ EXPORT UNQUALIFIED
 
   KEY_A, KEY_R, KEY_S, KEY_ENTER, KEY_RIGHT, KEY_LEFT,
 
+  MOUSE_BUTTON_RIGHT,
+
   GESTURE_TAP,
   (* functions *)
   InitWindow, CloseWindow, WindowShouldClose,
 
   ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D,
+
+  GetScreenToWorld2D,
 
   SetTargetFPS,
 
@@ -26,15 +30,17 @@ EXPORT UNQUALIFIED
 
   IsKeyPressed, IsKeyDown,
 
-  GetMouseWheelMove,
+  IsMouseButtonDown, GetMousePosition, GetMouseDelta, GetMouseWheelMove,
 
   IsGestureDetected,
 
-  DrawLine, DrawRectangle, DrawRectangleRec, DrawRectangleLines,
+  DrawLine, DrawCircle, DrawRectangle, DrawRectangleRec, DrawRectangleLines,
 
   DrawText,
 
-  Fade;
+  Fade,
+
+  DrawGrid;
 
 TYPE
   TVector2 = RECORD
@@ -93,6 +99,9 @@ CONST
   KEY_RIGHT = 262;
   KEY_LEFT = 263;
 
+  (* raylib mouse keys *)
+  MOUSE_BUTTON_RIGHT = 1;
+
   (* raylib gesture keys *)
   GESTURE_TAP = 1;
 
@@ -108,6 +117,9 @@ PROCEDURE EndDrawing;
 PROCEDURE BeginMode2D(Camera: TCamera2D);
 PROCEDURE EndMode2D;
 
+(* screen space functions *)
+PROCEDURE GetScreenToWorld2D(Position: TVector2; Camera: TCamera2D): TVector2;
+
 (* timing functions *)
 PROCEDURE SetTargetFPS(Fps: INTEGER32);
 
@@ -119,6 +131,9 @@ PROCEDURE IsKeyPressed(Key: INTEGER32): BOOLEAN;
 PROCEDURE IsKeyDown(Key: INTEGER32): BOOLEAN;
 
 (* input functions: mouse *)
+PROCEDURE IsMouseButtonDown(Button: INTEGER32): BOOLEAN;
+PROCEDURE GetMousePosition(): TVector2;
+PROCEDURE GetMouseDelta(): TVector2;
 PROCEDURE GetMouseWheelMove(): REAL32;
 
 (* input functions: gestures and touch *)
@@ -126,6 +141,7 @@ PROCEDURE IsGestureDetected(Gesture: CARDINAL32): BOOLEAN;
 
 (* basic shapes drawing functions *)
 PROCEDURE DrawLine(StartPosX, StartPosY, EndPosX, EndPosY: INTEGER32; Color: TColor);
+PROCEDURE DrawCircle(CenterX, CenterY: INTEGER32; Radius: REAL32; Color: TColor);
 PROCEDURE DrawRectangle(PosX, PosY, Width, Height: INTEGER32; Color: TColor);
 PROCEDURE DrawRectangleRec(Rec: TRectangle; Color: TColor);
 PROCEDURE DrawRectangleLines(PosX, PosY, Width, Height: INTEGER32; Color: TColor);
@@ -135,5 +151,8 @@ PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER32; Color: 
 
 (* color/pixel functions *)
 PROCEDURE Fade(Color: TColor; Alpha: REAL32): TColor;
+
+(* basic 3d shapes drawing functions *)
+PROCEDURE DrawGrid(Slices: INTEGER32; Spacing: REAL32);
 
 END Raylib.
