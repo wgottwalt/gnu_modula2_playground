@@ -12,7 +12,7 @@ EXPORT UNQUALIFIED
   SKYBLUE, BLUE, DARKBLUE, PURPLE, VIOLET, DARKPURPLE, BEIGE, BROWN, DARKBROWN, WHITE, BLACK, BLANK,
   MAGENTA, RAYWHITE,
 
-  KEY_A, KEY_R, KEY_S, KEY_ENTER, KEY_RIGHT, KEY_LEFT,
+  KEY_A, KEY_C, KEY_R, KEY_S, KEY_SPACE, KEY_ENTER, KEY_RIGHT, KEY_LEFT,
 
   MOUSE_BUTTON_LEFT, MOUSE_BUTTON_RIGHT, MOUSE_BUTTON_MIDDLE, MOUSE_BUTTON_SIDE, MOUSE_BUTTON_EXTRA,
   MOUSE_BUTTON_FORWARD, MOUSE_BUTTON_BACK,
@@ -24,9 +24,9 @@ EXPORT UNQUALIFIED
 
   ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D,
 
-  GetScreenToWorld2D,
+  GetScreenToWorld2D, GetWorldToScreen2D,
 
-  SetTargetFPS,
+  SetTargetFPS, GetFrameTime,
 
   GetRandomValue,
 
@@ -95,8 +95,10 @@ CONST
 
   (* raylib keyboard function keys *)
   KEY_A = 65;
+  KEY_C = 67;
   KEY_R = 82;
   KEY_S = 83;
+  KEY_SPACE = 32;
   KEY_ENTER = 257;
   KEY_RIGHT = 262;
   KEY_LEFT = 263;
@@ -123,12 +125,12 @@ CONST
   GESTURE_PINCH_IN = 256;
   GESTURE_PINCH_OUT = 512;
 
-(* Window related functions *)
+(* window related functions *)
 PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
 PROCEDURE CloseWindow;
 PROCEDURE WindowShouldClose(): BOOLEAN;
 
-(* Drawing related functions *)
+(* drawing related functions *)
 PROCEDURE ClearBackground(Color: TColor);
 PROCEDURE BeginDrawing;
 PROCEDURE EndDrawing;
@@ -137,9 +139,11 @@ PROCEDURE EndMode2D;
 
 (* screen space functions *)
 PROCEDURE GetScreenToWorld2D(Position: TVector2; Camera: TCamera2D): TVector2;
+PROCEDURE GetWorldToScreen2D(Position: TVector2; Camera: TCamera2D): TVector2;
 
 (* timing functions *)
 PROCEDURE SetTargetFPS(Fps: INTEGER32);
+PROCEDURE GetFrameTime(): REAL32;
 
 (* randomness functions *)
 PROCEDURE GetRandomValue(Min, Max: INTEGER32): INTEGER32;

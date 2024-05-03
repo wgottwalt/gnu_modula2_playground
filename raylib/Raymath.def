@@ -7,12 +7,14 @@ EXPORT UNQUALIFIED
   (* constants *)
   VERSION,
   (* functions *)
-  Vector2Add, Vector2Scale;
+  Vector2Add, Vector2Subtract, Vector2Length, Vector2Scale;
 
 CONST
   VERSION = "raymath 1.5 wrapper (raylib 5.0 wrapper)";
 
 PROCEDURE Vector2Add(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Subtract(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Length(V: TVector2): REAL32;
 PROCEDURE Vector2Scale(V: TVector2; Scale: REAL32): TVector2;
 
 END Raymath.
