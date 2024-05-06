@@ -7,8 +7,8 @@ TYPE
   GameScreen = (LOGO, TITLE, GAMEPLAY, ENDING);
 
 CONST
-  ScreenWidth = 800;
-  ScreenHeight = 450;
+  SCREEN_WIDTH = 800;
+  SCREEN_HEIGHT = 450;
 
 VAR
   CurrentScreen: GameScreen;
@@ -18,7 +18,7 @@ BEGIN
   CurrentScreen := LOGO;
   FramesCounter := 0;
 
-  Raylib.InitWindow(ScreenWidth, ScreenHeight, "raylib [core] example - basic screen manager");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - basic screen manager");
   Raylib.SetTargetFPS(60);
 
   WHILE NOT Raylib.WindowShouldClose() DO
@@ -53,19 +53,19 @@ BEGIN
         Raylib.DrawText("WAIT for 2 SECONDS...", 290, 220, 20, Raylib.GRAY) |
 
       TITLE:
-        Raylib.DrawRectangle(0, 0, ScreenWidth, ScreenHeight, Raylib.GREEN);
+        Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.GREEN);
         Raylib.DrawText("TITLE SCREEN", 20, 20, 40, Raylib.DARKGREEN);
         Raylib.DrawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20,
                         Raylib.DARKGREEN) |
 
       GAMEPLAY:
-        Raylib.DrawRectangle(0, 0, ScreenWidth, ScreenHeight, Raylib.PURPLE);
+        Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.PURPLE);
         Raylib.DrawText("GAMEPLAY SCREEN", 20, 20, 40, Raylib.MAROON);
         Raylib.DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20,
                         Raylib.MAROON) |
 
       ENDING:
-        Raylib.DrawRectangle(0, 0, ScreenWidth, ScreenHeight, Raylib.BLUE);
+        Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.BLUE);
         Raylib.DrawText("ENDING SCREEN", 20, 20, 40, Raylib.DARKBLUE);
         Raylib.DrawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20,
                         Raylib.DARKBLUE);

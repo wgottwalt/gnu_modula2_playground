@@ -27,7 +27,7 @@ TYPE
                              REAL32, INTEGER32, INTEGER32);
 
 CONST
-  CameraDescriptions = TDescArray{
+  CAMERA_DESCRIPTIONS = TDescArray{
     "Follow player center",
     "Follow player center, but clamp to map edges",
     "Follow player center; smoothed",
@@ -162,9 +162,9 @@ PROCEDURE UpdateCameraCenterSmoothFollow(VAR Camera: Raylib.TCamera2D; VAR Playe
                                          EnvItemsLength: INTEGER32; Delta: REAL32;
                                          Width, Height: INTEGER32);
 CONST
-  MinSpeed = 30.0;
-  MinEffectLength = 10.0;
-  FractionSpeed = 0.8;
+  MIN_SPEED = 30.0;
+  MIN_EFFECT_LENGTH = 10.0;
+  FRACTION_SPEED = 0.8;
 VAR
   Diff: Raylib.TVector2;
   Length, Speed: REAL32;
@@ -174,8 +174,8 @@ BEGIN
   Diff := Raymath.Vector2Subtract(Player.Position, Camera.Target);
   Length := Raymath.Vector2Length(Diff);
 
-  IF Length > MinEffectLength THEN
-    Speed := MaxReal32(FractionSpeed * Length, MinSpeed);
+  IF Length > MIN_EFFECT_LENGTH THEN
+    Speed := MaxReal32(FRACTION_SPEED * Length, MIN_SPEED);
     Camera.Target := Raymath.Vector2Add(Camera.Target,
                                         Raymath.Vector2Scale(Diff, Speed * Delta / Length));
   END;
@@ -185,7 +185,7 @@ PROCEDURE UpdateCameraEvenOutOnLanding(VAR Camera: Raylib.TCamera2D; VAR Player:
                                        VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER32;
                                        Delta: REAL32; Width, Height: INTEGER32);
 CONST
-  EvenOutSpeed = 700.0;
+  EVEN_OUT_SPEED = 700.0;
 BEGIN
   WITH Camera DO
     Offset.X := VAL(REAL32, Width) / 2.0;
@@ -194,13 +194,13 @@ BEGIN
 
     IF EveningOut THEN
       IF EvenOutTarget > Target.Y THEN
-        INC(Target.Y, EvenOutSpeed * Delta);
+        INC(Target.Y, EVEN_OUT_SPEED * Delta);
         IF Target.Y > EvenOutTarget THEN
           Target.Y := EvenOutTarget;
           EveningOut := FALSE;
         END;
       ELSE
-        DEC(Target.Y, EvenOutSpeed * Delta);
+        DEC(Target.Y, EVEN_OUT_SPEED * Delta);
         IF Target.Y < EvenOutTarget THEN
           Target.Y := EvenOutTarget;
           EveningOut := FALSE;
@@ -273,8 +273,8 @@ END Detail;
 (* end nested module *)
 
 CONST
-  ScreenWidth = 800;
-  ScreenHeight = 450;
+  SCREEN_WIDTH = 800;
+  SCREEN_HEIGHT = 450;
 
 VAR
   Player: Detail.TPlayer;
@@ -287,7 +287,7 @@ VAR
   I: INTEGER32;
 
 BEGIN
-  Raylib.InitWindow(ScreenWidth, ScreenHeight, "raylib [core] example - 2d camera");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 2d camera");
 
   WITH Player DO
     Position := Raylib.TVector2{400, 280};
@@ -305,7 +305,7 @@ BEGIN
 
   WITH Camera DO
     Target := Player.Position;
-    Offset := Raylib.TVector2{VAL(REAL32, ScreenWidth) / 2.0, VAL(REAL32, ScreenHeight) / 2.0};
+    Offset := Raylib.TVector2{VAL(REAL32, SCREEN_WIDTH) / 2.0, VAL(REAL32, SCREEN_HEIGHT) / 2.0};
     Rotation := 0.0;
     Zoom := 1.0;
   END;
@@ -338,7 +338,7 @@ BEGIN
     END;
 
     Detail.CameraUpdaters[CameraOption](Camera, Player, EnvItems, EnvItemsLength, DeltaTime,
-                                        ScreenWidth, ScreenHeight);
+                                        SCREEN_WIDTH, SCREEN_HEIGHT);
 
     Raylib.BeginDrawing;
       Raylib.ClearBackground(Raylib.LIGHTGRAY);
@@ -366,7 +366,7 @@ BEGIN
       Raylib.DrawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Raylib.DARKGRAY);
       Raylib.DrawText("- C to change camera mode", 40, 100, 10, Raylib.DARKGRAY);
       Raylib.DrawText("Current camera mode:", 20, 120, 10, Raylib.BLACK);
-      Raylib.DrawText(Detail.CameraDescriptions[CameraOption], 40, 140, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(Detail.CAMERA_DESCRIPTIONS[CameraOption], 40, 140, 10, Raylib.DARKGRAY);
     Raylib.EndDrawing;
   END;
 

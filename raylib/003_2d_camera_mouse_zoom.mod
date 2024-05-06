@@ -4,9 +4,9 @@ FROM SYSTEM IMPORT REAL32;
 IMPORT Raylib, Raymath, Rlgl;
 
 CONST
-  ScreenWidth = 800;
-  ScreenHeight = 450;
-  ZoomIncrement = 0.125;
+  SCREEN_WIDTH = 800;
+  SCREEN_HEIGHT = 450;
+  ZOOM_INCREMENT = 0.125;
 
 VAR
   Camera: Raylib.TCamera2D;
@@ -14,7 +14,7 @@ VAR
   Wheel: REAL32;
 
 BEGIN
-  Raylib.InitWindow(ScreenWidth, ScreenHeight, "raylib [core] example - 2d camera mouse zoom");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 2d camera mouse zoom");
 
   Camera.Zoom := 1.0;
 
@@ -33,9 +33,9 @@ BEGIN
       WITH Camera DO
         Offset := Raylib.GetMousePosition();
         Target := MouseWorldPos;
-        INC(Zoom, Wheel * ZoomIncrement);
-        IF Zoom < ZoomIncrement THEN  
-          Zoom := ZoomIncrement;
+        INC(Zoom, Wheel * ZOOM_INCREMENT);
+        IF Zoom < ZOOM_INCREMENT THEN
+          Zoom := ZOOM_INCREMENT;
         END;
       END;
     END;
