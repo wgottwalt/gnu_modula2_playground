@@ -51,10 +51,8 @@ BEGIN
   WHILE NOT Raylib.WindowShouldClose() DO
     IF Raylib.IsKeyDown(Raylib.KEY_RIGHT) THEN
       INC(Player.X, 2.0);
-    ELSE
-      IF Raylib.IsKeyDown(Raylib.KEY_LEFT) THEN
-        DEC(Player.X, 2.0);
-      END;
+    ELSIF Raylib.IsKeyDown(Raylib.KEY_LEFT) THEN
+      DEC(Player.X, 2.0);
     END;
 
     WITH Camera DO
@@ -65,28 +63,22 @@ BEGIN
 
       IF Raylib.IsKeyDown(Raylib.KEY_A) THEN
         DEC(Rotation);
-      ELSE
-        IF Raylib.IsKeyDown(Raylib.KEY_S) THEN
-          INC(Rotation);
-        END;
+      ELSIF Raylib.IsKeyDown(Raylib.KEY_S) THEN
+        INC(Rotation);
       END;
 
       IF Rotation > 40.0 THEN
         Rotation := 40.0;
-      ELSE
-        IF Rotation < -40.0 THEN
-          Rotation := -40.0;
-        END;
+      ELSIF Rotation < -40.0 THEN
+        Rotation := -40.0;
       END;
 
       INC(Zoom, Raylib.GetMouseWheelMove() * 0.05);
 
       IF Zoom > 3.0 THEN
         Zoom := 3.0;
-      ELSE
-        IF Zoom < 0.1 THEN
-          Zoom := 0.1;
-        END;
+      ELSIF Zoom < 0.1 THEN
+        Zoom := 0.1;
       END;
 
       IF Raylib.IsKeyPressed(Raylib.KEY_R) THEN

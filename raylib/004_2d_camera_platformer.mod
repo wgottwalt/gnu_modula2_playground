@@ -321,10 +321,8 @@ BEGIN
 
       IF Zoom > 3.0 THEN
         Zoom := 3.0;
-      ELSE
-        IF Zoom < 0.25 THEN
-          Zoom := 0.25;
-        END;
+      ELSIF Zoom < 0.25 THEN
+        Zoom := 0.25;
       END;
 
       IF Raylib.IsKeyPressed(Raylib.KEY_R) THEN
