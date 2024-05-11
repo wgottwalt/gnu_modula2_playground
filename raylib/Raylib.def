@@ -1,10 +1,10 @@
 DEFINITION MODULE FOR "C" Raylib;
 
-FROM SYSTEM IMPORT CARDINAL8, CARDINAL32, INTEGER32, REAL32;
+FROM SYSTEM IMPORT ADDRESS, CARDINAL8, CARDINAL32, INTEGER32, REAL32;
 
 EXPORT UNQUALIFIED
   (* types *)
-  TVector2, TColor, TRectangle, TCamera2D,
+  TVector2, TColor, TRectangle, TTexture, TTexture2D, TTextureCubemap, TRenderTexture, TCamera2D,
   (* constants *)
   VERSION,
 
@@ -32,9 +32,10 @@ EXPORT UNQUALIFIED
   GESTURE_NONE, GESTURE_TAP, GESTURE_DOUBLETAP, GESTURE_HOLD, GESTURE_DRAG, GESTURE_SWIPE_RIGHT,
   GESTURE_SWIPE_LEFT, GESTURE_SWIPE_UP, GESTURE_SWIPE_DOWN, GESTURE_PINCH_IN, GESTURE_PINCH_OUT,
   (* functions *)
-  InitWindow, CloseWindow, WindowShouldClose,
+  InitWindow, CloseWindow, WindowShouldClose, GetScreenWidth, GetScreenHeight,
 
-  ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D,
+  ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D, BeginTextureMode,
+  EndTextureMode,
 
   GetScreenToWorld2D, GetWorldToScreen2D,
 
@@ -50,9 +51,15 @@ EXPORT UNQUALIFIED
 
   DrawLine, DrawCircle, DrawRectangle, DrawRectangleRec, DrawRectangleLines,
 
+  LoadRenderTexture,
+
+  DrawTextureRec,
+
   DrawText,
 
   Fade,
+
+  TextFormat,
 
   DrawGrid;
 
@@ -68,6 +75,22 @@ TYPE
   TRectangle = RECORD
     X, Y, Width, Height: REAL32;
   END;
+
+  TTexture = RECORD
+    Id: CARDINAL32;
+    Width, Height, Mipmaps, Format: INTEGER32;
+  END;
+
+  TTexture2D = TTexture;
+  TTextureCubemap = TTexture;
+
+  TRenderTexture = RECORD
+    Id: CARDINAL32;
+    Texture: TTexture;
+    Depth: TTexture;
+  END;
+
+  TRenderTexture2D = TRenderTexture;
 
   TCamera2D = RECORD
     Offset, Target: TVector2;
@@ -243,6 +266,8 @@ CONST
 PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
 PROCEDURE CloseWindow;
 PROCEDURE WindowShouldClose(): BOOLEAN;
+PROCEDURE GetScreenWidth(): INTEGER32;
+PROCEDURE GetScreenHeight(): INTEGER32;
 
 (* drawing related functions *)
 PROCEDURE ClearBackground(Color: TColor);
@@ -250,6 +275,8 @@ PROCEDURE BeginDrawing;
 PROCEDURE EndDrawing;
 PROCEDURE BeginMode2D(Camera: TCamera2D);
 PROCEDURE EndMode2D;
+PROCEDURE BeginTextureMode(Target: TRenderTexture2D);
+PROCEDURE EndTextureMode;
 
 (* screen space functions *)
 PROCEDURE GetScreenToWorld2D(Position: TVector2; Camera: TCamera2D): TVector2;
@@ -282,11 +309,20 @@ PROCEDURE DrawRectangle(PosX, PosY, Width, Height: INTEGER32; Color: TColor);
 PROCEDURE DrawRectangleRec(Rec: TRectangle; Color: TColor);
 PROCEDURE DrawRectangleLines(PosX, PosY, Width, Height: INTEGER32; Color: TColor);
 
+(* texture loading functions *)
+PROCEDURE LoadRenderTexture(Width, Height: INTEGER32): TRenderTexture2D;
+
+(* texture drawing functions *)
+PROCEDURE DrawTextureRec(Texture: TTexture2D; Source: TRectangle; Position: TVector2; Tint: TColor);
+
 (* text drawing functions *)
 PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER32; Color: TColor);
 
 (* color/pixel functions *)
 PROCEDURE Fade(Color: TColor; Alpha: REAL32): TColor;
+
+(* ASCII test strings management functions *)
+PROCEDURE TextFormat(Text: ARRAY OF CHAR; ...): ADDRESS;
 
 (* basic 3d shapes drawing functions *)
 PROCEDURE DrawGrid(Slices: INTEGER32; Spacing: REAL32);
