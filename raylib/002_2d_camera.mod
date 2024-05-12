@@ -1,6 +1,6 @@
 MODULE TwoDCamera;
 
-FROM SYSTEM IMPORT INTEGER32, REAL32;
+FROM SYSTEM IMPORT ADR, INTEGER32, REAL32;
 IMPORT Raylib;
 
 CONST
@@ -106,7 +106,7 @@ BEGIN
         END;
       Raylib.EndMode2D;
 
-      Raylib.DrawText("SCREEN AREA", 640, 10, 20, Raylib.RED);
+      Raylib.DrawText(ADR("SCREEN AREA"), 640, 10, 20, Raylib.RED);
 
       Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, 5, Raylib.RED);
       Raylib.DrawRectangle(0, 5, 5, SCREEN_HEIGHT - 10, Raylib.RED);
@@ -116,11 +116,11 @@ BEGIN
       Raylib.DrawRectangle(10, 10, 250, 113, Raylib.Fade(Raylib.SKYBLUE, 0.5));
       Raylib.DrawRectangleLines(10, 10, 250, 113, Raylib.BLUE);
 
-      Raylib.DrawText("Free 2d camera controls:", 20, 20, 10, Raylib.BLACK);
-      Raylib.DrawText("- Right/Left to move Offset", 40, 40, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- Mouse Wheel to Zoom in-out", 40, 60, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- A / S to Rotate", 40, 80, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- R to reset Zoom and Rotation", 40, 100, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("Free 2d camera controls:"), 20, 20, 10, Raylib.BLACK);
+      Raylib.DrawText(ADR("- Right/Left to move Offset"), 40, 40, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- Mouse Wheel to Zoom in-out"), 40, 60, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- A / S to Rotate"), 40, 80, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- R to reset Zoom and Rotation"), 40, 100, 10, Raylib.DARKGRAY);
     Raylib.EndDrawing;
   END;
 

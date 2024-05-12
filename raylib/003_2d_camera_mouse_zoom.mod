@@ -1,6 +1,6 @@
 MODULE TwoDCameraMouseZoom;
 
-FROM SYSTEM IMPORT REAL32;
+FROM SYSTEM IMPORT ADR, REAL32;
 IMPORT Raylib, Raymath, Rlgl;
 
 CONST
@@ -53,7 +53,7 @@ BEGIN
         Raylib.DrawCircle(100, 100, 50.0, Raylib.YELLOW);
       Raylib.EndMode2D;
 
-      Raylib.DrawText("Mouse right button drag to move, mouse wheel to zoom", 10, 10, 20,
+      Raylib.DrawText(ADR("Mouse right button drag to move, mouse wheel to zoom"), 10, 10, 20,
                       Raylib.WHITE);
     Raylib.EndDrawing;
   END;

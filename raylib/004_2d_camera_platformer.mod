@@ -1,6 +1,6 @@
 MODULE TwoDCameraPlatformer;
 
-FROM SYSTEM IMPORT INTEGER32, REAL32, TSIZE;
+FROM SYSTEM IMPORT ADR, INTEGER32, REAL32, TSIZE;
 IMPORT Raylib, Raymath;
 
 (* begin nested module *)
@@ -358,13 +358,14 @@ BEGIN
                           5.0, Raylib.GOLD);
       Raylib.EndMode2D;
 
-      Raylib.DrawText("Controls:", 20, 20, 10, Raylib.BLACK);
-      Raylib.DrawText("- Right/Left to move", 40, 40, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- Space to jump", 40, 60, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("- C to change camera mode", 40, 100, 10, Raylib.DARKGRAY);
-      Raylib.DrawText("Current camera mode:", 20, 120, 10, Raylib.BLACK);
-      Raylib.DrawText(Detail.CAMERA_DESCRIPTIONS[CameraOption], 40, 140, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("Controls:"), 20, 20, 10, Raylib.BLACK);
+      Raylib.DrawText(ADR("- Right/Left to move"), 40, 40, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- Space to jump"), 40, 60, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- Mouse Wheel to Zoom in-out, R to reset zoom"), 40, 80, 10,
+                      Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("- C to change camera mode"), 40, 100, 10, Raylib.DARKGRAY);
+      Raylib.DrawText(ADR("Current camera mode:"), 20, 120, 10, Raylib.BLACK);
+      Raylib.DrawText(ADR(Detail.CAMERA_DESCRIPTIONS[CameraOption]), 40, 140, 10, Raylib.DARKGRAY);
     Raylib.EndDrawing;
   END;
 

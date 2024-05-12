@@ -1,5 +1,6 @@
 MODULE BasicWindow;
 
+FROM SYSTEM IMPORT ADR;
 IMPORT Raylib;
 
 CONST
@@ -13,7 +14,7 @@ BEGIN
   WHILE NOT Raylib.WindowShouldClose() DO
     Raylib.BeginDrawing;
     Raylib.ClearBackground(Raylib.RAYWHITE);
-    Raylib.DrawText("Congrats! You created your first window!", 190, 200, 20, Raylib.LIGHTGRAY);
+    Raylib.DrawText(ADR("Congrats! You created your first window!"), 190, 200, 20, Raylib.LIGHTGRAY);
     Raylib.EndDrawing;
   END;
 

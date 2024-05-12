@@ -316,7 +316,7 @@ PROCEDURE LoadRenderTexture(Width, Height: INTEGER32): TRenderTexture2D;
 PROCEDURE DrawTextureRec(Texture: TTexture2D; Source: TRectangle; Position: TVector2; Tint: TColor);
 
 (* text drawing functions *)
-PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER32; Color: TColor);
+PROCEDURE DrawText(Text: ADDRESS; PosX, PosY, FontSize: INTEGER32; Color: TColor);
 
 (* color/pixel functions *)
 PROCEDURE Fade(Color: TColor; Alpha: REAL32): TColor;

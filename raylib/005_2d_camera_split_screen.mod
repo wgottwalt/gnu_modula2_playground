@@ -1,17 +1,14 @@
 MODULE TwoDCameraSplitScreen;
 
-FROM libc IMPORT memset, strncpy;
-FROM SYSTEM IMPORT ADR, INTEGER32, REAL32;
+FROM SYSTEM IMPORT ADDRESS, ADR, INTEGER32, REAL32;
 IMPORT Raylib;
 
 CONST
-  CHAR_ARRAY_SIZE = 16;
   SCREEN_WIDTH = 800;
   SCREEN_HEIGHT = 440;
   PLAYER_SIZE = 40;
 
 VAR
-  CharBuffer: ARRAY[1..CHAR_ARRAY_SIZE] OF CHAR;
   Player1, Player2: Raylib.TRectangle;
   Camera1, Camera2: Raylib.TCamera2D;
   ScreenCamera1, ScreenCamera2: Raylib.TRenderTexture;
@@ -100,10 +97,8 @@ BEGIN
 
         FOR I := 0 TO (SCREEN_WIDTH / PLAYER_SIZE - 1) DO
           FOR J := 0 TO (SCREEN_HEIGHT / PLAYER_SIZE - 1) DO
-            memset(ADR(CharBuffer), 0, CHAR_ARRAY_SIZE);
-            strncpy(ADR(CharBuffer), Raylib.TextFormat("[%i,%i]", I, J), CHAR_ARRAY_SIZE);
-            Raylib.DrawText(CharBuffer, 10 + PLAYER_SIZE * I, 15 + PLAYER_SIZE * J, 10,
-                            Raylib.LIGHTGRAY);
+            Raylib.DrawText(Raylib.TextFormat("[%i,%i]", I, J), 10 + PLAYER_SIZE * I,
+                            15 + PLAYER_SIZE * J, 10, Raylib.LIGHTGRAY);
           END;
         END;
 
@@ -113,7 +108,7 @@ BEGIN
 
       Raylib.DrawRectangle(0, 0, Raylib.GetScreenWidth() / 2, 30, Raylib.Fade(Raylib.RAYWHITE,
                            0.6));
-      Raylib.DrawText("PLAYER1: W/S/A/D to move", 10, 10, 10, Raylib.MAROON);
+      Raylib.DrawText(ADR("PLAYER1: W/S/A/D to move"), 10, 10, 10, Raylib.MAROON);
     Raylib.EndTextureMode;
 
     Raylib.BeginTextureMode(ScreenCamera2);
@@ -130,10 +125,8 @@ BEGIN
 
         FOR I := 0 TO (SCREEN_WIDTH / PLAYER_SIZE - 1) DO
           FOR J := 0 TO (SCREEN_HEIGHT / PLAYER_SIZE - 1) DO
-            memset(ADR(CharBuffer), 0, CHAR_ARRAY_SIZE);
-            strncpy(ADR(CharBuffer), Raylib.TextFormat("[%i,%i]", I, J), CHAR_ARRAY_SIZE);
-            Raylib.DrawText(CharBuffer, 10 + PLAYER_SIZE * I, 15 + PLAYER_SIZE * J, 10,
-                            Raylib.LIGHTGRAY);
+            Raylib.DrawText(Raylib.TextFormat("[%i,%i]", I, J), 10 + PLAYER_SIZE * I,
+                            15 + PLAYER_SIZE * J, 10, Raylib.LIGHTGRAY);
           END;
         END;
 
@@ -143,7 +136,7 @@ BEGIN
 
       Raylib.DrawRectangle(0, 0, Raylib.GetScreenWidth() / 2, 30,
                            Raylib.Fade(Raylib.RAYWHITE, 0.6));
-      Raylib.DrawText("PLAYER2: UP/DOWN/LEFT/RIGHT to move", 10, 10, 10, Raylib.DARKBLUE);
+      Raylib.DrawText(ADR("PLAYER2: UP/DOWN/LEFT/RIGHT to move"), 10, 10, 10, Raylib.DARKBLUE);
     Raylib.EndTextureMode;
 
     Raylib.BeginDrawing;

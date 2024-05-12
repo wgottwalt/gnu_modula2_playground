@@ -1,6 +1,6 @@
 MODULE TitleScreen;
 
-FROM SYSTEM IMPORT INTEGER32;
+FROM SYSTEM IMPORT ADR, INTEGER32;
 IMPORT Raylib;
 
 TYPE
@@ -49,25 +49,25 @@ BEGIN
     Raylib.ClearBackground(Raylib.RAYWHITE);
     CASE CurrentScreen OF
       LOGO:
-        Raylib.DrawText("LOGO SCREEN", 20, 20, 40, Raylib.LIGHTGRAY);
-        Raylib.DrawText("WAIT for 2 SECONDS...", 290, 220, 20, Raylib.GRAY) |
+        Raylib.DrawText(ADR("LOGO SCREEN"), 20, 20, 40, Raylib.LIGHTGRAY);
+        Raylib.DrawText(ADR("WAIT for 2 SECONDS..."), 290, 220, 20, Raylib.GRAY) |
 
       TITLE:
         Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.GREEN);
-        Raylib.DrawText("TITLE SCREEN", 20, 20, 40, Raylib.DARKGREEN);
-        Raylib.DrawText("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN", 120, 220, 20,
+        Raylib.DrawText(ADR("TITLE SCREEN"), 20, 20, 40, Raylib.DARKGREEN);
+        Raylib.DrawText(ADR("PRESS ENTER or TAP to JUMP to GAMEPLAY SCREEN"), 120, 220, 20,
                         Raylib.DARKGREEN) |
 
       GAMEPLAY:
         Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.PURPLE);
-        Raylib.DrawText("GAMEPLAY SCREEN", 20, 20, 40, Raylib.MAROON);
-        Raylib.DrawText("PRESS ENTER or TAP to JUMP to ENDING SCREEN", 130, 220, 20,
+        Raylib.DrawText(ADR("GAMEPLAY SCREEN"), 20, 20, 40, Raylib.MAROON);
+        Raylib.DrawText(ADR("PRESS ENTER or TAP to JUMP to ENDING SCREEN"), 130, 220, 20,
                         Raylib.MAROON) |
 
       ENDING:
         Raylib.DrawRectangle(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, Raylib.BLUE);
-        Raylib.DrawText("ENDING SCREEN", 20, 20, 40, Raylib.DARKBLUE);
-        Raylib.DrawText("PRESS ENTER or TAP to RETURN to TITLE SCREEN", 120, 220, 20,
+        Raylib.DrawText(ADR("ENDING SCREEN"), 20, 20, 40, Raylib.DARKBLUE);
+        Raylib.DrawText(ADR("PRESS ENTER or TAP to RETURN to TITLE SCREEN"), 120, 220, 20,
                         Raylib.DARKBLUE);
     END;
     Raylib.EndDrawing;
