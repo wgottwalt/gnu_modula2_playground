@@ -5,12 +5,17 @@ FROM Raylib IMPORT TVector2;
 
 EXPORT UNQUALIFIED
   (* constants *)
-  VERSION,
+  VERSION, PI, EPSILON, DEG2RAD, RAD2DEG,
   (* functions *)
   Vector2Add, Vector2Subtract, Vector2Length, Vector2Scale;
 
 CONST
   VERSION = "raymath 1.5 wrapper (raylib 5.0 wrapper)";
+
+  PI = 3.14159265358979323846;
+  EPSILON = 0.000001;
+  DEG2RAD = PI / 180.0;
+  RAD2DEG = 180.0 / PI;
 
 PROCEDURE Vector2Add(V1, V2: TVector2): TVector2;
 PROCEDURE Vector2Subtract(V1, V2: TVector2): TVector2;
