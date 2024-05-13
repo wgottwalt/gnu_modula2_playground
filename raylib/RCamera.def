@@ -1,0 +1,21 @@
+DEFINITION MODULE FOR "C" RCamera;
+
+FROM SYSTEM IMPORT REAL32;
+FROM Raylib IMPORT TCamera, TVector3;
+
+EXPORT UNQUALIFIED
+  (* constants *)
+  VERSION,
+  (* functions *)
+  CameraYaw, CameraPitch, CameraRoll;
+
+CONST
+  VERSION = "rcamera wrapper (raylib 5.0 wrapper)";
+
+(* camera rotation *)
+PROCEDURE CameraYaw(VAR Camera: TCamera; Angle: REAL32; RotateAroundTarget: BOOLEAN);
+PROCEDURE CameraPitch(VAR Camera: TCamera; Angle: REAL32;
+                      LockView, RotateAroundTarget, RotateUp: BOOLEAN);
+PROCEDURE CameraRoll(VAR Camera: TCamera; Angle: REAL32);
+
+END RCamera.
