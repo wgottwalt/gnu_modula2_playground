@@ -4,7 +4,8 @@ FROM SYSTEM IMPORT ADDRESS, CARDINAL8, CARDINAL32, INTEGER32, REAL32;
 
 EXPORT UNQUALIFIED
   (* types *)
-  TVector2, TColor, TRectangle, TTexture, TTexture2D, TTextureCubemap, TRenderTexture, TCamera2D,
+  TVector2, TVector3, TColor, TRectangle, TTexture, TTexture2D, TTextureCubemap, TRenderTexture,
+  TCamera3D, TCamera, TCamera2D,
   (* constants *)
   VERSION,
 
@@ -31,11 +32,17 @@ EXPORT UNQUALIFIED
 
   GESTURE_NONE, GESTURE_TAP, GESTURE_DOUBLETAP, GESTURE_HOLD, GESTURE_DRAG, GESTURE_SWIPE_RIGHT,
   GESTURE_SWIPE_LEFT, GESTURE_SWIPE_UP, GESTURE_SWIPE_DOWN, GESTURE_PINCH_IN, GESTURE_PINCH_OUT,
+
+  CAMERA_CUSTOM, CAMERA_FREE, CAMERA_ORBITAL, CAMERA_FIRST_PERSON, CAMERA_THIRD_PERSON,
+
+  CAMERA_PERSPECTIVE, CAMERA_ORTHOGRAPHIC,
   (* functions *)
   InitWindow, CloseWindow, WindowShouldClose, GetScreenWidth, GetScreenHeight,
 
-  ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D, BeginTextureMode,
-  EndTextureMode,
+  ShowCursor, HideCursor, IsCursorHidden, EnableCursor, DisableCursor, IsCursorOnScreen,
+
+  ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D, BeginMode3D, EndMode3D,
+  BeginTextureMode, EndTextureMode,
 
   GetScreenToWorld2D, GetWorldToScreen2D,
 
@@ -49,6 +56,8 @@ EXPORT UNQUALIFIED
 
   IsGestureDetected,
 
+  UpdateCamera,
+
   DrawLine, DrawCircle, DrawRectangle, DrawRectangleRec, DrawRectangleLines,
 
   LoadRenderTexture,
@@ -61,11 +70,15 @@ EXPORT UNQUALIFIED
 
   TextFormat,
 
-  DrawGrid;
+  DrawCube, DrawCubeWires, DrawPlane, DrawGrid;
 
 TYPE
   TVector2 = RECORD
     X, Y: REAL32;
+  END;
+
+  TVector3 = RECORD
+    X, Y, Z: REAL32;
   END;
 
   TColor = RECORD
@@ -91,6 +104,14 @@ TYPE
   END;
 
   TRenderTexture2D = TRenderTexture;
+
+  TCamera3D = RECORD
+    Position, Target, Up: TVector3;
+    FovY: REAL32;
+    Projection: INTEGER32;
+  END;
+
+  TCamera = TCamera3D;
 
   TCamera2D = RECORD
     Offset, Target: TVector2;
@@ -262,6 +283,17 @@ CONST
   GESTURE_PINCH_IN = 256;
   GESTURE_PINCH_OUT = 512;
 
+  (* camera system mode *)
+  CAMERA_CUSTOM = 0;
+  CAMERA_FREE = 1;
+  CAMERA_ORBITAL = 2;
+  CAMERA_FIRST_PERSON = 3;
+  CAMERA_THIRD_PERSON = 4;
+
+  (* camera projection *)
+  CAMERA_PERSPECTIVE = 0;
+  CAMERA_ORTHOGRAPHIC = 1;
+
 (* window related functions *)
 PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
 PROCEDURE CloseWindow;
@@ -269,12 +301,22 @@ PROCEDURE WindowShouldClose(): BOOLEAN;
 PROCEDURE GetScreenWidth(): INTEGER32;
 PROCEDURE GetScreenHeight(): INTEGER32;
 
+(* cursor related functions *)
+PROCEDURE ShowCursor;
+PROCEDURE HideCursor;
+PROCEDURE IsCursorHidden(): BOOLEAN;
+PROCEDURE EnableCursor;
+PROCEDURE DisableCursor;
+PROCEDURE IsCursorOnScreen(): BOOLEAN;
+
 (* drawing related functions *)
 PROCEDURE ClearBackground(Color: TColor);
 PROCEDURE BeginDrawing;
 PROCEDURE EndDrawing;
 PROCEDURE BeginMode2D(Camera: TCamera2D);
 PROCEDURE EndMode2D;
+PROCEDURE BeginMode3D(Camera: TCamera3D);
+PROCEDURE EndMode3D;
 PROCEDURE BeginTextureMode(Target: TRenderTexture2D);
 PROCEDURE EndTextureMode;
 
@@ -302,6 +344,9 @@ PROCEDURE GetMouseWheelMove(): REAL32;
 (* input functions: gestures and touch *)
 PROCEDURE IsGestureDetected(Gesture: CARDINAL32): BOOLEAN;
 
+(* camera system functions *)
+PROCEDURE UpdateCamera(VAR Camera: TCamera; Mode: INTEGER32);
+
 (* basic shapes drawing functions *)
 PROCEDURE DrawLine(StartPosX, StartPosY, EndPosX, EndPosY: INTEGER32; Color: TColor);
 PROCEDURE DrawCircle(CenterX, CenterY: INTEGER32; Radius: REAL32; Color: TColor);
@@ -325,6 +370,9 @@ PROCEDURE Fade(Color: TColor; Alpha: REAL32): TColor;
 PROCEDURE TextFormat(Text: ARRAY OF CHAR; ...): ADDRESS;
 
 (* basic 3d shapes drawing functions *)
+PROCEDURE DrawCube(Position: TVector3; Width, Height, Length: REAL32; Color: TColor);
+PROCEDURE DrawCubeWires(Position: TVector3; Width, Height, Length: REAL32; Color: TColor);
+PROCEDURE DrawPlane(CenterPos: TVector3; Size: TVector2; Color: TColor);
 PROCEDURE DrawGrid(Slices: INTEGER32; Spacing: REAL32);
 
 END Raylib.
