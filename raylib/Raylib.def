@@ -4,8 +4,8 @@ FROM SYSTEM IMPORT ADDRESS, CARDINAL8, CARDINAL32, INTEGER32, REAL32;
 
 EXPORT UNQUALIFIED
   (* types *)
-  TVector2, TVector3, TColor, TRectangle, TTexture, TTexture2D, TTextureCubemap, TRenderTexture,
-  TCamera3D, TCamera, TCamera2D,
+  TVector2, TVector3, TVector4, TQuaternion, TMatrix, TColor, TRectangle, TTexture, TTexture2D,
+  TTextureCubemap, TRenderTexture, TCamera3D, TCamera, TCamera2D,
   (* constants *)
   VERSION,
 
@@ -79,6 +79,19 @@ TYPE
 
   TVector3 = RECORD
     X, Y, Z: REAL32;
+  END;
+
+  TVector4 = RECORD
+    X, Y, Z, W: REAL32;
+  END;
+
+  TQuaternion = TVector4;
+
+  TMatrix = RECORD
+    m0, m4, m8, m12: REAL32;
+    m1, m5, m9, m13: REAL32;
+    m2, m6, m10, m14: REAL32;
+    m3, m7, m11, m15: REAL32;
   END;
 
   TColor = RECORD
