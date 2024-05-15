@@ -1,21 +1,65 @@
 DEFINITION MODULE FOR "C" RCamera;
 
-FROM SYSTEM IMPORT REAL32;
-FROM Raylib IMPORT TCamera, TVector3;
+FROM SYSTEM IMPORT INTEGER32, REAL32;
+FROM Raylib IMPORT TCamera, TVector3, TMatrix;
 
 EXPORT UNQUALIFIED
   (* constants *)
-  VERSION,
+  VERSION, CAMERA_MOVE_SPEED, CAMERA_ROTATION_SPEED, CAMERA_PAN_SPEED,
+  CAMERA_MOUSE_MOVE_SENSITIVITY, CAMERA_MOUSE_SCROLL_SENSITIVITY, CAMERA_ORBITAL_SPEED,
+  CAMERA_FIRST_PERSON_STEP_TRIGONOMETRIC_DIVIDER, CAMERA_FIRST_PERSON_STEP_DIVIDER,
+  CAMERA_FIRST_PERSON_WAVING_DIVIDER, PLAYER_MOVEMENT_SENSITIVITY,
   (* functions *)
-  CameraYaw, CameraPitch, CameraRoll;
+  GetCameraForward, GetCameraUp, GetCameraRight,
+
+  CameraMoveForward, CameraMoveUp, CameraMoveRight, CameraMoveToTarget,
+
+  CameraYaw, CameraPitch, CameraRoll,
+
+  GetCameraViewMatrix, GetCameraProjectionMatrix,
+
+  UpdateCamera, UpdateCameraPro;
 
 CONST
   VERSION = "rcamera wrapper (raylib 5.0 wrapper)";
+
+  CAMERA_MOVE_SPEED = 0.09;
+  CAMERA_ROTATION_SPEED = 0.03;
+  CAMERA_PAN_SPEED = 0.2;
+
+  CAMERA_MOUSE_MOVE_SENSITIVITY = 0.003;
+  CAMERA_MOUSE_SCROLL_SENSITIVITY = 1.5;
+  CAMERA_ORBITAL_SPEED = 0.5;
+
+  CAMERA_FIRST_PERSON_STEP_TRIGONOMETRIC_DIVIDER = 8.0;
+  CAMERA_FIRST_PERSON_STEP_DIVIDER = 30.0;
+  CAMERA_FIRST_PERSON_WAVING_DIVIDER = 200.0;
+
+  PLAYER_MOVEMENT_SENSITIVITY = 20.0;
+
+(* camera getters *)
+PROCEDURE GetCameraForward(Camera: TCamera): TVector3;
+PROCEDURE GetCameraUp(Camera: TCamera): TVector3;
+PROCEDURE GetCameraRight(Camera: TCamera): TVector3;
+
+(* camera movement *)
+PROCEDURE CameraMoveForward(VAR Camera: TCamera; Distance: REAL32; MoveInWorldPlane: BOOLEAN);
+PROCEDURE CameraMoveUp(VAR Camera: TCamera; Distance: REAL32);
+PROCEDURE CameraMoveRight(VAR Camera: TCamera; Distance: REAL32; MoveInWorldPlane: BOOLEAN);
+PROCEDURE CameraMoveToTarget(VAR Camera: TCamera; Delta: REAL32);
 
 (* camera rotation *)
 PROCEDURE CameraYaw(VAR Camera: TCamera; Angle: REAL32; RotateAroundTarget: BOOLEAN);
 PROCEDURE CameraPitch(VAR Camera: TCamera; Angle: REAL32;
                       LockView, RotateAroundTarget, RotateUp: BOOLEAN);
 PROCEDURE CameraRoll(VAR Camera: TCamera; Angle: REAL32);
+
+(* camera matrix operators *)
+PROCEDURE GetCameraViewMatrix(VAR Camera: TCamera): TMatrix;
+PROCEDURE GetCameraProjectionMatrix(VAR Camera: TCamera; Aspect: REAL32): TMatrix;
+
+(* camera update *)
+PROCEDURE UpdateCamera(VAR Camera: TCamera; Mode: INTEGER32);
+PROCEDURE UpdateCameraPro(VAR Camera: TCamera; Movement, Rotation: TVector3; Zoom: REAL32);
 
 END RCamera.
