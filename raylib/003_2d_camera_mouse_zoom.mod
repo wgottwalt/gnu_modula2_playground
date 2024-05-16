@@ -14,7 +14,8 @@ VAR
   Wheel: REAL32;
 
 BEGIN
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 2d camera mouse zoom");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
+                    ADR("raylib [core] example - 2d camera mouse zoom"));
 
   Camera.Zoom := 1.0;
 

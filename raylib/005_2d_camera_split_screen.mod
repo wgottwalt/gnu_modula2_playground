@@ -16,7 +16,8 @@ VAR
   I, J: INTEGER32;
 
 BEGIN
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 2d camera split screen");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
+                    ADR("raylib [core] example - 2d camera split screen"));
 
   Player1 := Raylib.TRectangle{200.0, 200.0, PLAYER_SIZE, PLAYER_SIZE};
   Player2 := Raylib.TRectangle{250.0, 200.0, PLAYER_SIZE, PLAYER_SIZE};

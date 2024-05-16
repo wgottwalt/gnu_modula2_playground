@@ -308,7 +308,7 @@ CONST
   CAMERA_ORTHOGRAPHIC = 1;
 
 (* window related functions *)
-PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ARRAY OF CHAR);
+PROCEDURE InitWindow(Width, Height: INTEGER32; Title: ADDRESS);
 PROCEDURE CloseWindow;
 PROCEDURE WindowShouldClose(): BOOLEAN;
 PROCEDURE GetScreenWidth(): INTEGER32;

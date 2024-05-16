@@ -17,7 +17,7 @@ VAR
   I: INTEGER32;
 
 BEGIN
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 2d camera");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, ADR("raylib [core] example - 2d camera"));
 
   Player := Raylib.TRectangle{400, 280, 40, 40};
 

@@ -20,7 +20,8 @@ VAR
   CharBuffer: ARRAY[0..15] OF CHAR;
 
 BEGIN
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - 3d camera first person");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
+                    ADR("raylib [core] example - 3d camera first person"));
 
   WITH Camera DO
     Position := Raylib.TVector3{0.0, 2.0, 4.0};

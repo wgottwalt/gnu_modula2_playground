@@ -18,7 +18,8 @@ BEGIN
   CurrentScreen := LOGO;
   FramesCounter := 0;
 
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, "raylib [core] example - basic screen manager");
+  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT,
+                    ADR("raylib [core] example - basic screen manager"));
   Raylib.SetTargetFPS(60);
 
   WHILE NOT Raylib.WindowShouldClose() DO
