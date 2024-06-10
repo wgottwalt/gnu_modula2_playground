@@ -30,6 +30,12 @@ There will be also some odd stuff here, because I really enjoy coding Modula-2.
 I will try to complete everything I try out, but some of the stuff will be work
 in progress.
 
+-- nice to know --
+
+Various examples and tricks I found myself by reading the GCC Modula-2 backend
+code and just playing around. Some of this is not mentioned in the most
+Modula-2 books.
+
 -- coroutines --
 
 That is an example on how to use PIM coroutines. I had some trouble with the
