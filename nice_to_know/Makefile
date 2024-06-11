@@ -1,6 +1,6 @@
 M2C = $(CROSS_COMPILE)gm2
 
-BINARIES = ProceduresAreConstants
+BINARIES = NestedVariadicRecords ProceduresAreConstants
 M2SOURCES = $(wildcard *.mod)
 SOURCES = $(filter-out $(addsuffix .mod, $(BINARIES)), $(M2SOURCES))
 OBJECTS = $(SOURCES:.mod=.o)
