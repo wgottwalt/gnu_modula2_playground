@@ -41,7 +41,10 @@ Modula-2 books.
 That is an example on how to use PIM coroutines. I had some trouble with the
 ISO version. I put the PIM version here, because they seem to work nicely. It
 is just a small example to get a feeling for this, after all that coroutine
-mechanism is quite different from C++ coroutines.
+mechanism is quite different from C++ coroutines. At the beginning it was quite
+hard to get it to work, because of a simple reason. The stack sizes old manuals
+are talking about are often far to small. You need at least a 16 KiB stack for
+every coroutine or you run in very hard to understand runtime errors.
 
 -- raylib --
 
