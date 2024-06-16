@@ -1,0 +1,123 @@
+(*!m2iso*)
+DEFINITION MODULE FOR "C" MiniSDL2;
+
+FROM SYSTEM IMPORT ADDRESS, BITSET32, CARDINAL8, CARDINAL16, CARDINAL32, INTEGER32;
+
+EXPORT UNQUALIFIED
+  (* simple types *)
+  TSDL_Keycode, TSDL_Scancode,
+  (* pointer types *)
+  PSDL_Rect, PSDL_Keysym, PSDL_KeyboardEvent, PSDL_QuitEvent, PSDL_Event, PSDL_Surface, PSDL_Window,
+  (* complex types *)
+  TSDL_Rect, TSDL_Keysym, TSDL_KeyboardEvent, TSDL_QuitEvent, TSDL_Event, TSDL_Surface, TSDL_Window,
+  (* constants *)
+  SDL_INIT_VIDEO, SDL_QUIT, SDL_KEYDOWN, SDLK_ESCAPE,
+  (* functions *)
+  SDL_Init, SDL_Quit, SDL_Log, SDL_GetError, SDL_CreateWindow, SDL_GetWindowSurface,
+  SDL_UpdateWindowSurface, SDL_DestroyWindow, SDL_UpperBlit, SDL_FreeSurface, SDL_PollEvent,
+  SDL_Delay;
+
+TYPE
+  TSDL_Keycode = INTEGER32;
+  TSDL_Scancode = INTEGER32;
+
+  PSDL_Rect = POINTER TO TSDL_Rect;
+  PSDL_Keysym = POINTER TO TSDL_Keysym;
+  PSDL_KeyboardEvent = POINTER TO TSDL_KeyboardEvent;
+  PSDL_QuitEvent = POINTER TO TSDL_QuitEvent;
+  PSDL_Event = POINTER TO TSDL_Event;
+  PSDL_Surface = POINTER TO TSDL_Surface;
+  PSDL_Window = POINTER TO TSDL_Window;
+
+  TSDL_Rect = RECORD
+    X, Y, W, H: INTEGER32;
+  END;
+
+  TSDL_Keysym = RECORD
+    Scancode: TSDL_Scancode;
+    Sym: TSDL_Keycode;
+    Mod: CARDINAL16;
+    Unused: CARDINAL32;
+  END;
+
+  TSDL_KeyboardEvent = RECORD
+    Type: CARDINAL32;
+    Timestamp: CARDINAL32;
+    WindowId: CARDINAL32;
+    State: CARDINAL8;
+    Repeat: CARDINAL8;
+    Padding2: CARDINAL8;
+    Padding3: CARDINAL8;
+    Keysym: TSDL_Keysym;
+  END;
+
+  TSDL_QuitEvent = RECORD
+    Type: CARDINAL32;
+    Timestamp: CARDINAL32;
+  END;
+
+  TSDL_Event = RECORD
+    CASE CARDINAL8 OF
+      | 0: Type: CARDINAL32
+      | 1: Key: TSDL_KeyboardEvent
+      | 2: Quit: TSDL_QuitEvent;
+    ELSE
+      Padding: ARRAY[0..63] OF CARDINAL8;
+    END;
+  END;
+
+  TSDL_Surface = RECORD
+    Flags: CARDINAL32;
+    Format: ADDRESS;
+    W: INTEGER32;
+    H: INTEGER32;
+    Pitch: INTEGER32;
+    Pixels: ADDRESS;
+    Userdata: ADDRESS;
+    Locked: INTEGER32;
+    ListBlitmap: ADDRESS;
+    ClipRect: TSDL_Rect;
+    Map: ADDRESS;
+    Refcount: INTEGER32;
+  END;
+
+  TSDL_Window = RECORD
+  END;
+
+CONST
+  SDL_INIT_VIDEO = BITSET32(020H);
+
+  SDL_QUIT = BITSET32(0100H);
+  SDL_KEYDOWN = BITSET32(0300H);
+
+  SDLK_ESCAPE = 01BH;
+
+(* init *)
+PROCEDURE SDL_Init(Flag: CARDINAL32): [INTEGER32];
+PROCEDURE SDL_Quit;
+
+(* logging *)
+PROCEDURE SDL_Log(Fmt: ARRAY OF CHAR; ...); 
+
+(* error *)
+PROCEDURE SDL_GetError(): ADDRESS;
+
+(* video *)
+PROCEDURE SDL_CreateWindow(Title: ARRAY OF CHAR; X, Y, W, H: INTEGER32;
+                           Flags: CARDINAL32): PSDL_Window;
+PROCEDURE SDL_GetWindowSurface(Window: PSDL_Window): PSDL_Surface;
+PROCEDURE SDL_UpdateWindowSurface(Window: PSDL_Window): [INTEGER32];
+PROCEDURE SDL_DestroyWindow(Window: PSDL_Window);
+
+(* surface *)
+PROCEDURE SDL_UpperBlit(Src: PSDL_Surface; SrcRect: PSDL_Rect; Dst: PSDL_Surface;
+                        DstRect: PSDL_Rect): [INTEGER32];
+PROCEDURE SDL_FreeSurface(Surface: PSDL_Surface);
+
+(* events *)
+PROCEDURE SDL_PollEvent(Event: PSDL_Event): [INTEGER32];
+
+(* timer *)
+PROCEDURE SDL_Delay(Ms: CARDINAL32);
+
+END MiniSDL2.
