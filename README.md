@@ -30,6 +30,20 @@ There will be also some odd stuff here, because I really enjoy coding Modula-2.
 I will try to complete everything I try out, but some of the stuff will be work
 in progress.
 
+-- image viewer --
+
+This is a simple image viewer using the SDL2 and SDL2_image libs to display all
+kinds of images. I included a nice example JPEG which gets loaded if the viewer
+is started without an argument. In this example I enable support of all image
+formats tha are supported by SLD2_image, but that will fail if you miss some
+of the more niche formats like AVIF. In that case just change the parameter of
+IMG_INIT(). The image will be displayed for about 3 seconds, then the viewer
+closes. If you look into the SDL2 wrapper you can see that I actually added
+all the SDL2 event stuff to be able to wait for a quit or keyboard event. But
+this did not work for me. Here the Modula-2 runtime runs into some really odd
+issues I can not figure out. It is odd, because the Raylib uses a similar
+technique and there it works just fine.
+
 -- nice to know --
 
 Various examples and tricks I found myself by reading the GCC Modula-2 backend
