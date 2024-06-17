@@ -35,7 +35,9 @@ CONST
 VAR
   Window: MiniSDL2.PSDL_Window;
   WindowSurface, ImageSurface: MiniSDL2.PSDL_Surface;
+  Event: MiniSDL2.TSDL_Event;
   Filename: ARRAY[0..255] OF CHAR;
+  Running: BOOLEAN;
 
 BEGIN
   IF MiniSDL2.SDL_Init(BSet32Int32(MiniSDL2.SDL_INIT_VIDEO)) = 0 THEN
@@ -49,11 +51,23 @@ BEGIN
         Window := MiniSDL2.SDL_CreateWindow("SDL2 Image Window", 0, 0, ImageSurface^.W,
                                             ImageSurface^.H, 0);
         IF Window <> NIL THEN
+          Running := TRUE;
+
           WindowSurface := MiniSDL2.SDL_GetWindowSurface(Window);
           IF WindowSurface <> NIL THEN
             MiniSDL2.SDL_UpperBlit(ImageSurface, NIL, WindowSurface, NIL);
             MiniSDL2.SDL_UpdateWindowSurface(Window);
-            MiniSDL2.SDL_Delay(3000);
+
+            WHILE Running DO
+              WHILE MiniSDL2.SDL_PollEvent(ADR(Event)) = 1 DO
+                IF (Event.Type = BSet32UInt32(MiniSDL2.SDL_QUIT)) OR
+                   ((Event.Type = BSet32UInt32(MiniSDL2.SDL_KEYDOWN)) AND
+                   (Event.Key.Keysym.Sym = MiniSDL2.SDLK_ESCAPE))
+                THEN
+                  Running := FALSE;
+                END;
+              END;
+            END;
           END;
           MiniSDL2.SDL_DestroyWindow(Window);
         END;
