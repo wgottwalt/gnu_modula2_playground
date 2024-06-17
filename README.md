@@ -37,12 +37,8 @@ kinds of images. I included a nice example JPEG which gets loaded if the viewer
 is started without an argument. In this example I enable support of all image
 formats that are supported by SLD2_image. But this will fail if you are missing
 some of the libs of the niche formats like AVIF. In that case just change the
-parameter of IMG_INIT(). The image will be displayed for about 3 seconds, then
-the viewer closes. If you look into the SDL2 wrapper you can see that I actually
-added all the SDL2 event stuff to be able to wait for a quit or keyboard event.
-But this did not work for me. Here the Modula-2 runtime runs into some really
-odd issues I can not figure out. It is odd, because the Raylib uses a similar
-technique and there it works just fine.
+parameter of IMG_INIT(). The viewer will react to a window managers application
+close event or the escape key to end the viewer.
 
 -- nice to know --
 
