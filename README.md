@@ -37,14 +37,14 @@ kinds of images. I included a nice example JPEG which gets loaded if the viewer
 is started without an argument. In this example I enable support of all image
 formats that are supported by SLD2_image. But this will fail if you are missing
 some of the libs of the niche formats like AVIF. In that case just change the
-parameter of IMG_INIT(). The viewer will react to a window managers application
-close event or the escape key to end the viewer.
+parameter of the IMG_Init() procedure. The viewer will react to a window managers
+"application close event" or the escape key to end the viewer.
 
 -- nice to know --
 
 Various examples and tricks I found myself by reading the GCC Modula-2 backend
-code and just playing around. Some of this is not mentioned in the most
-Modula-2 books.
+code and just playing around. Some of this is not mentioned in the most Modula-2
+books.
 
 -- coroutines --
 
@@ -54,7 +54,7 @@ is just a small example to get a feeling for this, after all that coroutine
 mechanism is quite different from C++ coroutines. At the beginning it was quite
 hard to get it to work, because of a simple reason. The stack sizes old manuals
 are talking about are often far to small. You need at least a 16 KiB stack for
-every coroutine or you run in very hard to understand runtime errors.
+every coroutine or you run into very hard to understand runtime errors.
 
 -- raylib --
 
