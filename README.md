@@ -63,7 +63,12 @@ interfacing mechanics to play around with the famous raylib. For now the Raylib
 is incomplete and in the most cases will only provide what is needed to get the
 examples running. But I plan to complete this, because I really enjoy how well
 that works. (Just to mention it: I also work on Xlib, libpci and SDL2 wrapper
-code, but they are far more complex.)
+code, but they are far more complex.) I will provide a complete Raylib wrapper,
+it is just a matter of time. Some parts won't be a wrapper but native Modula-2
+implementations, because some parts of Raylib are just macros and these are not
+possible in Modula-2. And there are all the basic vector math stuff where it
+does not make much sense to "wrap". Doing that natively in Modula-2 may also
+yield a slightly better performance.
 
 -- libpciaccess --
 
