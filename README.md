@@ -80,10 +80,10 @@ much stricter type system. Things like returning dynamic allocated strings is a
 typical C thing and is handled differently in Modula-2. There are dynamic
 strings types in the Modula-2 libs, but they are not the same. Plus, you always
 have to figure out how ownership of these allocated memory is done. Is the lib
-freeing the memory or does the user of the has to deal with it? For that reason
-this wrapper copies the string to a fixed length string, a defined type which
-can be used as a return type in Modula-2 procedures. Another really difficult
-part are C bitfields which are an extreme example of packed types. I had to do
-thourough testing and GCC code reading to understand how to deal with that,
-hence I included some testing code. The way how it is done here is a GCC feature.
-I'm pretty sure that this will not work with other Modula-2 compilers.
+freeing the memory or does the user of the lib has to deal with it? For that
+reason this wrapper copies the string to a fixed length string, a defined type
+which can be used as a return type in Modula-2 procedures. Another really
+difficult part are C bitfields which are an extreme example of packed types. I
+had to do thourough testing and GCC code reading to understand how to deal with
+that, hence I included some testing code. The way how it is done here is a GCC
+feature. I'm pretty sure that this will not work with other Modula-2 compilers.
