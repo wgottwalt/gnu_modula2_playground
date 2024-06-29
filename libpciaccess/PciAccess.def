@@ -1,0 +1,195 @@
+(*!m2iso*)
+DEFINITION MODULE PciAccess;
+
+FROM SYSTEM IMPORT ADDRESS, CARDINAL8, CARDINAL16, CARDINAL32, CARDINAL64, CSSIZE_T, INTEGER32;
+
+EXPORT QUALIFIED
+  (* opaque types *)
+  PCARDINAL8, PCARDINAL16, PCARDINAL32, PDeviceIterator, PINTEGER32,
+  (* pointer types *)
+  PAddr, PAgpInfo, PBridgeInfo, PDevice, PIdMatch, PMemRegion, PPcmciaBridgeInfo, PSlotMatch,
+  PString,
+  (* complex types *)
+  TAddr, TAgpInfo, TBridgeInfo, TDevice, TIdMatch, TMemRegion, TPcmciaBridgeInfo, TSlotMatch,
+  TString,
+  (* constants *)
+  VERSION, MAX_STRING_LENGTH,
+  (* functions *)
+  DeviceHasKernelDriver, DeviceIsBootVga, DeviceReadRom, DeviceMapRange, DeviceUnmapRange,
+  DeviceProbe, DeviceGetAgpInfo, DeviceGetBridgeInfo, DeviceGetPcmciaBridgeInfo,
+  DeviceGetBridgeBuses, SystemInit, SystemInitDevMem, SystemCleanup, SlotMatchIteratorCreate,
+  IdMatchIteratorCreate, IteratorDestroy, DeviceNext, DeviceFindBySlot, GetStrings,
+  DeviceGetDeviceName, DeviceGetSubdeviceName, DeviceGetVendorName, DeviceGetSubvendorName,
+  DeviceEnable, DeviceDisable, DeviceCfgRead, DeviceCfgReadU8, DeviceCfgReadU16, DeviceCfgReadU32,
+  DeviceCfgWrite, DeviceCfgWriteU8, DeviceCfgWriteU16, DeviceCfgWriteU32, DeviceCfgWriteBits;
+
+TYPE
+  PCARDINAL8;
+  PCARDINAL16;
+  PCARDINAL32;
+  PDeviceIterator;
+  PINTEGER32;
+
+  PAddr = POINTER TO TAddr;
+  PAgpInfo = POINTER TO TAgpInfo;
+  PBridgeInfo = POINTER TO TBridgeInfo;
+  PDevice = POINTER TO TDevice;
+  PIdMatch = POINTER TO TIdMatch;
+  PMemRegion = POINTER TO TMemRegion;
+  PPcmciaBridgeInfo = POINTER TO TPcmciaBridgeInfo;
+  PSlotMatch = POINTER TO TSlotMatch;
+  PString = POINTER TO TString;
+
+  TAddr = CARDINAL64;
+
+  TAgpInfo = RECORD
+    ConfigOffset: CARDINAL32;
+    MajorVersion: CARDINAL8;
+    MinorVersion: CARDINAL8;
+    Rates: CARDINAL8;
+    Flags: RECORD
+      <* bytealignment(0) *>
+      FastWrites: [0..1];
+      Addr64: [0..1];
+      HTrans: [0..1];
+      Gart64: [0..1];
+      Coherent: [0..1];
+      Sideband: [0..1];
+      Isochronus: [0..1];
+    END;
+    AsyncReqSize: CARDINAL8;
+    CalibrationCycleTiming: CARDINAL8;
+    MaxRequests: CARDINAL8;
+  END;
+
+  TBridgeInfo = RECORD
+    PrimaryBus: CARDINAL8;
+    SecondaryBus: CARDINAL8;
+    SubordinateBus: CARDINAL8;
+    SecondaryLatencyTimer: CARDINAL8;
+    IoType: CARDINAL8;
+    MemType: CARDINAL8;
+    PrefetchMemType: CARDINAL8;
+    SecondaryStatus: CARDINAL16;
+    BridgeControl: CARDINAL16;
+    IoBase: CARDINAL32;
+    IoLimit: CARDINAL32;
+    MemBase: CARDINAL32;
+    MemLimit: CARDINAL32;
+    PrefetchMemBase: CARDINAL64;
+    PrefetchMemLimit: CARDINAL64;
+  END;
+
+  TDevice = RECORD
+    Domain16: CARDINAL16;
+    Bus: CARDINAL8;
+    Dev: CARDINAL8;
+    Func: CARDINAL8;
+    VendorId: CARDINAL16;
+    DeviceId: CARDINAL16;
+    SubvendorId: CARDINAL16;
+    SubdeviceId: CARDINAL16;
+    DeviceClass: CARDINAL32;
+    Revision: CARDINAL8;
+    Regions: ARRAY[0..5] OF TMemRegion;
+    Irq: INTEGER32;
+    UserData: CSSIZE_T;
+    VgaArbRSrc: INTEGER32;
+    Domain: CARDINAL32;
+  END;
+
+  TIdMatch = RECORD
+    VendorId: CARDINAL32;
+    DeviceId: CARDINAL32;
+    SubvendorId: CARDINAL32;
+    SubdeviceId: CARDINAL32;
+    DeviceClass: CARDINAL32;
+    DeviceClassMask: CARDINAL32;
+    MatchData: CSSIZE_T;
+  END;
+
+  TMemRegion = RECORD
+    Memory: ADDRESS;
+    BusAddr: TAddr;
+    BaseAddr: TAddr;
+    Size: TAddr;
+    Flags: RECORD
+      <* bytealignment(0) *>
+      IsIo: [0..1];
+      IsPrefetchable: [0..1];
+      Is64: [0..1];
+    END;
+  END;
+
+  TPcmciaBridgeInfo = RECORD
+    PrimaryBus: CARDINAL8;
+    CardBus: CARDINAL8;
+    SubordinateBus: CARDINAL8;
+    CardbusLatencyTimer: CARDINAL8;
+    SecondaryStatus: CARDINAL8;
+    BridgeControl: CARDINAL8;
+    Io: ARRAY[0..1] OF RECORD
+      Base: CARDINAL32;
+      Limit: CARDINAL32;
+    END;
+    Mem: ARRAY[0..1] OF RECORD
+      Base: CARDINAL32;
+      Limit: CARDINAL32;
+    END;
+  END;
+
+  TSlotMatch = RECORD
+    Domain: CARDINAL32;
+    Bus: CARDINAL32;
+    Dev: CARDINAL32;
+    Func: CARDINAL32;
+    MatchData: CSSIZE_T;
+  END;
+
+  TString = ARRAY[0..(MAX_STRING_LENGTH - 1)] OF CHAR;
+
+CONST
+  VERSION = "LibPciAccess wrapper (libpicaccess 0.18.1)";
+  MAX_STRING_LENGTH = 255;
+
+PROCEDURE DeviceHasKernelDriver(Dev: PDevice): INTEGER32;
+PROCEDURE DeviceIsBootVga(Dev: PDevice): INTEGER32;
+PROCEDURE DeviceReadRom(Dev: PDevice; Buffer: ADDRESS): INTEGER32;
+PROCEDURE DeviceMapRange(Dev: PDevice; Base, Size: TAddr; MapFlags: CARDINAL32;
+                         Addr: ADDRESS): INTEGER32;
+PROCEDURE DeviceUnmapRange(Dev: PDevice; Memory: ADDRESS; Size: TAddr): INTEGER32;
+PROCEDURE DeviceProbe(Dev: PDevice): INTEGER32;
+PROCEDURE DeviceGetAgpInfo(Dev: PDevice): PAgpInfo;
+PROCEDURE DeviceGetBridgeInfo(Dev: PDevice): PBridgeInfo;
+PROCEDURE DeviceGetPcmciaBridgeInfo(Dev: PDevice): PPcmciaBridgeInfo;
+PROCEDURE DeviceGetBridgeBuses(Dev: PDevice; PrimaryBus, SecondaryBus,
+                               SubordinateBus: PINTEGER32): INTEGER32;
+PROCEDURE SystemInit(): INTEGER32;
+PROCEDURE SystemInitDevMem(Fd: INTEGER32);
+PROCEDURE SystemCleanup;
+PROCEDURE SlotMatchIteratorCreate(Match: PSlotMatch): PDeviceIterator;
+PROCEDURE IdMatchIteratorCreate(Match: PIdMatch): PDeviceIterator;
+PROCEDURE IteratorDestroy(Iter: PDeviceIterator);
+PROCEDURE DeviceNext(Iter: PDeviceIterator): PDevice;
+PROCEDURE DeviceFindBySlot(Domain, Bus, Dev, Func: CARDINAL32): PDevice;
+PROCEDURE DeviceGetParentBridge(Dev: PDevice): PDevice;
+PROCEDURE GetStrings(M: PIdMatch; VAR DeviceName, VendorName, SubdeviceName, SubvendorName: TString);
+PROCEDURE DeviceGetDeviceName(Dev: PDevice): TString;
+PROCEDURE DeviceGetSubdeviceName(Dev: PDevice): TString;
+PROCEDURE DeviceGetVendorName(Dev: PDevice): TString;
+PROCEDURE DeviceGetSubvendorName(Dev: PDevice): TString;
+PROCEDURE DeviceEnable(Dev: PDevice);
+PROCEDURE DeviceDisable(Dev: PDevice);
+PROCEDURE DeviceCfgRead(Dev: PDevice; Data: ADDRESS; Offset, Size: TAddr;
+                        BytesRead: PAddr): INTEGER32;
+PROCEDURE DeviceCfgReadU8(Dev: PDevice; Data: PCARDINAL8; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgReadU16(Dev: PDevice; Data: PCARDINAL16; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgReadU32(Dev: PDevice; Data: PCARDINAL32; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgWrite(Dev: PDevice; Data: ADDRESS; Offset, Size: TAddr;
+                         BytesWritten: PAddr): INTEGER32;
+PROCEDURE DeviceCfgWriteU8(Dev: PDevice; Data: CARDINAL8; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgWriteU16(Dev: PDevice; Data: CARDINAL16; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgWriteU32(Dev: PDevice; Data: CARDINAL32; Offset: TAddr): INTEGER32;
+PROCEDURE DeviceCfgWriteBits(Dev: PDevice; Mask: CARDINAL32; Offset: TAddr): INTEGER32;
+
+END PciAccess.

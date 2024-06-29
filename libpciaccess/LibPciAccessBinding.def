@@ -1,0 +1,59 @@
+(*!m2iso*)
+DEFINITION MODULE FOR "C" LibPciAccessBinding;
+
+FROM SYSTEM IMPORT ADDRESS, CARDINAL8, CARDINAL16, CARDINAL32, CARDINAL64, INTEGER32;
+
+EXPORT UNQUALIFIED
+  (* functions *)
+  pci_device_has_kernel_driver, pci_device_is_boot_vga, pci_device_read_rom, pci_device_map_range,
+  pci_device_unmap_range, pci_device_probe, pci_device_get_agp_info, pci_device_get_bridge_info,
+  pci_device_get_pcmcia_bridge_info, pci_device_get_bridge_buses, pci_system_init,
+  pci_system_init_dev_mem, pci_system_cleanup, pci_slot_match_iterator_create,
+  pci_id_match_iterator_create, pci_iterator_destroy, pci_device_next, pci_device_find_by_slot,
+  pci_device_get_parent_bridge, pci_get_strings, pci_device_get_device_name,
+  pci_device_get_subdevice_name, pci_device_get_vendor_name, pci_device_get_subvendor_name,
+  pci_device_enable, pci_device_disable, pci_device_cfg_read, pci_device_cfg_read_u8,
+  pci_device_cfg_read_u16, pci_device_cfg_read_u32, pci_device_cfg_write, pci_device_cfg_write_u8,
+  pci_device_cfg_write_u16, pci_device_cfg_write_u32, pci_device_cfg_write_bits;
+
+PROCEDURE pci_device_has_kernel_driver(dev: ADDRESS): INTEGER32;
+PROCEDURE pci_device_is_boot_vga(dev: ADDRESS): INTEGER32;
+PROCEDURE pci_device_read_rom(dev, buffer: ADDRESS): INTEGER32;
+PROCEDURE pci_device_map_range(dev: ADDRESS; base, size: CARDINAL64; maps_flags: CARDINAL32;
+                               addr: ADDRESS): INTEGER32;
+PROCEDURE pci_device_unmap_range(dev, memory: ADDRESS; size: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_probe(dev: ADDRESS): INTEGER32;
+PROCEDURE pci_device_get_agp_info(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_bridge_info(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_pcmcia_bridge_info(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_bridge_buses(dev, primary_bus, secondary_bus,
+                                      subordinate_bus: ADDRESS): INTEGER32;
+PROCEDURE pci_system_init(): INTEGER32;
+PROCEDURE pci_system_init_dev_mem(fd: INTEGER32);
+PROCEDURE pci_system_cleanup;
+PROCEDURE pci_slot_match_iterator_create(match: ADDRESS): ADDRESS;
+PROCEDURE pci_id_match_iterator_create(match: ADDRESS): ADDRESS;
+PROCEDURE pci_iterator_destroy(iter: ADDRESS);
+PROCEDURE pci_device_next(iter: ADDRESS): ADDRESS;
+PROCEDURE pci_device_find_by_slot(domain, bus, dev, func: CARDINAL32): ADDRESS;
+PROCEDURE pci_device_get_parent_bridge(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_get_strings(m, device_name, vendor_name, subdevice_name, subvendor_name: ADDRESS);
+PROCEDURE pci_device_get_device_name(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_subdevice_name(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_vendor_name(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_get_subvendor_name(dev: ADDRESS): ADDRESS;
+PROCEDURE pci_device_enable(dev: ADDRESS);
+PROCEDURE pci_device_disable(dev: ADDRESS);
+PROCEDURE pci_device_cfg_read(dev, data: ADDRESS; offset, size: CARDINAL64;
+                              bytes_read: ADDRESS): INTEGER32;
+PROCEDURE pci_device_cfg_read_u8(dev, data: ADDRESS; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_read_u16(dev, data: ADDRESS; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_read_u32(dev, data: ADDRESS; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_write(dev, data: ADDRESS; offset, size: CARDINAL64;
+                               bytes_written: ADDRESS): INTEGER32;
+PROCEDURE pci_device_cfg_write_u8(dev: ADDRESS; data: CARDINAL8; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_write_u16(dev: ADDRESS; data: CARDINAL16; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_write_u32(dev: ADDRESS; data: CARDINAL32; offset: CARDINAL64): INTEGER32;
+PROCEDURE pci_device_cfg_write_bits(dev: ADDRESS; mask: CARDINAL32; offset: CARDINAL64): INTEGER32;
+
+END LibPciAccessBinding.
