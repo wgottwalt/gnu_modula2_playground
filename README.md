@@ -64,3 +64,19 @@ is incomplete and in the most cases will only provide what is needed to get the
 examples running. But I plan to complete this, because I really enjoy how well
 that works. (Just to mention it: I also work on Xlib, libpci and SDL2 wrapper
 code, but they are far more complex.)
+
+-- libpciaccess --
+
+This is an attempt to properly wrap an C bases library and is complete. There
+I split bindings and the actuall Modula-2 interface. The reason is simple, the
+C based lib returns char arrays, something which is difficult to deal with.
+Modula-2 has stricter typing and things like returning dynamic allocated strings
+how it is done in C is a problem in Modula-2. There a dynamic strings in the
+Modula-2 libs, but they are not the same. Plus, you always have to figure out
+how owning of these allocated memory is done. Is the lib freeing the memory or
+does the lib user have to do it? For this reason this wrapper copies the string
+to a fixed length string, a defoned type which can used as a returning type in
+Modula-2 procedures. Another really difficult part a C bitfields which are an
+extreme example of packed types. I had to do thourough testing, hence I included
+some testing examples. The way how it is done here is a GCC feature, I'm pretty
+sure that this will not work with other Modula-2 compilers.
