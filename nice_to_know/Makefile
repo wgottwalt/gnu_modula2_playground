@@ -18,7 +18,7 @@ $(BINARIES): %: %.mod $(OBJECTS)
 	$(M2C) $(M2FLAGS) $< $(OBJECTS) -o $@ $(LIBS)
 
 clean:
-	$(RM) $(OBJECTS) $(BINARIES:=.o)
+	$(RM) $(OBJECTS)
 
 distclean: clean
 	$(RM) $(BINARIES)
