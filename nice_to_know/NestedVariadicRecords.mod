@@ -13,24 +13,24 @@ TYPE
   (* creating anonymous unions inside structs seem not to be possible *)
   TColor = RECORD
     CASE CARDINAL8 OF
-      0: Unsigned: RECORD
-        CASE BOOLEAN OF
-          FALSE: Rgba: RECORD
-            R, G, B, A: CARDINAL8;
-          END |
-          TRUE: Value: CARDINAL32 |
-        END;
-      END |
-      1: Signed: RECORD
-        CASE BOOLEAN OF
-          FALSE: Rgba: RECORD
-            R, G, B, A: INTEGER8;
-          END |
-          TRUE: Value: INTEGER32 |
-        END;
-      END |
-      2: Float: REAL32 |
-      3: Values: ARRAY[0..SIZE32] OF CARDINAL8 |
+      | 0: Unsigned: RECORD
+          CASE BOOLEAN OF
+            | FALSE: Rgba: RECORD
+                R, G, B, A: CARDINAL8;
+              END
+            | TRUE: Value: CARDINAL32
+          END;
+        END
+      | 1: Signed: RECORD
+          CASE BOOLEAN OF
+            | FALSE: Rgba: RECORD
+                R, G, B, A: INTEGER8;
+              END
+            | TRUE: Value: INTEGER32
+          END;
+        END
+      | 2: Float: REAL32
+      | 3: Values: ARRAY[0..SIZE32] OF CARDINAL8
     ELSE
       Raw: ARRAY[0..SIZE32] OF CHAR;
     END;
