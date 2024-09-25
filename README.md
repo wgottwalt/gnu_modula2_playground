@@ -15,6 +15,8 @@ reasons for this.
    cxxlib, gcclib and the libs you add on your own.
 3. In GCC 13 the gm2 frontend behaves a bit odd which makes using globing
    mechanisms in makefiles quite annoying.
+4. Avoid small size optimizations (-Os). These result in very odd errors,
+   especially if combined with wrappers around libs (libc.def).
 
 If you are on Arch Linux you could use my GCC 15 snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
