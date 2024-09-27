@@ -5,7 +5,7 @@ M2SOURCES = $(wildcard *.mod)
 SOURCES = $(filter-out $(addsuffix .mod, $(BINARIES)), $(M2SOURCES))
 OBJECTS = $(SOURCES:.mod=.o)
 
-FLAGS = -W -Wextra -Os -s
+FLAGS = -W -Wextra -O2 -s
 M2FLAGS = -fsoft-check-all $(FLAGS)
 LIBS =
 

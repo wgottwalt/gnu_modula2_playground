@@ -10,7 +10,7 @@ M2BINARIES = M2TestPackedTypes ListDevices
 M2SOURCES = $(filter-out $(addsuffix .mod, $(M2BINARIES)), $(wildcard *.mod))
 M2OBJECTS = $(M2SOURCES:.mod=.o)
 
-FLAGS = -W -Wextra -Os -s
+FLAGS = -W -Wextra -O2 -s
 CFLAGS = -std=c18 -Wall -flto $(FLAGS)
 M2FLAGS = -fiso -fsoft-check-all $(FLAGS)
 LIBS = -lpciaccess

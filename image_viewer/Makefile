@@ -6,7 +6,7 @@ M2SOURCES = $(wildcard *.mod)
 SOURCES = $(filter-out $(addsuffix .mod, $(BINARIES)), $(M2SOURCES))
 OBJECTS = $(SOURCES:.mod=.o)
 
-FLAGS = -W -Wextra -Os -s
+FLAGS = -W -Wextra -O2 -s
 M2FLAGS = -static-libgm2 -fiso -fsoft-check-all $(FLAGS)
 LIBS = -lSDL2 -lSDL2_image
 
