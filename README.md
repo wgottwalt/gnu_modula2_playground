@@ -19,7 +19,7 @@ reasons for this.
    especially if combined with wrappers around libs (libc.def).
 5. Do not use SHORTREAL (aka float) with the c-runtime wrapped printf function
    and the %f placeholder. In C %f is meant for doubles but also works with
-   floats. This is not true for Modula-2. Here every variable assigned to the %s
+   floats. This is not true for Modula-2. Here every variable assigned to the %f
    placeholder is always interpreted as double, producing really odd output.
 6. If you can use the c-runtime (libc.def), do so and avoid Modula-2 lib
    functions. They are slow, really really horrible slow.
