@@ -17,6 +17,12 @@ reasons for this.
    mechanisms in makefiles quite annoying.
 4. Avoid small size optimizations (-Os). These result in very odd errors,
    especially if combined with wrappers around libs (libc.def).
+5. Do not use SHORTREAL (aka float) with the c-runtime wrapped printf function
+   and the %f placeholder. In C %f is meant for doubles but also works with
+   floats. This is not true for Modula-2. Here every variable assigned to the %s
+   placeholder is always interpreted as double, producing really odd output.
+6. If you can use the c-runtime (libc.def), do so and avoid Modula-2 lib
+   functions. They are slow, really really horrible slow.
 
 If you are on Arch Linux you could use my GCC 15 snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
