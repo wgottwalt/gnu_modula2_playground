@@ -21,6 +21,9 @@ reasons for this.
    and the %f placeholder. In C %f is meant for doubles but also works with
    floats. This is not true for Modula-2. Here every variable assigned to the %f
    placeholder is always interpreted as double, producing really odd output.
+   Avoid SHORTREAL with c-runtime wrapped libs in general. There also seems to
+   be no benefit in SHORTREALs at all in the case of packing or vectorization
+   (SIMD).
 6. If you can use the c-runtime (libc.def), do so and avoid Modula-2 lib
    functions. They are slow, really really horrible slow.
 
