@@ -30,6 +30,10 @@ reasons for this.
 If you are on Arch Linux you could use my GCC 15 snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
 
+I am also a developer contributing to GCC and able to bring code upstream.
+If you encounter odd issues in the Modula-2 frontend, you can contact me here
+and I will try to fix it in upstream.
+
 All the Modula-2 code in here should be proper ISO standard Modula-2 code
 combined with some PIMx calls if no matching ISO call is available. Though I
 will really try to stick to the ISO standard. I used to code quite a lot of
