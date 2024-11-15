@@ -10,7 +10,7 @@ CONST
   SIZE32 = TSIZE(CARDINAL32);
 
 TYPE
-  (* creating anonymous unions inside structs seem not to be possible *)
+  (* creating anonymous unions inside structs does not seem to be supported *)
   TColor = RECORD
     CASE CARDINAL8 OF
       | 0: Unsigned: RECORD
