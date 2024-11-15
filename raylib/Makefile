@@ -1,28 +1,30 @@
 M2C = $(CROSS_COMPILE)gm2
-STRIP = $(CROSS_COMPILE)strip
 
 BINARIES = 000_basic_window 001_title_screen 002_2d_camera 003_2d_camera_mouse_zoom \
            004_2d_camera_platformer 005_2d_camera_split_screen 006_3d_camera_first_person \
            007_initialize_3d_camera_free
 M2SOURCES = $(wildcard *.mod)
 SOURCES = $(filter-out $(addsuffix .mod, $(BINARIES)), $(M2SOURCES))
-OBJECTS = $(SOURCES:.mod=.o)
+OBJECTS = $(patsubst %.mod,.obj/%.o,$(SOURCES))
+OBJDIR = .obj
 
-FLAGS = -W -Wall -Wextra -O3 -s
-M2FLAGS = -static-libgm2 -fiso -fsoft-check-all $(FLAGS)
+FLAGS = -W -Wall -Wextra -O2 -s
+M2FLAGS = -fiso -fsoft-check-all $(FLAGS)
 LIBS = -lraylib
 
-all: $(BINARIES)
+all: $(OBJDIR) $(BINARIES)
 
-%.o: %.mod
+$(OBJDIR):
+	mkdir -p $(OBJDIR)
+
+$(OBJDIR)/%.o: %.mod
 	$(M2C) $(M2FLAGS) -c $< -o $@
 
 $(BINARIES): %: %.mod $(OBJECTS)
 	$(M2C) $(M2FLAGS) $< $(OBJECTS) -o $@ $(LIBS)
-	@$(STRIP) $@
 
 clean:
-	$(RM) $(OBJECTS) $(BINARIES:=.o)
+	$(RM) -rf $(OBJDIR)
 
 distclean: clean
 	$(RM) $(BINARIES)
