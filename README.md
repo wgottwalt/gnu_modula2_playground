@@ -30,7 +30,7 @@ reasons for this.
 If you are on Arch Linux you could use my GCC 15 snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
 
-I am also a developer contributing to GCC and able to bring code upstream.
+I am also a developer contributing to GCC and are able to bring code upstream.
 If you encounter odd issues in the Modula-2 frontend, you can contact me here
 and I will try to fix it in upstream.
 
