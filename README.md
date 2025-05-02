@@ -79,10 +79,10 @@ especially about wrapping c-based pointers. Most problematic are functions
 which return c-strings. That can not really mapped to Modula-2, because Modula-2
 has a somewhat stricter type system. And Raylib does something really odd about
 returning c-strings, they all point to internal buffers. You can cast them, and
-this is what I do in the examples, but this is actually safe in threading or
+this is what I do in the examples, but this is actually not safe in threading or
 async scenarios. The Raylib wrapper provides constants about the sizes of these
-internal buffer which can be used for casting. Example 005 and 006 demonstrate
-that.
+internal buffer which can be used for casting. Example 005 and 006 show how to
+deal with these functions and casting the internal buffers.
 
 -- libpciaccess --
 
