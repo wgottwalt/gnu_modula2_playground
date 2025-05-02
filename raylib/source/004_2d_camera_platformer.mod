@@ -1,33 +1,34 @@
+(*!m2iso+gm2*)
 MODULE TwoDCameraPlatformer;
 
-FROM SYSTEM IMPORT ADR, INTEGER32, REAL32, TSIZE;
+FROM SYSTEM IMPORT ADR, TSIZE;
 IMPORT Raylib, Raymath;
 
 (* begin nested module *)
 MODULE Detail;
 
-FROM SYSTEM IMPORT ADR, INTEGER32, REAL32, TSIZE;
+FROM SYSTEM IMPORT ADR, TSIZE;
 IMPORT Raylib, Raymath;
 
 TYPE
   TPlayer = RECORD
     Position: Raylib.TVector2;
-    Speed: REAL32;
+    Speed: SHORTREAL;
     CanJump: BOOLEAN;
   END;
 
   TEnvItem = RECORD
     Rect: Raylib.TRectangle;
-    Blocking: INTEGER32;
+    Blocking: INTEGER;
     Color: Raylib.TColor;
   END;
 
   TDescArray = ARRAY[0..4],[0..80] OF CHAR;
-  TCameraUpdater = PROCEDURE(VAR Raylib.TCamera2D, VAR TPlayer, VAR ARRAY OF TEnvItem, INTEGER32,
-                             REAL32, INTEGER32, INTEGER32);
+  TCameraUpdater = PROCEDURE(VAR Raylib.TCamera2D, VAR TPlayer, VAR ARRAY OF TEnvItem, INTEGER,
+                             SHORTREAL, INTEGER, INTEGER);
 
 CONST
-  CAMERA_DESCRIPTIONS = TDescArray{
+  camera_descriptions = TDescArray{
     "Follow player center",
     "Follow player center, but clamp to map edges",
     "Follow player center; smoothed",
@@ -35,7 +36,7 @@ CONST
     "Player push camera on getting too close to screen edge"
   };
 
-PROCEDURE MinReal32(A, B: REAL32): REAL32;
+PROCEDURE MinReal32(A, B: SHORTREAL): SHORTREAL;
 BEGIN
   IF A > B THEN
     RETURN B;
@@ -44,7 +45,7 @@ BEGIN
   END;
 END MinReal32;
 
-PROCEDURE MaxReal32(A, B: REAL32): REAL32;
+PROCEDURE MaxReal32(A, B: SHORTREAL): SHORTREAL;
 BEGIN
   IF A > B THEN
     RETURN A;
@@ -54,24 +55,24 @@ BEGIN
 END MaxReal32;
 
 PROCEDURE UpdatePlayer(VAR Player: TPlayer; VAR EnvItems: ARRAY OF TEnvItem;
-                       EnvItemsLength: INTEGER32; Delta: REAL32);
+                       EnvItemsLength: INTEGER; Delta: SHORTREAL);
 CONST
-  PLAYER_HOR_SPD = 200.0;
-  PLAYER_JUMP_SPD = 350.0;
-  G = 400.0;
+  player_hor_spd = 200.0;
+  player_jump_spd = 350.0;
+  g = 400.0;
 VAR
-  I: INTEGER32;
+  I: INTEGER;
   HitObstacle: BOOLEAN;
 BEGIN
   WITH Player DO
-    IF Raylib.IsKeyDown(Raylib.KEY_LEFT) THEN
-      DEC(Position.X, PLAYER_HOR_SPD * Delta);
+    IF Raylib.IsKeyDown(Raylib.key_left) THEN
+      DEC(Position.X, player_hor_spd * Delta);
     END;
-    IF Raylib.IsKeyDown(Raylib.KEY_RIGHT) THEN
-      INC(Position.X, PLAYER_HOR_SPD * Delta);
+    IF Raylib.IsKeyDown(Raylib.key_right) THEN
+      INC(Position.X, player_hor_spd * Delta);
     END;
-    IF Raylib.IsKeyDown(Raylib.KEY_SPACE) AND CanJump THEN
-      Speed := -PLAYER_JUMP_SPD;
+    IF Raylib.IsKeyDown(Raylib.key_space) AND CanJump THEN
+      Speed := -player_jump_spd;
       CanJump := FALSE;
     END;
 
@@ -84,14 +85,14 @@ BEGIN
           HitObstacle := TRUE;
           Speed := 0.0;
           Position.Y := Rect.Y;
-          I := EnvItemsLength - 1; (* having a working EXIT/BREAK here would be nice *)
+          I := EnvItemsLength - 1; (* simulate break *)
         END;
       END;
     END;
 
     IF NOT HitObstacle THEN
       INC(Position.Y, Speed * Delta);
-      INC(Speed, G * Delta);
+      INC(Speed, g * Delta);
       CanJump := FALSE;
     ELSE
       CanJump := TRUE;
@@ -100,28 +101,28 @@ BEGIN
 END UpdatePlayer;
 
 PROCEDURE UpdateCameraCenter(VAR Camera: Raylib.TCamera2D; VAR Player: TPlayer;
-                             VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER32;
-                             Delta: REAL32; Width, Height: INTEGER32);
+                             VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER;
+                             Delta: SHORTREAL; Width, Height: INTEGER);
 BEGIN
   WITH Camera DO
-    Offset.X := VAL(REAL32, Width) / 2.0;
-    Offset.Y := VAL(REAL32, Height) / 2.0;
+    Offset.X := VAL(SHORTREAL, Width) / 2.0;
+    Offset.Y := VAL(SHORTREAL, Height) / 2.0;
     Target := Player.Position;
   END;
 END UpdateCameraCenter;
 
 PROCEDURE UpdateCameraCenterInsideMap(VAR Camera: Raylib.TCamera2D; VAR Player: TPlayer;
-                                      VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER32;
-                                      Delta: REAL32; Width, Height: INTEGER32);
+                                      VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER;
+                                      Delta: SHORTREAL; Width, Height: INTEGER);
 VAR
   Min, Max: Raylib.TVector2;
-  MinX, MinY, MaxX, MaxY: REAL32;
-  I: INTEGER32;
+  MinX, MinY, MaxX, MaxY: SHORTREAL;
+  I: INTEGER;
 BEGIN
   WITH Camera DO
     Target := Player.Position;
-    Offset.X := VAL(REAL32, Width) / 2.0;
-    Offset.Y := VAL(REAL32, Height) / 2.0;
+    Offset.X := VAL(SHORTREAL, Width) / 2.0;
+    Offset.Y := VAL(SHORTREAL, Height) / 2.0;
   END;
 
   MinX := 1000.0;
@@ -142,65 +143,64 @@ BEGIN
   Min := Raylib.GetWorldToScreen2D(Raylib.TVector2{MinX, MinY}, Camera);
 
   WITH Camera DO
-    IF Max.X < VAL(REAL32, Width) THEN
-      Offset.X := VAL(REAL32, Width) - (Max.X - VAL(REAL32, Width) / 2.0);
+    IF Max.X < VAL(SHORTREAL, Width) THEN
+      Offset.X := VAL(SHORTREAL, Width) - (Max.X - VAL(SHORTREAL, Width) / 2.0);
     END;
-    IF Max.Y < VAL(REAL32, Height) THEN
-      Offset.Y := VAL(REAL32, Height) - (Max.Y - VAL(REAL32, Height) / 2.0);
+    IF Max.Y < VAL(SHORTREAL, Height) THEN
+      Offset.Y := VAL(SHORTREAL, Height) - (Max.Y - VAL(SHORTREAL, Height) / 2.0);
     END;
     IF Min.X > 0.0 THEN
-      Offset.X := VAL(REAL32, Width) / 2.0 - Min.X;
+      Offset.X := VAL(SHORTREAL, Width) / 2.0 - Min.X;
     END;
     IF Min.Y > 0.0 THEN
-      Offset.Y := VAL(REAL32, Height) / 2.0 - Min.Y;
+      Offset.Y := VAL(SHORTREAL, Height) / 2.0 - Min.Y;
     END;
   END;
 END UpdateCameraCenterInsideMap;
 
 PROCEDURE UpdateCameraCenterSmoothFollow(VAR Camera: Raylib.TCamera2D; VAR Player: TPlayer;
-                                         VAR EnvItems: ARRAY OF TEnvItem;
-                                         EnvItemsLength: INTEGER32; Delta: REAL32;
-                                         Width, Height: INTEGER32);
+                                         VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER;
+                                         Delta: SHORTREAL; Width, Height: INTEGER);
 CONST
-  MIN_SPEED = 30.0;
-  MIN_EFFECT_LENGTH = 10.0;
-  FRACTION_SPEED = 0.8;
+  min_speed = 30.0;
+  min_effect_length = 10.0;
+  fraction_speed = 0.8;
 VAR
   Diff: Raylib.TVector2;
-  Length, Speed: REAL32;
+  Length, Speed: SHORTREAL;
 BEGIN
-  Camera.Offset.X := VAL(REAL32, Width) / 2.0;
-  Camera.Offset.Y := VAL(REAL32, Height) / 2.0;
+  Camera.Offset.X := VAL(SHORTREAL, Width) / 2.0;
+  Camera.Offset.Y := VAL(SHORTREAL, Height) / 2.0;
   Diff := Raymath.Vector2Subtract(Player.Position, Camera.Target);
   Length := Raymath.Vector2Length(Diff);
 
-  IF Length > MIN_EFFECT_LENGTH THEN
-    Speed := MaxReal32(FRACTION_SPEED * Length, MIN_SPEED);
+  IF Length > min_effect_length THEN
+    Speed := MaxReal32(fraction_speed * Length, min_speed);
     Camera.Target := Raymath.Vector2Add(Camera.Target,
                                         Raymath.Vector2Scale(Diff, Speed * Delta / Length));
   END;
 END UpdateCameraCenterSmoothFollow;
 
 PROCEDURE UpdateCameraEvenOutOnLanding(VAR Camera: Raylib.TCamera2D; VAR Player: TPlayer;
-                                       VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER32;
-                                       Delta: REAL32; Width, Height: INTEGER32);
+                                       VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER;
+                                       Delta: SHORTREAL; Width, Height: INTEGER);
 CONST
-  EVEN_OUT_SPEED = 700.0;
+  even_out_speed = 700.0;
 BEGIN
   WITH Camera DO
-    Offset.X := VAL(REAL32, Width) / 2.0;
-    Offset.Y := VAL(REAL32, Height) / 2.0;
+    Offset.X := VAL(SHORTREAL, Width) / 2.0;
+    Offset.Y := VAL(SHORTREAL, Height) / 2.0;
     Target.X := Player.Position.X;
 
     IF EveningOut THEN
       IF EvenOutTarget > Target.Y THEN
-        INC(Target.Y, EVEN_OUT_SPEED * Delta);
+        INC(Target.Y, even_out_speed * Delta);
         IF Target.Y > EvenOutTarget THEN
           Target.Y := EvenOutTarget;
           EveningOut := FALSE;
         END;
       ELSE
-        DEC(Target.Y, EVEN_OUT_SPEED * Delta);
+        DEC(Target.Y, even_out_speed * Delta);
         IF Target.Y < EvenOutTarget THEN
           Target.Y := EvenOutTarget;
           EveningOut := FALSE;
@@ -218,20 +218,20 @@ BEGIN
 END UpdateCameraEvenOutOnLanding;
 
 PROCEDURE UpdateCameraPlayerBoundsPush(VAR Camera: Raylib.TCamera2D; VAR Player: TPlayer;
-                                       VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER32;
-                                       Delta: REAL32; Width, Height: INTEGER32);
+                                       VAR EnvItems: ARRAY OF TEnvItem; EnvItemsLength: INTEGER;
+                                       Delta: SHORTREAL; Width, Height: INTEGER);
 VAR
   BBox, BBoxWorldMin, BBoxWorldMax, Tmp, Tmp2: Raylib.TVector2;
 BEGIN
   BBox := Raylib.TVector2{0.2, 0.2};
 
-  Tmp.X := (1.0 - BBox.X) * 0.5 * VAL(REAL32, Width);
-  Tmp.Y := (1.0 - BBox.Y) * 0.5 * VAL(REAL32, Height);
+  Tmp.X := (1.0 - BBox.X) * 0.5 * VAL(SHORTREAL, Width);
+  Tmp.Y := (1.0 - BBox.Y) * 0.5 * VAL(SHORTREAL, Height);
   Tmp2 := Tmp;
   BBoxWorldMin := Raylib.GetScreenToWorld2D(Tmp, Camera);
 
-  Tmp.X := (1.0 + BBox.X) * 0.5 * VAL(REAL32, Width);
-  Tmp.Y := (1.0 + BBox.Y) * 0.5 * VAL(REAL32, Height);
+  Tmp.X := (1.0 + BBox.X) * 0.5 * VAL(SHORTREAL, Width);
+  Tmp.Y := (1.0 + BBox.Y) * 0.5 * VAL(SHORTREAL, Height);
   BBoxWorldMax := Raylib.GetScreenToWorld2D(Tmp, Camera);
 
   Camera.Offset := Tmp2;
@@ -254,8 +254,8 @@ END UpdateCameraPlayerBoundsPush;
 
 VAR
   CameraUpdaters: ARRAY[0..4] OF TCameraUpdater;
-  CameraUpdatersLength: INTEGER32;
-  EvenOutTarget: REAL32;
+  CameraUpdatersLength: INTEGER;
+  EvenOutTarget: SHORTREAL;
   EveningOut: BOOLEAN;
 
 BEGIN
@@ -273,21 +273,21 @@ END Detail;
 (* end nested module *)
 
 CONST
-  SCREEN_WIDTH = 800;
-  SCREEN_HEIGHT = 450;
+  screen_width = 800;
+  screen_height = 450;
 
 VAR
   Player: Detail.TPlayer;
   PlayerRect: Raylib.TRectangle;
   Camera: Raylib.TCamera2D;
   EnvItems: ARRAY[0..4] OF Detail.TEnvItem;
-  EnvItemsLength: INTEGER32;
-  CameraOption: INTEGER32;
-  DeltaTime: REAL32;
-  I: INTEGER32;
+  EnvItemsLength: INTEGER;
+  CameraOption: INTEGER;
+  DeltaTime: SHORTREAL;
+  I: INTEGER;
 
 BEGIN
-  Raylib.InitWindow(SCREEN_WIDTH, SCREEN_HEIGHT, ADR("raylib [core] example - 2d camera"));
+  Raylib.InitWindow(screen_width, screen_height, "raylib [core] example - 2d camera");
 
   WITH Player DO
     Position := Raylib.TVector2{400, 280};
@@ -295,17 +295,18 @@ BEGIN
     CanJump := FALSE;
   END;
 
-  EnvItems[0] := Detail.TEnvItem{Raylib.TRectangle{0.0, 0.0, 1000.0, 400.0}, 0, Raylib.LIGHTGRAY};
-  EnvItems[1] := Detail.TEnvItem{Raylib.TRectangle{0.0, 400.0, 1000.0, 200.0}, 1, Raylib.GRAY};
-  EnvItems[2] := Detail.TEnvItem{Raylib.TRectangle{300.0, 200.0, 400.0, 10.0}, 1, Raylib.GRAY};
-  EnvItems[3] := Detail.TEnvItem{Raylib.TRectangle{250.0, 300.0, 100.0, 10.0}, 1, Raylib.GRAY};
-  EnvItems[4] := Detail.TEnvItem{Raylib.TRectangle{650.0, 300.0, 100.0, 10.0}, 1, Raylib.GRAY};
+  EnvItems[0] := Detail.TEnvItem{Raylib.TRectangle{0.0, 0.0, 1000.0, 400.0}, 0, Raylib.lightgray};
+  EnvItems[1] := Detail.TEnvItem{Raylib.TRectangle{0.0, 400.0, 1000.0, 200.0}, 1, Raylib.gray};
+  EnvItems[2] := Detail.TEnvItem{Raylib.TRectangle{300.0, 200.0, 400.0, 10.0}, 1, Raylib.gray};
+  EnvItems[3] := Detail.TEnvItem{Raylib.TRectangle{250.0, 300.0, 100.0, 10.0}, 1, Raylib.gray};
+  EnvItems[4] := Detail.TEnvItem{Raylib.TRectangle{650.0, 300.0, 100.0, 10.0}, 1, Raylib.gray};
 
   EnvItemsLength := TSIZE(EnvItems) / TSIZE(EnvItems[0]);
 
   WITH Camera DO
     Target := Player.Position;
-    Offset := Raylib.TVector2{VAL(REAL32, SCREEN_WIDTH) / 2.0, VAL(REAL32, SCREEN_HEIGHT) / 2.0};
+    Offset := Raylib.TVector2{VAL(SHORTREAL, screen_width) / 2.0,
+                              VAL(SHORTREAL, screen_height) / 2.0};
     Rotation := 0.0;
     Zoom := 1.0;
   END;
@@ -325,21 +326,21 @@ BEGIN
         Zoom := 0.25;
       END;
 
-      IF Raylib.IsKeyPressed(Raylib.KEY_R) THEN
+      IF Raylib.IsKeyPressed(Raylib.key_r) THEN
         Zoom := 1.0;
         Player.Position := Raylib.TVector2{400.0, 200.0};
       END;
     END;
 
-    IF Raylib.IsKeyPressed(Raylib.KEY_C) THEN
+    IF Raylib.IsKeyPressed(Raylib.key_c) THEN
       CameraOption := (CameraOption + 1) MOD Detail.CameraUpdatersLength;
     END;
 
     Detail.CameraUpdaters[CameraOption](Camera, Player, EnvItems, EnvItemsLength, DeltaTime,
-                                        SCREEN_WIDTH, SCREEN_HEIGHT);
+                                        screen_width, screen_height);
 
     Raylib.BeginDrawing;
-      Raylib.ClearBackground(Raylib.LIGHTGRAY);
+      Raylib.ClearBackground(Raylib.lightgray);
 
       Raylib.BeginMode2D(Camera);
         FOR I := 0 TO (EnvItemsLength - 1) DO
@@ -352,20 +353,20 @@ BEGIN
           Width := 40.0;
           Height := 40.0;
         END;
-        Raylib.DrawRectangleRec(PlayerRect, Raylib.RED);
+        Raylib.DrawRectangleRec(PlayerRect, Raylib.red);
 
-        Raylib.DrawCircle(VAL(INTEGER32, Player.Position.X), VAL(INTEGER32, Player.Position.Y),
-                          5.0, Raylib.GOLD);
+        Raylib.DrawCircle(VAL(INTEGER, Player.Position.X), VAL(INTEGER, Player.Position.Y), 5.0,
+                          Raylib.gold);
       Raylib.EndMode2D;
 
-      Raylib.DrawText(ADR("Controls:"), 20, 20, 10, Raylib.BLACK);
-      Raylib.DrawText(ADR("- Right/Left to move"), 40, 40, 10, Raylib.DARKGRAY);
-      Raylib.DrawText(ADR("- Space to jump"), 40, 60, 10, Raylib.DARKGRAY);
-      Raylib.DrawText(ADR("- Mouse Wheel to Zoom in-out, R to reset zoom"), 40, 80, 10,
-                      Raylib.DARKGRAY);
-      Raylib.DrawText(ADR("- C to change camera mode"), 40, 100, 10, Raylib.DARKGRAY);
-      Raylib.DrawText(ADR("Current camera mode:"), 20, 120, 10, Raylib.BLACK);
-      Raylib.DrawText(ADR(Detail.CAMERA_DESCRIPTIONS[CameraOption]), 40, 140, 10, Raylib.DARKGRAY);
+      Raylib.DrawText("Controls:", 20, 20, 10, Raylib.black);
+      Raylib.DrawText("- Right/Left to move", 40, 40, 10, Raylib.darkgray);
+      Raylib.DrawText("- Space to jump", 40, 60, 10, Raylib.darkgray);
+      Raylib.DrawText("- Mouse Wheel to Zoom in-out, R to reset zoom", 40, 80, 10,
+                      Raylib.darkgray);
+      Raylib.DrawText("- C to change camera mode", 40, 100, 10, Raylib.darkgray);
+      Raylib.DrawText("Current camera mode:", 20, 120, 10, Raylib.black);
+      Raylib.DrawText(Detail.camera_descriptions[CameraOption], 40, 140, 10, Raylib.darkgray);
     Raylib.EndDrawing;
   END;
 

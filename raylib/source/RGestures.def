@@ -1,0 +1,50 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" RGestures;
+
+FROM Raylib IMPORT TVector2;
+
+EXPORT UNQUALIFIED
+  (* types *)
+  TGestureEvent,
+  (* constants *)
+  version_major, version_minor, version_patch, version,
+
+  pi,
+
+  max_touch_points,
+
+  touch_action_up, touch_action_down, touch_action_move, touch_action_cancel,
+  (* procedures *)
+  ProcessGestureEvent, UpdateGestures;
+
+TYPE
+  TGestureEvent = RECORD
+    TouchAction, PointCount: INTEGER;
+    PointId: ARRAY[0..(max_touch_points - 1)] OF INTEGER;
+    Position: ARRAY[0..(max_touch_points - 1)] OF TVector2;
+  END;
+
+CONST
+  (* RGestures version *)
+  version_major = 5;
+  version_minor = 5;
+  version_patch = 0;
+  version = "5.5";
+
+  (* PI constants *)
+  pi = 3.14159265358979323846;
+
+  (* internal *)
+  max_touch_points = 8;
+
+  (* touch actions *)
+  touch_action_up = 0;
+  touch_action_down = 1;
+  touch_action_move = 2;
+  touch_action_cancel = 3;
+
+(* module procedure declarations *)
+PROCEDURE ProcessGestureEvent(Event: TGestureEvent);
+PROCEDURE UpdateGestures;
+
+END RGestures.

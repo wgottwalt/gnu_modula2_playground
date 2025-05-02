@@ -1,0 +1,231 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" Raymath;
+
+FROM Raylib IMPORT PQuaternion, PSHORTREAL, PVector3, TMatrix, TQuaternion, TVector2, TVector3,
+                   TVector4;
+
+EXPORT UNQUALIFIED
+  (* types *)
+  TFloat3, PFloat3, TFloat16, PFloat16,
+  (* constants *)
+  version_major, version_minor, version_patch, version,
+
+  pi, deg2rad, rad2deg, epsilon,
+  (* procedures *)
+  Clamp, Lerp, Normalize, Remap, Wrap, FloatEquals,
+
+  Vector2Zero, Vector2One, Vector2Add, Vector2AddValue, Vector2Subtract, Vector2SubtractValue,
+  Vector2Length, Vector2LengthSqr, Vector2DotProduct, Vector2Distance, Vector2DistanceSqr,
+  Vector2Angle, Vector2LineAngle, Vector2Scale, Vector2Multiply, Vector2Negate, Vector2Divide,
+  Vector2Normalize, Vector2Transform, Vector2Lerp, Vector2Reflect, Vector2Min, Vector2Max,
+  Vector2Rotate, Vector2MoveTowards, Vector2Invert, Vector2Clamp, Vector2ClampValue, Vector2Equals,
+  Vector2Refract,
+
+  Vector3Zero, Vector3One, Vector3Add, Vector3AddValue, Vector3Subtract, Vector3SubtractValue,
+  Vector3Scale, Vector3Multiply, Vector3CrossProduct, Vector3Perpendicular, Vector3Length,
+  Vector3LengthSqr, Vector3DotProduct, Vector3Distance, Vector3DistanceSqr, Vector3Angle,
+  Vector3Negate, Vector3Divide, Vector3Normalize, Vector3Project, Vector3Reject,
+  Vector3OrthoNormalize, Vector3Transform, Vector3RotateByQuaternion, Vector3RotateByAxisAngle,
+  Vector3MoveTowards, Vector3Lerp, Vector3CubicHermite, Vector3Reflect, Vector3Min, Vector3Max,
+  Vector3Barycenter, Vector3Unproject, Vector3ToFloatV, Vector3Invert, Vector3Clamp,
+  Vector3ClampValue, Vector3Equals, Vector3Refract,
+
+  Vector4Zero, Vector4One, Vector4Add, Vector4AddValue, Vector4Subtract, Vector4SubtractValue,
+  Vector4Length, Vector4LengthSqr, Vector4DotProduct, Vector4Distance, Vector4DistanceSqr,
+  Vector4Scale, Vector4Multiply, Vector4Negate, Vector4Divide, Vector4Normalize, Vector4Min,
+  Vector4Max, Vector4Lerp, Vector4MoveTowards, Vector4Invert, Vector4Equals,
+
+  MatrixDeterminant, MatrixTrace, MatrixTranspose, MatrixInvert, MatrixIdentity, MatrixAdd,
+  MatrixSubtract, MatrixMultiply, MatrixTranslate, MatrixRotate, MatrixRotateX, MatrixRotateY,
+  MatrixRotateZ, MatrixRotateXYZ, MatrixRotateZYX, MatrixScale, MatrixFrustum, MatrixPerspective,
+  MatrixOrtho, MatrixLookAt, MatrixToFloatV,
+
+  QuaternionAdd, QuaternionAddValue, QuaternionSubtract, QuaternionSubtractValue,
+  QuaternionIdentity, QuaternionLength, QuaternionNormalize, QuaternionInvert, QuaternionMultiply,
+  QuaternionScale, QuaternionDivide, QuaternionLerp, QuaternionNlerp, QuaternionSlerp,
+  QuaternionCubicHermiteSpline, QuaternionFromVector3ToVector3, QuaternionFromMatrix,
+  QuaternionToMatrix, QuaternionFromAxisAngle, QuaternionToAxisAngle, QuaternionFromEuler,
+  QuaternionToEuler, QuaternionTransform, QuaternionEquals, MatrixDecompose;
+
+TYPE
+  TFloat3 = RECORD
+    V: ARRAY[0..2] OF SHORTREAL;
+  END;
+  PFloat3 = POINTER TO TFloat3;
+
+  TFloat16 = RECORD
+    V: ARRAY[0..15] OF SHORTREAL;
+  END;
+  PFloat16 = POINTER TO TFloat16;
+
+CONST
+  (* Raymath version constants *)
+  version_major = 2;
+  version_minor = 0;
+  version_patch = 0;
+  version = "2.0";
+
+  (* PI costants *)
+  pi = 3.14159265358979323846;
+  deg2rad = pi / 180.0;
+  rad2deg = 180.0 / pi;
+  epsilon = 0.000001;
+
+(* util procedures *)
+PROCEDURE Clamp(Value, Min, Max: SHORTREAL): SHORTREAL;
+PROCEDURE Lerp(Start, End, Amount: SHORTREAL): SHORTREAL;
+PROCEDURE Normalize(Value, Start, End: SHORTREAL): SHORTREAL;
+PROCEDURE Remap(Value, InputStart, InputEnd, OutputStart, OutputEnd: SHORTREAL): SHORTREAL;
+PROCEDURE Wrap(Value, Min, Max: SHORTREAL): SHORTREAL;
+PROCEDURE FloatEquals(X, Y: SHORTREAL): INTEGER;
+
+(* vector2 math procedures *)
+PROCEDURE Vector2Zero(): TVector2;
+PROCEDURE Vector2One(): TVector2;
+PROCEDURE Vector2Add(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2AddValue(V: TVector2; Add: SHORTREAL): TVector2;
+PROCEDURE Vector2Subtract(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2SubtractValue(V: TVector2; Sub: SHORTREAL): TVector2;
+PROCEDURE Vector2Length(V: TVector2): SHORTREAL;
+PROCEDURE Vector2LengthSqr(V: TVector2): SHORTREAL;
+PROCEDURE Vector2DotProduct(V1, V2: TVector2): SHORTREAL;
+PROCEDURE Vector2Distance(V1, V2: TVector2): SHORTREAL;
+PROCEDURE Vector2DistanceSqr(V1, V2: TVector2): SHORTREAL;
+PROCEDURE Vector2Angle(V1, V2: TVector2): SHORTREAL;
+PROCEDURE Vector2LineAngle(Start, End: TVector2): SHORTREAL;
+PROCEDURE Vector2Scale(V: TVector2; Scale: SHORTREAL): TVector2;
+PROCEDURE Vector2Multiply(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Negate(V: TVector2): TVector2;
+PROCEDURE Vector2Divide(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Normalize(V: TVector2): TVector2;
+PROCEDURE Vector2Transform(V: TVector2; Mat: TMatrix): TVector2;
+PROCEDURE Vector2Lerp(V1, V2: TVector2; Amount: SHORTREAL): TVector2;
+PROCEDURE Vector2Reflect(V, Normal: TVector2): TVector2;
+PROCEDURE Vector2Min(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Max(V1, V2: TVector2): TVector2;
+PROCEDURE Vector2Rotate(V: TVector2; Angle: SHORTREAL): TVector2;
+PROCEDURE Vector2MoveTowards(V, Target: TVector2; MaxDistance: SHORTREAL): TVector2;
+PROCEDURE Vector2Invert(V: TVector2): TVector2;
+PROCEDURE Vector2Clamp(V, Min, Max: TVector2): TVector2;
+PROCEDURE Vector2ClampValue(V: TVector2; Min, Max: SHORTREAL): TVector2;
+PROCEDURE Vector2Equals(P, Q: TVector2): INTEGER;
+PROCEDURE Vector2Refract(V, N: TVector2; R: SHORTREAL): TVector2;
+
+(* vector3 math procedures *)
+PROCEDURE Vector3Zero(): TVector3;
+PROCEDURE Vector3One(): TVector3;
+PROCEDURE Vector3Add(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3AddValue(V: TVector3; Add: SHORTREAL): TVector3;
+PROCEDURE Vector3Subtract(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3SubtractValue(V: TVector3; Sub: SHORTREAL): TVector3;
+PROCEDURE Vector3Scale(V: TVector3; Scalar: SHORTREAL): TVector3;
+PROCEDURE Vector3Multiply(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3CrossProduct(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3Perpendicular(V: TVector3): TVector3;
+PROCEDURE Vector3Length(V: TVector3): SHORTREAL;
+PROCEDURE Vector3LengthSqr(V: TVector3): SHORTREAL;
+PROCEDURE Vector3DotProduct(V1, V2: TVector3): SHORTREAL;
+PROCEDURE Vector3Distance(V1, V2: TVector3): SHORTREAL;
+PROCEDURE Vector3DistanceSqr(V1, V2: TVector3): SHORTREAL;
+PROCEDURE Vector3Angle(V1, V2: TVector3): SHORTREAL;
+PROCEDURE Vector3Negate(V: TVector3): TVector3;
+PROCEDURE Vector3Divide(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3Normalize(V: TVector3): TVector3;
+PROCEDURE Vector3Project(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3Reject(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3OrthoNormalize(V1, V2: PVector3);
+PROCEDURE Vector3Transform(V: TVector3; Mat: TMatrix): TVector3;
+PROCEDURE Vector3RotateByQuaternion(V: TVector3; Q: TQuaternion): TVector3;
+PROCEDURE Vector3RotateByAxisAngle(V, Axis: TVector3; Angle: SHORTREAL): TVector3;
+PROCEDURE Vector3MoveTowards(V, Target: TVector3; MaxDistance: SHORTREAL): TVector3;
+PROCEDURE Vector3Lerp(V1, V2: TVector3; Amount: SHORTREAL): TVector3;
+PROCEDURE Vector3CubicHermite(V1, Tangent1, V2, Tangent2: TVector3; Amount: SHORTREAL): TVector3;
+PROCEDURE Vector3Reflect(V, Normal: TVector3): TVector3;
+PROCEDURE Vector3Min(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3Max(V1, V2: TVector3): TVector3;
+PROCEDURE Vector3Barycenter(P, A, B, C: TVector3): TVector3;
+PROCEDURE Vector3Unproject(Source: TVector3; Projection, View: TMatrix): TVector3;
+PROCEDURE Vector3ToFloatV(V: TVector3): TFloat3;
+PROCEDURE Vector3Invert(V: TVector3): TVector3;
+PROCEDURE Vector3Clamp(V, Min, Max: TVector3): TVector3;
+PROCEDURE Vector3ClampValue(V: TVector3; Min, Max: SHORTREAL): TVector3;
+PROCEDURE Vector3Equals(P, Q: TVector3): INTEGER;
+PROCEDURE Vector3Refract(V, N: TVector3; R: SHORTREAL): TVector3;
+
+(* vector4 math procedures *)
+PROCEDURE Vector4Zero(): TVector4;
+PROCEDURE Vector4One(): TVector4;
+PROCEDURE Vector4Add(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4AddValue(V: TVector4; Add: SHORTREAL): TVector4;
+PROCEDURE Vector4Subtract(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4SubtractValue(V: TVector4; Add: SHORTREAL): TVector4;
+PROCEDURE Vector4Length(V: TVector4): SHORTREAL;
+PROCEDURE Vector4LengthSqr(V: TVector4): SHORTREAL;
+PROCEDURE Vector4DotProduct(V1, V2: TVector4): SHORTREAL;
+PROCEDURE Vector4Distance(V1, V2: TVector4): SHORTREAL;
+PROCEDURE Vector4DistanceSqr(V1, V2: TVector4): SHORTREAL;
+PROCEDURE Vector4Scale(V: TVector4; Scale: SHORTREAL): TVector4;
+PROCEDURE Vector4Multiply(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4Negate(V: TVector4): TVector4;
+PROCEDURE Vector4Divide(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4Normalize(V: TVector4): TVector4;
+PROCEDURE Vector4Min(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4Max(V1, V2: TVector4): TVector4;
+PROCEDURE Vector4Lerp(V: TVector4; Amount: SHORTREAL): TVector4;
+PROCEDURE Vector4MoveTowards(V, Target: TVector4; MaxDistance: SHORTREAL): TVector4;
+PROCEDURE Vector4Invert(V: TVector4): TVector4;
+PROCEDURE Vector4Equals(P, Q: TVector4): INTEGER;
+
+(* matrix math procedures *)
+PROCEDURE MatrixDeterminant(Mat: TMatrix): SHORTREAL;
+PROCEDURE MatrixTrace(Mat: TMatrix): SHORTREAL;
+PROCEDURE MatrixTranspose(Mat: TMatrix): TMatrix;
+PROCEDURE MatrixInvert(Mat: TMatrix): TMatrix;
+PROCEDURE MatrixIdentity(): TMatrix;
+PROCEDURE MatrixAdd(Left, Right: TMatrix): TMatrix;
+PROCEDURE MatrixSubtract(Left, Right: TMatrix): TMatrix;
+PROCEDURE MatrixMultiply(Left, Right: TMatrix): TMatrix;
+PROCEDURE MatrixTranslate(X, Y, Z: SHORTREAL): TMatrix;
+PROCEDURE MatrixRotate(Axis: TVector3; Angle: SHORTREAL): TMatrix;
+PROCEDURE MatrixRotateX(Angle: SHORTREAL): TMatrix;
+PROCEDURE MatrixRotateY(Angle: SHORTREAL): TMatrix;
+PROCEDURE MatrixRotateZ(Angle: SHORTREAL): TMatrix;
+PROCEDURE MatrixRotateXYZ(Angle: TVector3): TMatrix;
+PROCEDURE MatrixRotateZYX(Angle: TVector3): TMatrix;
+PROCEDURE MatrixScale(X, Y, Z: SHORTREAL): TMatrix;
+PROCEDURE MatrixFrustum(Left, Right, Bottom, Top, NearPlane, FarPlane: REAL): TMatrix;
+PROCEDURE MatrixPerspective(FovY, Aspect, NearPlane, FarPlane: REAL): TMatrix;
+PROCEDURE MatrixOrtho(Left, Right, Bottom, Top, NearPlane, FarPlane: REAL): TMatrix;
+PROCEDURE MatrixLookAt(Eye, Target, Up: TVector3): TMatrix;
+PROCEDURE MatrixToFloatV(Mat: TMatrix): TFloat16;
+
+(* quaternion math procedures *)
+PROCEDURE QuaternionAdd(Q1, Q2: TQuaternion): TQuaternion;
+PROCEDURE QuaternionAddValue(Q: TQuaternion; Add: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionSubtract(Q1, Q2: TQuaternion): TQuaternion;
+PROCEDURE QuaternionSubtractValue(Q: TQuaternion; Sub: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionIdentity(): TQuaternion;
+PROCEDURE QuaternionLength(Q: TQuaternion): SHORTREAL;
+PROCEDURE QuaternionNormalize(Q: TQuaternion): TQuaternion;
+PROCEDURE QuaternionInvert(Q: TQuaternion): TQuaternion;
+PROCEDURE QuaternionMultiply(Q1, Q2: TQuaternion): TQuaternion;
+PROCEDURE QuaternionScale(Q: TQuaternion; Mul: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionDivide(Q1, Q2: TQuaternion): TQuaternion;
+PROCEDURE QuaternionLerp(Q1, Q2: TQuaternion; Amount: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionNlerp(Q1, Q2: TQuaternion; Amount: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionSlerp(Q1, Q2: TQuaternion; Amount: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionCubicHermiteSpline(Q1, OutTagent1, Q2, InTagent2: TQuaternion;
+                                       T: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionFromVector3ToVector3(From, To: TVector3): TQuaternion;
+PROCEDURE QuaternionFromMatrix(Mat: TMatrix): TQuaternion;
+PROCEDURE QuaternionToMatrix(Q: TQuaternion): TMatrix;
+PROCEDURE QuaternionFromAxisAngle(Axis: TVector3; Angle: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionToAxisAngle(Q: TQuaternion; OutAxis: PVector3; OutAngle: PSHORTREAL);
+PROCEDURE QuaternionFromEuler(Pitch, Yaw, Roll: SHORTREAL): TQuaternion;
+PROCEDURE QuaternionToEuler(Q: TQuaternion): TVector3;
+PROCEDURE QuaternionTransform(Q: TQuaternion; Mat: TMatrix): TQuaternion;
+PROCEDURE QuaternionEquals(P, Q: TQuaternion): INTEGER;
+PROCEDURE MatrixDecompose(Mat: TMatrix; Translation: PVector3; Rotation: PQuaternion;
+                          Scale: PVector3);
+
+END Raymath.

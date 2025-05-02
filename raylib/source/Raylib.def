@@ -1,0 +1,1703 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" Raylib;
+
+FROM SYSTEM IMPORT ADDRESS, BYTE, CSIZE_T;
+
+EXPORT UNQUALIFIED
+  (* types *)
+  PINTEGER, PSHORTREAL,
+
+  TVector2, PVector2, TVector3, PVector3, TVector4, PVector4, TQuaternion, PQuaternion, TMatrix,
+  PMatrix, TColor, PColor, TRectangle, PRectangle,
+
+  TImage, PImage, TTexture, PTexture, TTexture2D, PTexture2D, TTextureCubemap, PTextureCubemap,
+  TRenderTexture, PRenderTexture, TRenderTexture2D, PRenderTexture2D,
+
+  TNPatchInfo, PNPatchInfo, TGlyphInfo, PGlyphInfo, TFont, PFont,
+
+  TCamera3D, PCamera3D, TCamera, PCamera, TCamera2D, PCamera2D,
+
+  TMesh, PMesh, TShader, PShader, TMaterialMap, PMaterialMap, TMaterial, PMaterial, TTransform,
+  PTransform, TModel, PModel, TModelAnimation, PModelAnimation,
+
+  TRay, PRay, TRayCollision, PRayCollision, TBoundingBox, PBoundingBox,
+
+  TWave, PWave, TAudioStream, PAudioStream, TSound, PSound, TMusic, PMusic,
+
+  TVrDeviceInfo, PVrDeviceInfo, TVrStereoConfig, PVrStereoConfig,
+
+  TFilePathList, PFilePathList, TAutomationEvent, PAutomationEvent, TAutomationEventList,
+  PAutomationEventList,
+
+  TTraceLogCallback, TLoadFileDataCallback, TSaveFileDataCallback, TLoadFileTextCallback,
+  TSaveFileTextCallback, TAudioCallback,
+
+  TMd5Sum, PMd5Sum, TSha1Sum, PSha1Sum,
+  (* constants *)
+  version_major, version_minor, version_patch, version,
+
+  max_filepath_capacity, max_filepath_length, max_text_buffer_length, max_text_split_count,
+
+  pi, deg2rad, rad2deg,
+
+  lightgray, gray, darkgray, yellow, gold, orange, pink, red, maroon, green, lime, darkgreen,
+  skyblue, blue, darkblue, purple, violet, darkpurple, beige, brown, darkbrown, white, black,
+  blank, magenta, raywhite,
+
+  flag_vsync_hint, flag_fullscreen_mode, flag_window_resizable, flag_window_undecorated,
+  flag_window_hidden, flag_window_minimized, flag_window_maximized, flag_window_unfocused,
+  flag_window_topmost, flag_window_always_run, flag_window_transparent, flag_window_highdpi,
+  flag_window_mouse_passthrough, flag_borderless_windowed_mode, flag_msaa_4x_hint,
+  flag_interlaced_hint,
+
+  log_all, log_trace, log_debug, log_info, log_warning, log_error, log_fatal, log_none,
+
+  key_null, key_apostrophe, key_comma, key_minus, key_period, key_slash, key_zero, key_one, key_two,
+  key_three, key_four, key_five, key_six, key_seven, key_eight, key_nine, key_semicolon, key_equal,
+  key_a, key_b, key_c, key_d, key_e, key_f, key_g, key_h, key_i, key_j, key_k, key_l, key_m, key_n,
+  key_o, key_p, key_q, key_r, key_s, key_t, key_u, key_v, key_w, key_x, key_y, key_z,
+  key_left_bracket, key_backslash, key_right_bracket, key_grave, key_space, key_escape, key_enter,
+  key_tab, key_backspace, key_insert, key_delete, key_right, key_left, key_down, key_up,
+  key_page_up, key_page_down, key_home, key_end, key_caps_lock, key_scroll_lock, key_num_lock,
+  key_print_screen, key_pause, key_f1, key_f2, key_f3, key_f4, key_f5, key_f6, key_f7, key_f8,
+  key_f9, key_f10, key_f11, key_f12, key_left_shift, key_left_control, key_left_alt, key_left_super,
+  key_right_shift, key_right_control, key_right_alt, key_right_super, key_kb_menu, key_kp_0,
+  key_kp_1, key_kp_2, key_kp_3, key_kp_4, key_kp_5, key_kp_6, key_kp_7, key_kp_8, key_kp_9,
+  key_kp_decimal, key_kp_divide, key_kp_multiply, key_kp_subtract, key_kp_add, key_kp_enter,
+  key_kp_equal, key_back, key_menu, key_volume_up, key_volume_down,
+
+  mouse_button_left, mouse_button_right, mouse_button_middle, mouse_button_side, mouse_button_extra,
+  mouse_button_forward, mouse_button_back,
+
+  gamepad_button_unknown, gamepad_button_left_face_up, gamepad_button_left_face_right,
+  gamepad_button_left_face_down, gamepad_button_left_face_left, gamepad_button_right_face_up,
+  gamepad_button_right_face_right, gamepad_button_right_face_down, gamepad_button_right_face_left,
+  gamepad_button_left_trigger_1, gamepad_button_left_trigger_2, gamepad_button_right_trigger_1,
+  gamepad_button_right_trigger_2, gamepad_button_middle_left, gamepad_button_middle,
+  gamepad_button_middle_right, gamepad_button_left_thumb, gamepad_button_right_thumb,
+
+  gamepad_axis_left_x, gamepad_axis_left_y, gamepad_axis_right_x, gamepad_axis_right_y,
+  gamepad_axis_left_trigger, gamepad_axis_right_trigger,
+
+  material_map_albedo, material_map_metalness, material_map_normal, material_map_roughness,
+  material_map_occlusion, material_map_emission, material_map_height, material_map_cubemap,
+  material_map_irradiance, material_map_prefilter, material_map_brdf,
+
+  shader_loc_vertex_position, shader_loc_vertex_texcoord01, shader_loc_vertex_texcoord02,
+  shader_loc_vertex_normal, shader_loc_vertex_tangent, shader_loc_vertex_color,
+  shader_loc_matrix_mvp, shader_loc_matrix_view, shader_loc_matrix_projection,
+  shader_loc_matrix_model, shader_loc_matrix_normal, shader_loc_vector_view,
+  shader_loc_color_diffuse, shader_loc_color_specular, shader_loc_color_ambient,
+  shader_loc_map_albedo, shader_loc_map_metalness, shader_loc_map_normal, shader_loc_map_roughness,
+  shader_loc_map_occlusion, shader_loc_map_emission, shader_loc_map_height, shader_loc_map_cubemap,
+  shader_loc_map_irradiance, shader_loc_map_prefilter, shader_loc_map_brdf,
+  shader_loc_vertex_boneids, shader_loc_vertex_boneweights, shader_loc_bone_matrices,
+
+  shader_uniform_float, shader_uniform_vec2, shader_uniform_vec3, shader_uniform_vec4,
+  shader_uniform_int, shader_uniform_ivec2, shader_uniform_ivec3, shader_uniform_ivec4,
+  shader_uniform_sampler3d,
+
+  shader_attrib_float, shader_attrib_vec2, shader_attrib_vec3, shader_attrib_vec4,
+
+  pixelformat_uncompressed_grayscale, pixelformat_uncompressed_gray_alpha,
+  pixelformat_uncompressed_r5g6b5, pixelformat_uncompressed_r8g8b8,
+  pixelformat_uncompressed_r5g5b5a1, pixelformat_uncompressed_r4g4b4a4,
+  pixelformat_uncompressed_r8g8b8a8, pixelformat_uncompressed_r32,
+  pixelformat_uncompressed_r32g32b32, pixelformat_uncompressed_r32g32b32a32,
+  pixelformat_uncompressed_r16, pixelformat_uncompressed_r16g16b16,
+  pixelformat_uncompressed_r16g16b16a16, pixelformat_compressed_dxt1_rgb,
+  pixelformat_compressed_dxt1_rgba, pixelformat_compressed_dxt3_rgba,
+  pixelformat_compressed_dxt5_rgba, pixelformat_compressed_etc1_rgb,
+  pixelformat_compressed_etc2_rgb, pixelformat_compressed_etc2_eac_rgba,
+  pixelformat_compressed_pvrt_rgb, pixelformat_compressed_pvrt_rgba,
+  pixelformat_compressed_astc_4x4_rgba, pixelformat_compressed_astc_8x8_rgba,
+
+  texture_filter_point, texture_filter_bilinear, texture_filter_trilinier,
+  texture_filter_anisotropic_4x, texture_filter_anisotropic_8x, texture_filter_anisotropic_16x,
+
+  texture_wrap_repeat, texture_wrap_clamp, texture_wrap_mirror_repeat, texture_wrap_mirror_clamp,
+
+  cubemap_layout_auto_detect, cubemap_layout_line_vertical, cubemap_layout_line_horizontal,
+  cubemap_layout_cross_three_by_four, cubemap_layout_cross_four_by_three,
+
+  font_default, font_bitmap, font_sdf,
+
+  blend_alpha, blend_additive, blend_multiplied, blend_add_colors, blend_subtract_colors,
+  blend_alpha_premultiply, blend_custom, blend_custom_separate,
+
+  gesture_none, gesture_tap, gesture_doubletap, gesture_hold, gesture_drag, gesture_swipe_right,
+  gesture_swipe_left, gesture_swipe_up, gesture_swipe_down, gesture_pinch_in, gesture_pinch_out,
+
+  camera_custom, camera_free, camera_orbital, camera_first_person, camera_third_person,
+
+  camera_perspective, camera_orthographic,
+
+  npatch_nine_patch, npatch_three_patch_vertical, npatch_three_patch_horizontal,
+  (* procedures *)
+  InitWindow, CloseWindow, WindowShouldClose, IsWindowReady, IsWindowFullscreen, IsWindowHidden,
+  IsWindowMinimized, IsWindowMaximized, IsWindowFocused, IsWindowResized, IsWindowState,
+  SetWindowState, ClearWindowState, ToggleFullscreen, ToggleBorderlessWindowed, MaximizeWindow,
+  MinimizeWindow, RestoreWindow, SetWindowIcon, SetWindowIcons, SetWindowTitle, SetWindowPosition,
+  SetWindowMonitor, SetWindowMinSize, SetWindowMaxSize, SetWindowSize, SetWindowOpacity,
+  SetWindowFocused, GetWindowHandle, GetScreenWidth, GetScreenHeight, GetRenderWidth,
+  GetRenderHeight, GetMonitorCount, GetCurrentMonitor, GetMonitorPosition, GetMonitorWidth,
+  GetMonitorHeight, GetMonitorPhysicalWidth, GetMonitorPhysicalHeight, GetMonitorRefreshRate,
+  GetWindowPosition, GetWindowScaleDPI, GetMonitorName, SetClipboardText, GetClipboardText,
+  GetClipboardImage, EnableEventWaiting, DisableEventWaiting,
+
+  ShowCursor, HideCursor, IsCursorHidden, EnableCursor, DisableCursor, IsCursorOnScreen,
+
+  ClearBackground, BeginDrawing, EndDrawing, BeginMode2D, EndMode2D, BeginMode3D, EndMode3D,
+  BeginTextureMode, EndTextureMode, BeginShaderMode, EndShaderMode, BeginBlendMode, EndBlendMode,
+  BeginScissorMode, EndScissorMode, BeginVrStereoMode, EndVrStereoMode,
+
+  LoadVrStereoConfig, UnloadVrStereoConfig,
+
+  LoadShader, LoadShaderFromMemory, IsShaderValid, GetShaderLocation, GetShaderLocationAttrib,
+  SetShaderValue, SetShaderValueV, SetShaderValueMatrix, SetShaderValueTexture, UnloadShader,
+
+  GetScreenToWorldRay, GetScreenToWorldRayEx, GetWorldToScreen, GetWorldToScreenEx,
+  GetWorldToScreen2D, GetScreenToWorld2D, GetCameraMatrix, GetCameraMatrix2D,
+
+  SetTargetFPS, GetFrameTime, GetTime, GetFPS,
+
+  SwapScreenBuffer, PollInputEvents, WaitTime,
+
+  SetRandomSeed, GetRandomValue, LoadRandomSequence, UnloadRandomSequence,
+
+  TakeScreenshot, SetConfigFlags, OpenURL,
+
+  TraceLog, SetTraceLogLevel, MemAlloc, MemRealloc, MemFree,
+
+  SetTraceLogCallback, SetLoadFileDataCallback, SetSaveFileDataCallback, SetLoadFileTextCallback,
+  SetSaveFileTextCallback,
+
+  LoadFileData, UnloadFileData, SaveFileData, ExportDataAsCode, LoadFileText, UnloadFileText,
+  SaveFileText,
+
+  FileExists, DirectoryExists, IsFileExtension, GetFileLength, GetFileExtension, GetFileName,
+  GetFileNameWithoutExt, GetDirectoryPath, GetPrevDirectoryPath, GetWorkingDirectory,
+  GetApplicationDirectory, MakeDirectory, ChangeDirectory, IsPathFile, IsFileNameValid,
+  LoadDirectoryFiles, LoadDirectoryFilesEx, UnloadDirectoryFiles, IsFileDropped, LoadDroppedFiles,
+  UnloadDroppedFiles, GetFileModTime,
+
+  CompressData, DecompressData, EncodeDataBase64, DecodeDataBase64, ComputeCRC32, ComputeMD5,
+  ComputeSHA1,
+
+  LoadAutomationEventList, UnloadAutomationEventList, ExportAutomationEventList,
+  SetAutomationEventList, SetAutomationEventBaseFrame, StartAutomationEventRecording,
+  StopAutomationEventRecording, PlayAutomationEvent,
+
+  IsKeyPressed, IsKeyPressedRepeat, IsKeyDown, IsKeyReleased, IsKeyUp, GetKeyPressed,
+  GetCharPressed, SetExitKey,
+
+  IsGamepadAvailable, GetGamepadName, IsGamepadButtonPressed, IsGamepadButtonDown,
+  IsGamepadButtonReleased, IsGamepadButtonUp, GetGamepadButtonPressed, GetGamepadAxisCount,
+  GetGamepadAxisMovement, SetGamepadMappings, SetGamepadVibration,
+
+  IsMouseButtonPressed, IsMouseButtonDown, IsMouseButtonReleased, IsMouseButtonUp,
+  GetMouseX, GetMouseY, GetMousePosition, GetMouseDelta, SetMousePosition, SetMouseOffset,
+  SetMouseScale, GetMouseWheelMove, GetMouseWheelMoveV, SetMouseCursor,
+
+  GetTouchX, GetTouchY, GetTouchPosition, GetTouchPointId, GetTouchPointCount,
+
+  SetGesturesEnabled, IsGestureDetected, GetGestureDetected, GetGestureHoldDuration,
+  GetGestureDragVector, GetGestureDragAngle, GetGesturePinchVector, GetGesturePinchAngle,
+
+  UpdateCamera, UpdateCameraPro,
+
+  SetShapesTexture, GetShapesTexture, GetShapesTextureRectangle,
+
+  DrawPixel, DrawPixelV, DrawLine, DrawLineV, DrawLineEx, DrawLineStrip, DrawLineBezier,
+  DrawCircle, DrawCircleSector, DrawCircleSectorLines, DrawCircleGradient, DrawCircleV,
+  DrawCircleLines, DrawCircleLinesV, DrawEllipse, DrawEllipseLines, DrawRing, DrawRingLines,
+  DrawRectangle, DrawRectangleV, DrawRectangleRec, DrawRectanglePro, DrawRectangleGradientV,
+  DrawRectangleGradientH, DrawRectangleGradientEx, DrawRectangleLines, DrawRectangleLinesEx,
+  DrawRectangleRounded, DrawRectangleRoundedLines, DrawRectangleRoundedLinesEx, DrawTriangle,
+  DrawTriangleLines, DrawTriangleFan, DrawTriangleStrip, DrawPoly, DrawPolyLines, DrawPolyLinesEx,
+
+  DrawSplineLinear, DrawSplineBasis, DrawSplineCatmullRom, DrawSplineBezierQuadratic,
+  DrawSplineBezierCubic, DrawSplineSegmentLinear, DrawSplineSegmentBasis,
+  DrawSplineSegmentCatmullRom, DrawSplineSegmentBezierQuadratic, DrawSplineSegmentBezierCubic,
+
+  GetSplinePointLinear, GetSplinePointBasis, GetSplinePointCatmullRom, GetSplinePointBezierQuad,
+  GetSplinePointBezierCubic,
+
+  CheckCollisionRecs, CheckCollisionCircles, CheckCollisionCircleRec, CheckCollisionCircleLine,
+  CheckCollisionPointRec, CheckCollisionPointCircle, CheckCollisionPointTriangle,
+  CheckCollisionPointLine, CheckCollisionPointPoly, CheckCollisionLines, GetCollisionRec,
+
+  LoadImage, LoadImageRaw, LoadImageAnim, LoadImageAnimFromMemory, LoadImageFromMemory,
+  LoadImageFromTexture, LoadImageFromScreen, IsImageValid, UnloadImage, ExportImage,
+  ExportImageToMemory, ExportImageAsCode,
+
+  GenImageColor, GenImageGradientLinear, GenImageGradientRadial, GenImageGradientSquare,
+  GenImageChecked, GenImageWhiteNoise, GenImagePerlinNoise, GenImageCellular, GenImageText,
+
+  ImageCopy, ImageFromImage, ImageFromChannel, ImageText, ImageTextEx, ImageFormat, ImageToPOT,
+  ImageCrop, ImageAlphaCrop, ImageAlphaClear, ImageAlphaMask, ImageAlphaPremultiply,
+  ImageBlurGaussian, ImageKernelConvolution, ImageResize, ImageResizeNN, ImageResizeCanvas,
+  ImageMipmaps, ImageDither, ImageFlipVertical, ImageFlipHorizontal, ImageRotate, ImageRotateCW,
+  ImageRotateCCW, ImageColorTint, ImageColorInvert, ImageColorGrayscale, ImageColorContrast,
+  ImageColorBrightness, ImageColorReplace, LoadImageColors, LoadImagePalette, UnloadImageColors,
+  UnloadImagePalette, GetImageAlphaBorder, GetImageColor,
+
+  ImageClearBackground, ImageDrawPixel, ImageDrawPixelV, ImageDrawLine, ImageDrawLineV,
+  ImageDrawLineEx, ImageDrawCircle, ImageDrawCircleV, ImageDrawCircleLines, ImageDrawCircleLinesV,
+  ImageDrawRectangle, ImageDrawRectangleV, ImageDrawRectangleRec, ImageDrawRectangleLines,
+  ImageDrawTriangle, ImageDrawTriangleEx, ImageDrawTriangleLines, ImageDrawTriangleFan,
+  ImageDrawTriangleStrip, ImageDraw, ImageDrawText, ImageDrawTextEx,
+
+  LoadTexture, LoadTextureFromImage, LoadTextureCubemap, LoadRenderTexture, IsTextureValid,
+  UnloadTexture, IsRenderTextureValid, UnloadRenderTexture, UpdateTexture, UpdateTextureRec,
+
+  GenTextureMipmaps, SetTextureFilter, SetTextureWrap,
+
+  DrawTexture, DrawTextureV, DrawTextureEx, DrawTextureRec, DrawTexturePro, DrawTextureNPatch,
+
+  ColorIsEqual, Fade, ColorToInt, ColorNormalize, ColorFromNormalized, ColorToHSV, ColorFromHSV,
+  ColorTint, ColorBrightness, ColorContrast, ColorAlpha, ColorAlphaBlend, ColorLerp, GetColor,
+  GetPixelColor, SetPixelColor, GetPixelDataSize,
+
+  GetFontDefault, LoadFont, LoadFontEx, LoadFontFromImage, LoadFontFromMemory, IsFontValid,
+  LoadFontData, GenImageFontAtlas, UnloadFontData, UnloadFont, ExportFontAsCode,
+
+  DrawFPS, DrawText, DrawTextEx, DrawTextPro, DrawTextCodepoint, DrawTextCodepoints,
+
+  SetTextLineSpacing, MeasureText, MeasureTextEx, GetGlyphIndex, GetGlyphInfo, GetGlyphAtlasRec,
+
+  LoadUTF8, UnloadUTF8, LoadCodepoints, UnloadCodepoints, GetCodepointCount, GetCodepoint,
+  GetCodepointNext, GetCodepointPrevious, CodepointToUTF8,
+
+  TextCopy, TextIsEqual, TextLength, TextFormat, TextSubtext, TextReplace, TextInsert, TextJoin,
+  TextSplit, TextAppend, TextFindIndex, TextToUpper, TextToLower, TextToPascal, TextToSnake,
+  TextToCamel, TextToInteger, TextToFloat,
+
+  DrawLine3D, DrawPoint3D, DrawCircle3D, DrawTriangle3D, DrawTriangleStrip3D, DrawCube, DrawCubeV,
+  DrawCubeWires, DrawCubeWiresV, DrawSphere, DrawSphereEx, DrawSphereWires, DrawCylinder,
+  DrawCylinderEx, DrawCylinderWires, DrawCylinderWiresEx, DrawCapsule, DrawCapsuleWires, DrawPlane,
+  DrawRay, DrawGrid,
+
+  LoadModel, LoadModelFromMesh, IsModelValid, UnloadModel, GetModelBoundingBox,
+
+  DrawModel, DrawModelEx, DrawModelWires, DrawModelWiresEx, DrawModelPoints, DrawModelPointsEx,
+  DrawBoundingBox, DrawBillboard, DrawBillboardRec, DrawBillboardPro,
+
+  UploadMesh, UpdateMeshBuffer, UnloadMesh, DrawMesh, DrawMeshInstanced, GetMeshBoundingBox,
+  GenMeshTangents, ExportMesh, ExportMeshAsCode,
+
+  GenMeshPoly, GenMeshPlane, GenMeshCube, GenMeshSphere, GenMeshHemiSphere, GenMeshCylinder,
+  GenMeshCone, GenMeshTorus, GenMeshKnot, GenMeshHeightmap, GenMeshCubicmap,
+
+  LoadMaterials, LoadMaterialDefault, IsMaterialValid, UnloadMaterial, SetMaterialTexture,
+  SetModelMeshMaterial,
+
+  LoadModelAnimations, UpdateModelAnimation, UpdateModelAnimationBones, UnloadModelAnimation,
+  UnloadModelAnimations, IsModelAnimationValid,
+
+  CheckCollisionSpheres, CheckCollisionBoxes, CheckCollisionBoxSphere, GetRayCollisionSphere,
+  GetRayCollisionBox, GetRayCollisionMesh, GetRayCollisionTriangle, GetRayCollisionQuad,
+
+  InitAudioDevice, CloseAudioDevice, IsAudioDeviceReady, SetMasterVolume, GetMasterVolume,
+
+  LoadWave, LoadWaveFromMemory, IsWaveValid, LoadSound, LoadSoundFromWave, LoadSoundAlias,
+  IsSoundValid, UpdateSound, UnloadWave, UnloadSound, UnloadSoundAlias, ExportWave,
+  ExportWaveAsCode,
+
+  PlaySound, StopSound, PauseSound, ResumeSound, IsSoundPlaying, SetSoundVolume, SetSoundPitch,
+  SetSoundPan, WaveCopy, WaveCrop, WaveFormat, LoadWaveSamples, UnloadWaveSamples,
+
+  LoadMusicStream, LoadMusicStreamFromMemory, IsMusicValid, UnloadMusicStream, PlayMusicStream,
+  IsMusicStreamPlaying, UpdateMusicStream, StopMusicStream, PauseMusicStream, ResumeMusicStream,
+  SeekMusicStream, SetMusicVolume, SetMusicPitch, SetMusicPan, GetMusicTimeLength,
+  GetMusicTimePlayed,
+
+  LoadAudioStream, IsAudioStreamValid, UnloadAudioStream, UpdateAudioStream, IsAudioStreamProcessed,
+  PlayAudioStream, PauseAudioStream, ResumeAudioStream, IsAudioStreamPlaying, StopAudioStream,
+  SetAudioStreamVolume, SetAudioStreamPitch, SetAudioStreamPan, SetAudioStreamBufferSizeDefault,
+  SetAudioStreamCallback, AttachAudioStreamProcessor, DetachAudioStreamProcessor,
+  AttachAudioMixedProcessor, DetachAudioMixedProcessor;
+
+TYPE
+  PINTEGER = POINTER TO INTEGER;
+  PSHORTREAL = POINTER TO SHORTREAL;
+
+  TVector2 = RECORD
+    X, Y: SHORTREAL;
+  END;
+  PVector2 = POINTER TO TVector2;
+
+  TVector3 = RECORD
+    X, Y, Z: SHORTREAL;
+  END;
+  PVector3 = POINTER TO TVector3;
+
+  TVector4 = RECORD
+    X, Y, Z, W: SHORTREAL;
+  END;
+  PVector4 = POINTER TO TVector4;
+
+  TQuaternion = TVector4;
+  PQuaternion = POINTER TO TQuaternion;
+
+  TMatrix = RECORD
+    M0, M4, M8, M12: SHORTREAL;
+    M1, M5, M9, M13: SHORTREAL;
+    M2, M6, M10, M14: SHORTREAL;
+    M3, M7, M11, M15: SHORTREAL;
+  END;
+  PMatrix = POINTER TO TMatrix;
+
+  TColor = RECORD
+    R, G, B, A: BYTE;
+  END;
+  PColor = POINTER TO TColor;
+
+  TRectangle = RECORD
+    X, Y, Width, Height: SHORTREAL;
+  END;
+  PRectangle = POINTER TO TRectangle;
+
+  TImage = RECORD
+    Data: ADDRESS;
+    Width, Height, Mipmaps, Format: INTEGER;
+  END;
+  PImage = POINTER TO TImage;
+
+  TTexture = RECORD
+    Id: CARDINAL;
+    Width, Height, Mipmaps, Format: INTEGER;
+  END;
+  PTexture = POINTER TO TTexture;
+
+  TTexture2D = TTexture;
+  PTexture2D = POINTER TO TTexture;
+
+  TTextureCubemap = TTexture;
+  PTextureCubemap = POINTER TO TTextureCubemap;
+
+  TRenderTexture = RECORD
+    Id: CARDINAL;
+    Texture, Depth: TTexture;
+  END;
+  PRenderTexture = POINTER TO TRenderTexture;
+
+  TRenderTexture2D = TRenderTexture;
+  PRenderTexture2D = POINTER TO TRenderTexture2D;
+
+  TNPatchInfo = RECORD
+    Source: TRectangle;
+    Left, Top, Right, Bottom, Layout: INTEGER;
+  END;
+  PNPatchInfo = POINTER TO TNPatchInfo;
+
+  TGlyphInfo = RECORD
+    Value, OffsetX, OffsetY, AdvanceX: INTEGER;
+    Image: TImage;
+  END;
+  PGlyphInfo = POINTER TO TGlyphInfo;
+
+  TFont = RECORD
+    BaseSize, GlyphCount, GlyphPadding: INTEGER;
+    Texture: TTexture2D;
+    Recs: PRectangle;
+    Glyphs: PGlyphInfo;
+  END;
+  PFont = POINTER TO TFont;
+
+  TCamera3D = RECORD
+    Position, Target, Up: TVector3;
+    FovY: SHORTREAL;
+    Projection: INTEGER;
+  END;
+  PCamera3D = POINTER TO TCamera3D;
+
+  TCamera = TCamera3D;
+  PCamera = POINTER TO TCamera;
+
+  TCamera2D = RECORD
+    Offset, Target: TVector2;
+    Rotation, Zoom: SHORTREAL;
+  END;
+  PCamera2D = POINTER TO TCamera2D;
+
+  TMesh = RECORD
+    VertexCount, TriangleCount: INTEGER;
+    Vertices, TexCoords, TexCoords2, Normals, Tangents: POINTER TO SHORTREAL;
+    Colors: POINTER TO BYTE;
+    Indices: POINTER TO SHORTCARD;
+    AnimVertices, AnimNormals: POINTER TO SHORTREAL;
+    BoneIds: POINTER TO BYTE;
+    BoneWeights: POINTER TO SHORTREAL;
+    BoneMatrices: PMatrix;
+    BoneCount: INTEGER;
+    VaoId: CARDINAL;
+    VboId: POINTER TO CARDINAL;
+  END;
+  PMesh = POINTER TO TMesh;
+
+  TShader = RECORD
+    Id: CARDINAL;
+    Locs: POINTER TO INTEGER;
+  END;
+  PShader = POINTER TO TShader;
+
+  TMaterialMap = RECORD
+    Texture: TTexture2D;
+    Color: TColor;
+    Value: SHORTREAL;
+  END;
+  PMaterialMap = POINTER TO TMaterialMap;
+
+  TMaterial = RECORD
+    Shader: TShader;
+    Maps: PMaterialMap;
+    Params: ARRAY[0..3] OF SHORTREAL;
+  END;
+  PMaterial = POINTER TO TMaterial;
+
+  TTransform = RECORD
+    Translation: TVector3;
+    Rotation: TQuaternion;
+    Scale: TVector3;
+  END;
+  PTransform = POINTER TO TTransform;
+
+  TBoneInfo = RECORD
+    Name: ARRAY[0..31] OF CHAR;
+    Parent: INTEGER;
+  END;
+  PBoneInfo = POINTER TO TBoneInfo;
+
+  TModel = RECORD
+    Transform: TMatrix;
+    MeshCount, MaterialCount: INTEGER;
+    Meshes: PMesh;
+    Materials: PMaterial;
+    MeshMaterial: POINTER TO INTEGER;
+    BoneCount: INTEGER;
+    Bones: PBoneInfo;
+    BindPose: PTransform;
+  END;
+  PModel = POINTER TO TModel;
+
+  TModelAnimation = RECORD
+    BoneCount, FrameCount: INTEGER;
+    Bones: PBoneInfo;
+    FramePoses: PTransform;
+    Name: ARRAY[0..31] OF CHAR;
+  END;
+  PModelAnimation = POINTER TO TModelAnimation;
+
+  TRay = RECORD
+    Position, Direction: TVector3;
+  END;
+  PRay = POINTER TO PRay;
+
+  TRayCollision = RECORD
+    Hit: BOOLEAN;
+    Distance: SHORTREAL;
+    Point, Normal: TVector3;
+  END;
+  PRayCollision = POINTER TO TRayCollision;
+
+  TBoundingBox = RECORD
+    Min, Max: TVector3;
+  END;
+  PBoundingBox = POINTER TO TBoundingBox;
+
+  TWave = RECORD
+    FrameCount, SampleRate, SampleSize, Channels: CARDINAL;
+    Data: ADDRESS;
+  END;
+  PWave = POINTER TO TWave;
+
+  TAudioStream = RECORD
+    Buffer, Processor: ADDRESS;
+    SampleRate, SampleSize, Channels: CARDINAL;
+  END;
+  PAudioStream = POINTER TO TAudioStream;
+
+  TSound = RECORD
+    Stream: TAudioStream;
+    FrameCount: CARDINAL;
+  END;
+  PSound = POINTER TO TSound;
+
+  TMusic = RECORD
+    Stream: TAudioStream;
+    FrameCount: CARDINAL;
+    Looping: BOOLEAN;
+    CtxType: INTEGER;
+    CtxData: ADDRESS;
+  END;
+  PMusic = POINTER TO TMusic;
+
+  TVrDeviceInfo = RECORD
+    HResolution, VResolution: INTEGER;
+    HScreenSize, VScreenSize: SHORTREAL;
+    EyeToScreenDistance, LensSeparationDistance: SHORTREAL;
+    LensDistortionValues, ChromaAbCorrection: ARRAY[0..3] OF SHORTREAL;
+  END;
+  PVrDeviceInfo = POINTER TO TVrDeviceInfo;
+
+  TVrStereoConfig = RECORD
+    Projection, ViewOffset: ARRAY[0..1] OF TMatrix;
+    LeftLensCenter, RightLensCenter, LeftScreenCenter, RightScreenCenter: ARRAY[0..1] OF SHORTREAL;
+    Scale, ScaleIn: ARRAY[0..1] OF SHORTREAL;
+  END;
+  PVrStereoConfig = POINTER TO TVrStereoConfig;
+
+  TFilePathList = RECORD
+    Capacity, Count: CARDINAL;
+    Paths: POINTER TO CHAR;
+  END;
+  PFilePathList = POINTER TO TFilePathList;
+
+  TAutomationEvent = RECORD
+    Frame, Type: CARDINAL;
+    Params: ARRAY[0..3] OF INTEGER;
+  END;
+  PAutomationEvent = POINTER TO TAutomationEvent;
+
+  TAutomationEventList = RECORD
+    Capacity, Count: CARDINAL;
+    Events: PAutomationEvent;
+  END;
+  PAutomationEventList = POINTER TO TAutomationEventList;
+
+  TTraceLogCallback = PROCEDURE(INTEGER, ARRAY OF CHAR, ...);
+  TLoadFileDataCallback = PROCEDURE(ARRAY OF CHAR, PINTEGER): ADDRESS;
+  TSaveFileDataCallback = PROCEDURE(ARRAY OF CHAR, ADDRESS, INTEGER): BOOLEAN;
+  TLoadFileTextCallback = PROCEDURE(ARRAY OF CHAR): ADDRESS;
+  TSaveFileTextCallback = PROCEDURE(ARRAY OF CHAR, ARRAY OF CHAR): BOOLEAN;
+  TAudioCallback = PROCEDURE(ADDRESS, CARDINAL);
+
+  TMd5Sum = ARRAY[0..3] OF CARDINAL;
+  PMd5Sum = POINTER TO TMd5Sum;
+  TSha1Sum = ARRAY[0..5] OF CARDINAL;
+  PSha1Sum = POINTER TO TSha1Sum;
+
+CONST
+  (* Raylib version *)
+  version_major = 5;
+  version_minor = 5;
+  version_patch = 0;
+  version = "5.5";
+
+  (* Raylib internal buffers *)
+  max_filepath_capacity = 8192;
+  max_filepath_length = 4096;
+  max_text_buffer_length = 1024;
+  max_text_split_count = 128;
+
+  (* PI costants *)
+  pi = 3.14159265358979323846;
+  deg2rad = pi / 180.0;
+  rad2deg = 180.0 / pi;
+
+  (* Raylib predefined colors *)
+  lightgray = TColor{200, 200, 200, 255};
+  gray = TColor{130, 130, 130, 255};
+  darkgray = TColor{80, 80, 80, 255};
+  yellow = TColor{253, 249, 0, 255};
+  gold = TColor{255, 203, 0, 255};
+  orange = TColor{255, 161, 0, 255};
+  pink = TColor{255, 109, 194, 255};
+  red = TColor{230, 41, 55, 255};
+  maroon = TColor{190, 33, 55, 255};
+  green = TColor{0, 228, 48, 255};
+  lime = TColor{0, 158, 47, 255};
+  darkgreen = TColor{0, 117, 44, 255};
+  skyblue = TColor{102, 191, 255, 255};
+  blue = TColor{0, 121, 241, 255};
+  darkblue = TColor{0, 82, 172, 255};
+  purple = TColor{200, 122, 255, 255};
+  violet = TColor{135, 60, 190, 255};
+  darkpurple = TColor{112, 31, 126, 255};
+  beige = TColor{211, 176, 131, 255};
+  brown = TColor{127, 106, 79, 255};
+  darkbrown = TColor{76, 63, 47, 255};
+  white = TColor{255, 255, 255, 255};
+  black = TColor{0, 0, 0, 255};
+  blank = TColor{0, 0, 0, 0};
+  magenta = TColor{255, 0, 255, 255};
+  raywhite = TColor{245, 245, 245, 255};
+
+  (* system/window config flags *)
+  flag_vsync_hint = 040H;
+  flag_fullscreen_mode = 02H;
+  flag_window_resizable = 04H;
+  flag_window_undecorated = 08H;
+  flag_window_hidden = 080H;
+  flag_window_minimized = 0200H;
+  flag_window_maximized = 0400H;
+  flag_window_unfocused = 0800H;
+  flag_window_topmost = 01000H;
+  flag_window_always_run = 0100H;
+  flag_window_transparent = 010H;
+  flag_window_highdpi = 02000H;
+  flag_window_mouse_passthrough = 04000H;
+  flag_borderless_windowed_mode = 08000H;
+  flag_msaa_4x_hint = 020H;
+  flag_interlaced_hint = 010000H;
+
+  (* trace lof level *)
+  log_all = 0;
+  log_trace = 1;
+  log_debug = 2;
+  log_info = 3;
+  log_warning = 4;
+  log_error = 5;
+  log_fatal = 6;
+  log_none = 7;
+
+  (* us keyboard keys *)
+  key_null = 0;
+  key_apostrophe = 39;
+  key_comma = 44;
+  key_minus = 45;
+  key_period = 46;
+  key_slash = 47;
+  key_zero = 48;
+  key_one = 49;
+  key_two = 50;
+  key_three = 51;
+  key_four = 52;
+  key_five = 53;
+  key_six = 54;
+  key_seven = 55;
+  key_eight = 56;
+  key_nine = 57;
+  key_semicolon = 59;
+  key_equal = 61;
+  key_a = 65;
+  key_b = 66;
+  key_c = 67;
+  key_d = 68;
+  key_e = 69;
+  key_f = 70;
+  key_g = 71;
+  key_h = 72;
+  key_i = 73;
+  key_j = 74;
+  key_k = 75;
+  key_l = 76;
+  key_m = 77;
+  key_n = 78;
+  key_o = 79;
+  key_p = 80;
+  key_q = 81;
+  key_r = 82;
+  key_s = 83;
+  key_t = 84;
+  key_u = 85;
+  key_v = 86;
+  key_w = 87;
+  key_x = 88;
+  key_y = 89;
+  key_z = 90;
+  key_left_bracket = 91;
+  key_backslash = 92;
+  key_right_bracket = 93;
+  key_grave = 96;
+  key_space = 32;
+  key_escape = 256;
+  key_enter = 257;
+  key_tab = 258;
+  key_backspace = 259;
+  key_insert = 260;
+  key_delete = 261;
+  key_right = 262;
+  key_left = 263;
+  key_down = 264;
+  key_up = 265;
+  key_page_up = 266;
+  key_page_down = 267;
+  key_home = 268;
+  key_end = 269;
+  key_caps_lock = 280;
+  key_scroll_lock = 281;
+  key_num_lock = 282;
+  key_print_screen = 283;
+  key_pause = 284;
+  key_f1 = 290;
+  key_f2 = 291;
+  key_f3 = 292;
+  key_f4 = 293;
+  key_f5 = 294;
+  key_f6 = 295;
+  key_f7 = 296;
+  key_f8 = 297;
+  key_f9 = 298;
+  key_f10 = 299;
+  key_f11 = 300;
+  key_f12 = 301;
+  key_left_shift = 340;
+  key_left_control = 341;
+  key_left_alt = 342;
+  key_left_super = 343;
+  key_right_shift = 344;
+  key_right_control = 345;
+  key_right_alt = 346;
+  key_right_super = 347;
+  key_kb_menu = 348;
+  key_kp_0 = 320;
+  key_kp_1 = 321;
+  key_kp_2 = 322;
+  key_kp_3 = 323;
+  key_kp_4 = 324;
+  key_kp_5 = 325;
+  key_kp_6 = 326;
+  key_kp_7 = 327;
+  key_kp_8 = 328;
+  key_kp_9 = 329;
+  key_kp_decimal = 330;
+  key_kp_divide = 331;
+  key_kp_multiply = 332;
+  key_kp_subtract = 333;
+  key_kp_add = 334;
+  key_kp_enter = 335;
+  key_kp_equal = 336;
+  key_back = 4;
+  key_menu = 5;
+  key_volume_up = 24;
+  key_volume_down = 25;
+
+  (* mouse buttons *)
+  mouse_button_left = 0;
+  mouse_button_right = 1;
+  mouse_button_middle = 2;
+  mouse_button_side = 3;
+  mouse_button_extra = 4;
+  mouse_button_forward = 5;
+  mouse_button_back = 6;
+
+  (* gamepad buttons *)
+  gamepad_button_unknown = 0;
+  gamepad_button_left_face_up = 1;
+  gamepad_button_left_face_right = 2;
+  gamepad_button_left_face_down = 3;
+  gamepad_button_left_face_left = 4;
+  gamepad_button_right_face_up = 5;
+  gamepad_button_right_face_right = 6;
+  gamepad_button_right_face_down = 7;
+  gamepad_button_right_face_left = 8;
+  gamepad_button_left_trigger_1 = 9;
+  gamepad_button_left_trigger_2 = 10;
+  gamepad_button_right_trigger_1 = 11;
+  gamepad_button_right_trigger_2 = 12;
+  gamepad_button_middle_left = 13;
+  gamepad_button_middle = 14;
+  gamepad_button_middle_right = 15;
+  gamepad_button_left_thumb = 16;
+  gamepad_button_right_thumb = 17;
+
+  (* gamepad axis *)
+  gamepad_axis_left_x = 0;
+  gamepad_axis_left_y = 1;
+  gamepad_axis_right_x = 2;
+  gamepad_axis_right_y = 3;
+  gamepad_axis_left_trigger = 4;
+  gamepad_axis_right_trigger = 5;
+
+  (* material map index *)
+  material_map_albedo = 0;
+  material_map_metalness = 1;
+  material_map_normal = 2;
+  material_map_roughness = 3;
+  material_map_occlusion = 4;
+  material_map_emission = 5;
+  material_map_height = 6;
+  material_map_cubemap = 7;
+  material_map_irradiance = 8;
+  material_map_prefilter = 9;
+  material_map_brdf = 10;
+
+  (* shader location index *)
+  shader_loc_vertex_position = 0;
+  shader_loc_vertex_texcoord01 = 1;
+  shader_loc_vertex_texcoord02 = 2;
+  shader_loc_vertex_normal = 3;
+  shader_loc_vertex_tangent = 4;
+  shader_loc_vertex_color = 5;
+  shader_loc_matrix_mvp = 6;
+  shader_loc_matrix_view = 7;
+  shader_loc_matrix_projection = 8;
+  shader_loc_matrix_model = 9;
+  shader_loc_matrix_normal = 10;
+  shader_loc_vector_view = 11;
+  shader_loc_color_diffuse = 12;
+  shader_loc_color_specular = 13;
+  shader_loc_color_ambient = 14;
+  shader_loc_map_albedo = 15;
+  shader_loc_map_metalness = 16;
+  shader_loc_map_normal = 17;
+  shader_loc_map_roughness = 18;
+  shader_loc_map_occlusion = 19;
+  shader_loc_map_emission = 20;
+  shader_loc_map_height = 21;
+  shader_loc_map_cubemap = 22;
+  shader_loc_map_irradiance = 23;
+  shader_loc_map_prefilter = 24;
+  shader_loc_map_brdf = 25;
+  shader_loc_vertex_boneids = 26;
+  shader_loc_vertex_boneweights = 27;
+  shader_loc_bone_matrices = 28;
+
+  (* shader uniform data types *)
+  shader_uniform_float = 0;
+  shader_uniform_vec2 = 1;
+  shader_uniform_vec3 = 2;
+  shader_uniform_vec4 = 3;
+  shader_uniform_int = 4;
+  shader_uniform_ivec2 = 5;
+  shader_uniform_ivec3 = 6;
+  shader_uniform_ivec4 = 7;
+  shader_uniform_sampler3d = 8;
+
+  (* shader attribute data types *)
+  shader_attrib_float = 0;
+  shader_attrib_vec2 = 1;
+  shader_attrib_vec3 = 2;
+  shader_attrib_vec4 = 3;
+
+  (* pixel formats *)
+  pixelformat_uncompressed_grayscale = 1;
+  pixelformat_uncompressed_gray_alpha = 2;
+  pixelformat_uncompressed_r5g6b5 = 3;
+  pixelformat_uncompressed_r8g8b8 = 4;
+  pixelformat_uncompressed_r5g5b5a1 = 5;
+  pixelformat_uncompressed_r4g4b4a4 = 6;
+  pixelformat_uncompressed_r8g8b8a8 = 7;
+  pixelformat_uncompressed_r32 = 8;
+  pixelformat_uncompressed_r32g32b32 = 9;
+  pixelformat_uncompressed_r32g32b32a32 = 10;
+  pixelformat_uncompressed_r16 = 11;
+  pixelformat_uncompressed_r16g16b16 = 12;
+  pixelformat_uncompressed_r16g16b16a16 = 13;
+  pixelformat_compressed_dxt1_rgb = 14;
+  pixelformat_compressed_dxt1_rgba = 15;
+  pixelformat_compressed_dxt3_rgba = 16;
+  pixelformat_compressed_dxt5_rgba = 17;
+  pixelformat_compressed_etc1_rgb = 18;
+  pixelformat_compressed_etc2_rgb = 19;
+  pixelformat_compressed_etc2_eac_rgba = 20;
+  pixelformat_compressed_pvrt_rgb = 21;
+  pixelformat_compressed_pvrt_rgba = 22;
+  pixelformat_compressed_astc_4x4_rgba = 23;
+  pixelformat_compressed_astc_8x8_rgba = 24;
+
+  (* texture parameters filter mode *)
+  texture_filter_point = 0;
+  texture_filter_bilinear = 1;
+  texture_filter_trilinier = 2;
+  texture_filter_anisotropic_4x = 3;
+  texture_filter_anisotropic_8x = 4;
+  texture_filter_anisotropic_16x = 5;
+
+  (* texture parameters wrap mode *)
+  texture_wrap_repeat = 0;
+  texture_wrap_clamp = 1;
+  texture_wrap_mirror_repeat = 2;
+  texture_wrap_mirror_clamp = 3;
+
+  (* cubemap layouts *)
+  cubemap_layout_auto_detect = 0;
+  cubemap_layout_line_vertical = 1;
+  cubemap_layout_line_horizontal = 2;
+  cubemap_layout_cross_three_by_four = 3;
+  cubemap_layout_cross_four_by_three = 4;
+
+  (* font types *)
+  font_default = 0;
+  font_bitmap = 1;
+  font_sdf = 2;
+
+  (* color blending modes *)
+  blend_alpha = 0;
+  blend_additive = 1;
+  blend_multiplied = 2;
+  blend_add_colors = 3;
+  blend_subtract_colors = 4;
+  blend_alpha_premultiply = 5;
+  blend_custom = 6;
+  blend_custom_separate = 7;
+
+  (* gestures *)
+  gesture_none = 0;
+  gesture_tap = 1;
+  gesture_doubletap = 2;
+  gesture_hold = 4;
+  gesture_drag = 8;
+  gesture_swipe_right = 16;
+  gesture_swipe_left = 32;
+  gesture_swipe_up = 64;
+  gesture_swipe_down = 128;
+  gesture_pinch_in = 256;
+  gesture_pinch_out = 512;
+
+  (* camera system modes *)
+  camera_custom = 0;
+  camera_free = 1;
+  camera_orbital = 2;
+  camera_first_person = 3;
+  camera_third_person = 4;
+
+  (* camera projection *)
+  camera_perspective = 0;
+  camera_orthographic = 1;
+
+  (* N-patch layout *)
+  npatch_nine_patch = 0;
+  npatch_three_patch_vertical = 1;
+  npatch_three_patch_horizontal = 2;
+
+(* window procedures *)
+PROCEDURE InitWindow(Width, Height: INTEGER; Title: ARRAY OF CHAR);
+PROCEDURE CloseWindow;
+PROCEDURE WindowShouldClose(): BOOLEAN;
+PROCEDURE IsWindowReady(): BOOLEAN;
+PROCEDURE IsWindowFullscreen(): BOOLEAN;
+PROCEDURE IsWindowHidden(): BOOLEAN;
+PROCEDURE IsWindowMinimized(): BOOLEAN;
+PROCEDURE IsWindowMaximized(): BOOLEAN;
+PROCEDURE IsWindowFocused(): BOOLEAN;
+PROCEDURE IsWindowResized(): BOOLEAN;
+PROCEDURE IsWindowState(Flags: CARDINAL): BOOLEAN;
+PROCEDURE SetWindowState(Flags: CARDINAL);
+PROCEDURE ClearWindowState(Flags: CARDINAL);
+PROCEDURE ToggleFullscreen;
+PROCEDURE ToggleBorderlessWindowed;
+PROCEDURE MaximizeWindow;
+PROCEDURE MinimizeWindow;
+PROCEDURE RestoreWindow;
+PROCEDURE SetWindowIcon(Image: TImage);
+PROCEDURE SetWindowIcons(VAR Image: PImage; Count: INTEGER);
+PROCEDURE SetWindowTitle(Title: ARRAY OF CHAR);
+PROCEDURE SetWindowPosition(X, Y: INTEGER);
+PROCEDURE SetWindowMonitor(Monitor: INTEGER);
+PROCEDURE SetWindowMinSize(Width, Heigth: INTEGER);
+PROCEDURE SetWindowMaxSize(Width, Height: INTEGER);
+PROCEDURE SetWindowSize(Width, Height: INTEGER);
+PROCEDURE SetWindowOpacity(Opacity: SHORTREAL);
+PROCEDURE SetWindowFocused;
+PROCEDURE GetWindowHandle(): ADDRESS;
+PROCEDURE GetScreenWidth(): INTEGER;
+PROCEDURE GetScreenHeight(): INTEGER;
+PROCEDURE GetRenderWidth(): INTEGER;
+PROCEDURE GetRenderHeight(): INTEGER;
+PROCEDURE GetMonitorCount(): INTEGER;
+PROCEDURE GetCurrentMonitor(): INTEGER;
+PROCEDURE GetMonitorPosition(Monitor: INTEGER): TVector2;
+PROCEDURE GetMonitorWidth(Monitor: INTEGER): INTEGER;
+PROCEDURE GetMonitorHeight(Monitor: INTEGER): INTEGER;
+PROCEDURE GetMonitorPhysicalWidth(Monitor: INTEGER): INTEGER;
+PROCEDURE GetMonitorPhysicalHeight(Monitor: INTEGER): INTEGER;
+PROCEDURE GetMonitorRefreshRate(Monitor: INTEGER): INTEGER;
+PROCEDURE GetWindowPosition(): TVector2;
+PROCEDURE GetWindowScaleDPI(): TVector2;
+PROCEDURE GetMonitorName(Monitor: INTEGER): ADDRESS;
+PROCEDURE SetClipboardText(Text: ARRAY OF CHAR);
+PROCEDURE GetClipboardText(): ADDRESS;
+PROCEDURE GetClipboardImage(): TImage;
+PROCEDURE EnableEventWaiting;
+PROCEDURE DisableEventWaiting;
+
+(* cursor procedures *)
+PROCEDURE ShowCursor;
+PROCEDURE HideCursor;
+PROCEDURE IsCursorHidden(): BOOLEAN;
+PROCEDURE EnableCursor;
+PROCEDURE DisableCursor;
+PROCEDURE IsCursorOnScreen(): BOOLEAN;
+
+(* drawing procedures *)
+PROCEDURE ClearBackground(Color: TColor);
+PROCEDURE BeginDrawing;
+PROCEDURE EndDrawing;
+PROCEDURE BeginMode2D(Camera: TCamera2D);
+PROCEDURE EndMode2D;
+PROCEDURE BeginMode3D(Camera: TCamera3D);
+PROCEDURE EndMode3D;
+PROCEDURE BeginTextureMode(Target: TRenderTexture2D);
+PROCEDURE EndTextureMode;
+PROCEDURE BeginShaderMode(Shader: TShader);
+PROCEDURE EndShaderMode;
+PROCEDURE BeginBlendMode(Mode: INTEGER);
+PROCEDURE EndBlendMode;
+PROCEDURE BeginScissorMode(X, Y, Width, Heigth: INTEGER);
+PROCEDURE EndScissorMode;
+PROCEDURE BeginVrStereoMode(Config: TVrStereoConfig);
+PROCEDURE EndVrStereoMode;
+
+(* vr stereo config procedures *)
+PROCEDURE LoadVrStereoConfig(Device: TVrDeviceInfo): TVrStereoConfig;
+PROCEDURE UnloadVrStereoConfig(Config: TVrStereoConfig);
+
+(* shader management procedures *)
+PROCEDURE LoadShader(VsFileName, FsFileName: ARRAY OF CHAR): TShader;
+PROCEDURE LoadShaderFromMemory(VsCode, FsCode: ARRAY OF CHAR): TShader;
+PROCEDURE IsShaderValid(Shader: TShader): BOOLEAN;
+PROCEDURE GetShaderLocation(Shader: TShader; UniformName: ARRAY OF CHAR): INTEGER;
+PROCEDURE GetShaderLocationAttrib(Shader: TShader; AttribName: ARRAY OF CHAR): INTEGER;
+PROCEDURE SetShaderValue(Shader: TShader; LocIndex: INTEGER; Value: ADDRESS; UniformType: INTEGER);
+PROCEDURE SetShaderValueV(Shader: TShader; LocIndex: INTEGER; Value: ADDRESS;
+                          UniformType, Count: INTEGER);
+PROCEDURE SetShaderValueMatrix(Shader: TShader; LocIndex: INTEGER; Mat: TMatrix);
+PROCEDURE SetShaderValueTexture(Shader: TShader; LocIndex: INTEGER; Texture: TTexture2D);
+PROCEDURE UnloadShader(Shader: TShader);
+
+(* screen space procedures *)
+PROCEDURE GetScreenToWorldRay(Position: TVector2; Camera: TCamera): TRay;
+PROCEDURE GetScreenToWorldRayEx(Position: TVector2; Camera: TCamera; Width, Height: INTEGER): TRay;
+PROCEDURE GetWorldToScreen(Position: TVector3; Camera: TCamera): TVector2;
+PROCEDURE GetWorldToScreenEx(Position: TVector3; Camera: TCamera; Width, Height: INTEGER): TVector2;
+PROCEDURE GetWorldToScreen2D(Position: TVector2; Camera: TCamera2D): TVector2;
+PROCEDURE GetScreenToWorld2D(Position: TVector2; Camera: TCamera2D): TVector2;
+PROCEDURE GetCameraMatrix(Camera: TCamera): TMatrix;
+PROCEDURE GetCameraMatrix2D(Camera: TCamera2D): TMatrix;
+
+(* timing procedures *)
+PROCEDURE SetTargetFPS(Fps: INTEGER);
+PROCEDURE GetFrameTime(): SHORTREAL;
+PROCEDURE GetTime(): REAL;
+PROCEDURE GetFPS(): INTEGER;
+
+(* frame control procedures *)
+PROCEDURE SwapScreenBuffer;
+PROCEDURE PollInputEvents;
+PROCEDURE WaitTime(Seconds: REAL);
+
+(* randomness procedures *)
+PROCEDURE SetRandomSeed(Seed: CARDINAL);
+PROCEDURE GetRandomValue(Min, Max: INTEGER): INTEGER;
+PROCEDURE LoadRandomSequence(Count: CARDINAL; Min, Max: INTEGER): PINTEGER;
+PROCEDURE UnloadRandomSequence(VAR Sequence: PINTEGER);
+
+(* misc procedures *)
+PROCEDURE TakeScreenshot(FileName: ARRAY OF CHAR);
+PROCEDURE SetConfigFlags(Flags: CARDINAL);
+PROCEDURE OpenURL(Url: ARRAY OF CHAR);
+
+(* utils procedures *)
+PROCEDURE TraceLog(LogLevel: INTEGER; Text: ARRAY OF CHAR; ...);
+PROCEDURE SetTraceLogLevel(LogLevel: INTEGER);
+PROCEDURE MemAlloc(Size: CARDINAL): ADDRESS;
+PROCEDURE MemRealloc(VAR Ptr: ADDRESS; Size: CARDINAL): ADDRESS;
+PROCEDURE MemFree(VAR Ptr: ADDRESS);
+
+(* custom callbacks *)
+PROCEDURE SetTraceLogCallback(Callback: TTraceLogCallback);
+PROCEDURE SetLoadFileDataCallback(Callback: TLoadFileDataCallback);
+PROCEDURE SetSaveFileDataCallback(Callback: TSaveFileDataCallback);
+PROCEDURE SetLoadFileTextCallback(Callback: TLoadFileTextCallback);
+PROCEDURE SetSaveFileTextCallback(Callback: TSaveFileTextCallback);
+
+(* file management procedures *)
+PROCEDURE LoadFileData(FileName: ARRAY OF CHAR; VAR DataSize: PINTEGER): ADDRESS;
+PROCEDURE UnloadFileData(VAR Data: ADDRESS);
+PROCEDURE SaveFileData(FileName: ARRAY OF CHAR; VAR Data: ADDRESS; DataSize: INTEGER): BOOLEAN;
+PROCEDURE ExportDataAsCode(Data: ADDRESS; DataSize: INTEGER; FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE LoadFileText(FileName: ARRAY OF CHAR): ADDRESS;
+PROCEDURE UnloadFileText(VAR Text: ARRAY OF CHAR);
+PROCEDURE SaveFileText(FileName: ARRAY OF CHAR; VAR Text: ARRAY OF CHAR): BOOLEAN;
+
+(* file system procedures *)
+PROCEDURE FileExists(FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE DirectoryExists(DirPath: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE IsFileExtension(FileName, Ext: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE GetFileLength(FileName: ARRAY OF CHAR): INTEGER;
+PROCEDURE GetFileExtension(FileName: ARRAY OF CHAR): ADDRESS;
+PROCEDURE GetFileName(FilePath: ARRAY OF CHAR): ADDRESS;
+PROCEDURE GetFileNameWithoutExt(FilePath: ARRAY OF CHAR): ADDRESS;
+PROCEDURE GetDirectoryPath(FilePath: ARRAY OF CHAR): ADDRESS;
+PROCEDURE GetPrevDirectoryPath(DirPath: ARRAY OF CHAR): ADDRESS;
+PROCEDURE GetWorkingDirectory(): ADDRESS;
+PROCEDURE GetApplicationDirectory(): ADDRESS;
+PROCEDURE MakeDirectory(DirPath: ARRAY OF CHAR): INTEGER;
+PROCEDURE ChangeDirectory(Dir: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE IsPathFile(Path: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE IsFileNameValid(FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE LoadDirectoryFiles(DirPath: ARRAY OF CHAR): TFilePathList;
+PROCEDURE LoadDirectoryFilesEx(BasePath, Filter: ARRAY OF CHAR;
+                               ScanSubdirs: BOOLEAN): TFilePathList;
+PROCEDURE UnloadDirectoryFiles(Files: TFilePathList);
+PROCEDURE IsFileDropped(): BOOLEAN;
+PROCEDURE LoadDroppedFiles(): TFilePathList;
+PROCEDURE UnloadDroppedFiles(Files: TFilePathList);
+PROCEDURE GetFileModTime(FileName: ARRAY OF CHAR): CSIZE_T;
+
+(* compression/encoding procedures *)
+PROCEDURE CompressData(Data: ADDRESS; DataSize: INTEGER; VAR CompDataSize: PINTEGER): ADDRESS;
+PROCEDURE DecompressData(CompDara: ADDRESS; CompDataSize: INTEGER; VAR DataSize: PINTEGER): ADDRESS;
+PROCEDURE EncodeDataBase64(Data: ADDRESS; DataSize: INTEGER; VAR OutputSize: PINTEGER): ADDRESS;
+PROCEDURE DecodeDataBase64(Data: ADDRESS; DataSize: INTEGER; VAR OutputSize: PINTEGER): ADDRESS;
+PROCEDURE ComputeCRC32(VAR Data: ADDRESS; DataSize: INTEGER): CARDINAL;
+PROCEDURE ComputeMD5(VAR Data: ADDRESS; DataSize: INTEGER): PMd5Sum;
+PROCEDURE ComputeSHA1(VAR Data: ADDRESS; DataSize: INTEGER): PSha1Sum;
+
+(* automation events procedures *)
+PROCEDURE LoadAutomationEventList(FileName: ARRAY OF CHAR): TAutomationEventList;
+PROCEDURE UnloadAutomationEventList(List: TAutomationEventList);
+PROCEDURE ExportAutomationEventList(List: TAutomationEventList; FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE SetAutomationEventList(VAR List: PAutomationEventList);
+PROCEDURE SetAutomationEventBaseFrame(Frame: INTEGER);
+PROCEDURE StartAutomationEventRecording;
+PROCEDURE StopAutomationEventRecording;
+PROCEDURE PlayAutomationEvent(Event: TAutomationEvent);
+
+(* keyboard input procedures *)
+PROCEDURE IsKeyPressed(Key: INTEGER): BOOLEAN;
+PROCEDURE IsKeyPressedRepeat(Key: INTEGER): BOOLEAN;
+PROCEDURE IsKeyDown(Key: INTEGER): BOOLEAN;
+PROCEDURE IsKeyReleased(Key: INTEGER): BOOLEAN;
+PROCEDURE IsKeyUp(Key: INTEGER): BOOLEAN;
+PROCEDURE GetKeyPressed(): INTEGER;
+PROCEDURE GetCharPressed(): INTEGER;
+PROCEDURE SetExitKey(Key: INTEGER);
+
+(* gamepad input procedures *)
+PROCEDURE IsGamepadAvailable(Gamepad: INTEGER): BOOLEAN;
+PROCEDURE GetGamepadName(Gamepad: INTEGER): ADDRESS;
+PROCEDURE IsGamepadButtonPressed(Gamepad, Button: INTEGER): BOOLEAN;
+PROCEDURE IsGamepadButtonDown(Gamepad, Button: INTEGER): BOOLEAN;
+PROCEDURE IsGamepadButtonReleased(Gamepad, Button: INTEGER): BOOLEAN;
+PROCEDURE IsGamepadButtonUp(Gamepad, Button: INTEGER): BOOLEAN;
+PROCEDURE GetGamepadButtonPressed(): INTEGER;
+PROCEDURE GetGamepadAxisCount(Gamepad: INTEGER): INTEGER;
+PROCEDURE GetGamepadAxisMovement(Gamepad, Axis: INTEGER): SHORTREAL;
+PROCEDURE SetGamepadMappings(Mappings: ARRAY OF CHAR): INTEGER;
+PROCEDURE SetGamepadVibration(Gamepad: INTEGER; LeftMotor, RightMotor, Duratuion: SHORTREAL);
+
+(* mouse input procedures *)
+PROCEDURE IsMouseButtonPressed(Button: INTEGER): BOOLEAN;
+PROCEDURE IsMouseButtonDown(Button: INTEGER): BOOLEAN;
+PROCEDURE IsMouseButtonReleased(Button: INTEGER): BOOLEAN;
+PROCEDURE IsMouseButtonUp(Button: INTEGER): BOOLEAN;
+PROCEDURE GetMouseX(): INTEGER;
+PROCEDURE GetMouseY(): INTEGER;
+PROCEDURE GetMousePosition(): TVector2;
+PROCEDURE GetMouseDelta(): TVector2;
+PROCEDURE SetMousePosition(X, Y: INTEGER);
+PROCEDURE SetMouseOffset(OffsetX, OffsetY: INTEGER);
+PROCEDURE SetMouseScale(ScaleX, ScaleY: SHORTREAL);
+PROCEDURE GetMouseWheelMove(): SHORTREAL;
+PROCEDURE GetMouseWheelMoveV(): TVector2;
+PROCEDURE SetMouseCursor(Cursor: INTEGER);
+
+(* touch input procedures *)
+PROCEDURE GetTouchX(): INTEGER;
+PROCEDURE GetTouchY(): INTEGER;
+PROCEDURE GetTouchPosition(Index: INTEGER): TVector2;
+PROCEDURE GetTouchPointId(Index: INTEGER): INTEGER;
+PROCEDURE GetTouchPointCount(): INTEGER;
+
+(* gesture input procedures *)
+PROCEDURE SetGesturesEnabled(Flags: CARDINAL);
+PROCEDURE IsGestureDetected(Gesture: CARDINAL): BOOLEAN;
+PROCEDURE GetGestureDetected(): INTEGER;
+PROCEDURE GetGestureHoldDuration(): SHORTREAL;
+PROCEDURE GetGestureDragVector(): TVector2;
+PROCEDURE GetGestureDragAngle(): SHORTREAL;
+PROCEDURE GetGesturePinchVector(): TVector2;
+PROCEDURE GetGesturePinchAngle(): SHORTREAL;
+
+(* camera system procedures *)
+PROCEDURE UpdateCamera(VAR Camera: TCamera; Mode: INTEGER);
+PROCEDURE UpdateCameraPro(VAR Camera: TCamera; Movement, Rotation: TVector3; Zoom: SHORTREAL);
+
+(* basic texture shapes procedures *)
+PROCEDURE SetShapesTexture(Texture: TTexture2D; Source: TRectangle);
+PROCEDURE GetShapesTexture(): TTexture2D;
+PROCEDURE GetShapesTextureRectangle(): TRectangle;
+
+(* basic shapes drawing procedures *)
+PROCEDURE DrawPixel(PosX, PosY: INTEGER; Color: TColor);
+PROCEDURE DrawPixelV(Position: TVector2; Color: TColor);
+PROCEDURE DrawLine(StartPosX, StartPosY, EndPosX, EndPosY: INTEGER; Color: TColor);
+PROCEDURE DrawLineV(StartPos, EndPos: TVector2; Color: TColor);
+PROCEDURE DrawLineEx(StartPos, EndPos: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawLineStrip(Points: PVector2; PointCount: INTEGER; Color: TColor);
+PROCEDURE DrawLineBezier(StartPos, EndPos: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawCircle(CenterX, CenterY: INTEGER; Radius: SHORTREAL; Color: TColor);
+PROCEDURE DrawCircleSector(Center: TVector2; Radius, StartAngle, EndAngle: SHORTREAL;
+                           Segments: INTEGER; Color: TColor);
+PROCEDURE DrawCircleSectorLines(Center: TVector2; Radius, StartAngle, EndAngle: SHORTREAL;
+                                Segments: INTEGER; Color: TColor);
+PROCEDURE DrawCircleGradient(CenterX, CenterY: INTEGER; Radius: SHORTREAL; Inner, Outer: TColor);
+PROCEDURE DrawCircleV(Center: TVector2; Radius: SHORTREAL; Color: TColor);
+PROCEDURE DrawCircleLines(CenterX, CenterY: INTEGER; Radius: SHORTREAL; Color: TColor);
+PROCEDURE DrawCircleLinesV(Vector: TVector2; Radius: SHORTREAL; Color: TColor);
+PROCEDURE DrawEllipse(CenterX, CenterY: INTEGER; RadiusH, RadiusV: SHORTREAL; Color: TColor);
+PROCEDURE DrawEllipseLines(CenterX, CenterY: INTEGER; RadiusH, RaduisV: SHORTREAL; Color: TColor);
+PROCEDURE DrawRing(Center: TVector2; InnerRadius, OuterRadius, StartAngle, EndAngle: SHORTREAL;
+                   Segments: INTEGER; Color: TColor);
+PROCEDURE DrawRingLines(Center: TVector2; InnerRadius, OuterRadius, StartAngle, EndAngle: SHORTREAL;
+                        Segments: INTEGER; Color: TColor);
+PROCEDURE DrawRectangle(PosX, PosY, Width, Height: INTEGER; Color: TColor);
+PROCEDURE DrawRectangleV(Position, Size: TVector2; Color: TColor);
+PROCEDURE DrawRectangleRec(Rec: TRectangle; Color: TColor);
+PROCEDURE DrawRectanglePro(Rec: TRectangle; Origin: TVector2; Rotation: SHORTREAL; Color: TColor);
+PROCEDURE DrawRectangleGradientV(PosX, PosY, Width, Height: INTEGER; Top, Buttom: TColor);
+PROCEDURE DrawRectangleGradientH(PosX, PosY, Width, Height: INTEGER; Left, Right: TColor);
+PROCEDURE DrawRectangleGradientEx(Rec: TRectangle;
+                                  TopLeft, ButtomLeft, TopRight, BottomRight: TColor);
+PROCEDURE DrawRectangleLines(PosX, PosY, Width, Height: INTEGER; Color: TColor);
+PROCEDURE DrawRectangleLinesEx(Rec: TRectangle; LineThick: SHORTREAL; Color: TColor);
+PROCEDURE DrawRectangleRounded(Rec: TRectangle; Roundness: SHORTREAL; Segments: INTEGER;
+                               Color: TColor);
+PROCEDURE DrawRectangleRoundedLines(Rec: TRectangle; Roundness: SHORTREAL; Segments: INTEGER;
+                                    Color: TColor);
+PROCEDURE DrawRectangleRoundedLinesEx(Rec: TRectangle; Roundness: SHORTREAL; Segments: INTEGER;
+                                      LineThick: SHORTREAL; Color: TColor);
+PROCEDURE DrawTriangle(V1, V2, V3: TVector2; Color: TColor);
+PROCEDURE DrawTriangleLines(V1, V2, V3: TVector2; Color: TColor);
+PROCEDURE DrawTriangleFan(Points: PVector2; PointCount: INTEGER; Color: TColor);
+PROCEDURE DrawTriangleStrip(Points: PVector2; PointCount: INTEGER; Color: TColor);
+PROCEDURE DrawPoly(Center: TVector2; Sides: INTEGER; Radius, Rotation: SHORTREAL; Color: TColor);
+PROCEDURE DrawPolyLines(Center: TVector2; Sides: INTEGER; Radius, Rotation: SHORTREAL;
+                        Color: TColor);
+PROCEDURE DrawPolyLinesEx(Center: TVector2; Sides: INTEGER; Radius, Rotation, LineThick: SHORTREAL;
+                          Color: TColor);
+
+(* spline drawing prodcedure *)
+PROCEDURE DrawSplineLinear(Points: PVector2; PointCount: INTEGER; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineBasis(Points: PVector2; PointCount: INTEGER; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineCatmullRom(Points: PVector2; PointCount: INTEGER; Thick: SHORTREAL;
+                               Color: TColor);
+PROCEDURE DrawSplineBezierQuadratic(Points: PVector2; PointCount: INTEGER; Thick: SHORTREAL;
+                                    Color: TColor);
+PROCEDURE DrawSplineBezierCubic(Points: PVector2; PointCount: INTEGER; Thick: SHORTREAL;
+                                Color: TColor);
+PROCEDURE DrawSplineSegmentLinear(P1, P2: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineSegmentBasis(P1, P2, P3, P4: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineSegmentCatmullRom(P1, P2, P3, P4: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineSegmentBezierQuadratic(P1, C2, P3: TVector2; Thick: SHORTREAL; Color: TColor);
+PROCEDURE DrawSplineSegmentBezierCubic(P1, C2, C3, P4: TVector2; Thick: SHORTREAL; Color: TColor);
+
+(* spline segment evaluation procedures *)
+PROCEDURE GetSplinePointLinear(StartPos, EndPos: TVector2; T: SHORTREAL): TVector2;
+PROCEDURE GetSplinePointBasis(P1, P2, P3, P4: TVector2; T: SHORTREAL): TVector2;
+PROCEDURE GetSplinePointCatmullRom(P1, P2, P3, P4: TVector2; T: SHORTREAL): TVector2;
+PROCEDURE GetSplinePointBezierQuad(P1, C2, P3: TVector2; T: SHORTREAL): TVector2;
+PROCEDURE GetSplinePointBezierCubic(P1, C2, C3, P4: TVector2; T: SHORTREAL);
+
+(* basic shape collision detection procedures *)
+PROCEDURE CheckCollisionRecs(Rec1, Rec2: TRectangle): BOOLEAN;
+PROCEDURE CheckCollisionCircles(Center1: TVector2; Radius1: SHORTREAL; Center2: TVector2;
+                                Radius2: SHORTREAL): BOOLEAN;
+PROCEDURE CheckCollisionCircleRec(Center: TVector2; Radius: SHORTREAL; Rec: TRectangle): BOOLEAN;
+PROCEDURE CheckCollisionCircleLine(Center: TVector2; Radius: SHORTREAL; P1, P2: TVector2): BOOLEAN;
+PROCEDURE CheckCollisionPointRec(Point: TVector2; Rec: TRectangle): BOOLEAN;
+PROCEDURE CheckCollisionPointCircle(Point, Center: TVector2; Radius: SHORTREAL): BOOLEAN;
+PROCEDURE CheckCollisionPointTriangle(Point, P1, P2, P3: TVector2): BOOLEAN;
+PROCEDURE CheckCollisionPointLine(Point, P1, P2: TVector2; Threshold: INTEGER): BOOLEAN;
+PROCEDURE CheckCollisionPointPoly(Point: TVector2; Points: PVector2; PointCount: INTEGER): BOOLEAN;
+PROCEDURE CheckCollisionLines(StartPos1, EndPos1, StartPos2, EndPos2: TVector2;
+                              CollisionPoint: PVector2): BOOLEAN;
+PROCEDURE GetCollisionRec(Rec1, Rec2: TRectangle): TRectangle;
+
+(* image loading procedures *)
+PROCEDURE LoadImage(FileName: ARRAY OF CHAR): TImage;
+PROCEDURE LoadImageRaw(FileName: ARRAY OF CHAR; Width, Height, Format, HeaderSize: INTEGER): TImage;
+PROCEDURE LoadImageAnim(FileName: ARRAY OF CHAR; VAR Frames: PINTEGER): TImage;
+PROCEDURE LoadImageAnimFromMemory(FileType: ARRAY OF CHAR; FileData: ADDRESS; DataSize: INTEGER;
+                                  VAR Frames: PINTEGER): TImage;
+PROCEDURE LoadImageFromMemory(FileType: ARRAY OF CHAR; FileData: ADDRESS;
+                              DataSize: INTEGER): TImage;
+PROCEDURE LoadImageFromTexture(Texture: TTexture2D): TImage;
+PROCEDURE LoadImageFromScreen(): TImage;
+PROCEDURE IsImageValid(Image: TImage): BOOLEAN;
+PROCEDURE UnloadImage(Image: TImage);
+PROCEDURE ExportImage(Image: TImage; FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE ExportImageToMemory(Image: TImage; FileType: ARRAY OF CHAR;
+                              VAR FileSize: PINTEGER): ADDRESS;
+PROCEDURE ExportImageAsCode(Image: TImage; FileName: ARRAY OF CHAR): BOOLEAN;
+
+(* image generation procedures *)
+PROCEDURE GenImageColor(Width, Height: INTEGER; Color: TColor): TImage;
+PROCEDURE GenImageGradientLinear(Width, Height, Direction: INTEGER; Start, End: TColor): TImage;
+PROCEDURE GenImageGradientRadial(Width, Height: INTEGER; Density: SHORTREAL;
+                                 Inner, Outer: TColor): TImage;
+PROCEDURE GenImageGradientSquare(Width, Height: INTEGER; Density: SHORTREAL;
+                                 Inner, Outer: TColor): TImage;
+PROCEDURE GenImageChecked(Width, Height, ChecksX, ChecksY: INTEGER; Col1, Col2: TColor): TImage;
+PROCEDURE GenImageWhiteNoise(Width, Height: INTEGER; Factor: SHORTREAL): TImage;
+PROCEDURE GenImagePerlinNoise(Width, Height, OffsetX, OffsetY: INTEGER; Scale: SHORTREAL): TImage;
+PROCEDURE GenImageCellular(Width, Height, TileSize: INTEGER): TImage;
+PROCEDURE GenImageText(Width, Height: INTEGER; Text: ARRAY OF CHAR): TImage;
+
+(* image manipulation procedures *)
+PROCEDURE ImageCopy(Image: TImage): TImage;
+PROCEDURE ImageFromImage(Image: TImage; Rec: TRectangle): TImage;
+PROCEDURE ImageFromChannel(Image: TImage; SelectedChannel: INTEGER): TImage;
+PROCEDURE ImageText(Text: ARRAY OF CHAR; FontSize: INTEGER; Color: TColor): TImage;
+PROCEDURE ImageTextEx(Font: TFont; Text: ARRAY OF CHAR; FontSize, Sacing: SHORTREAL;
+                      Tint: TColor): TImage;
+PROCEDURE ImageFormat(VAR Image: PImage; NewFormat: INTEGER);
+PROCEDURE ImageToPOT(VAR Image: PImage; Fill: TColor);
+PROCEDURE ImageCrop(VAR Image: PImage; Crop: TRectangle);
+PROCEDURE ImageAlphaCrop(VAR Image: PImage; Threshold: TFont);
+PROCEDURE ImageAlphaClear(VAR Image: PImage; Color: TColor; Threshold: TColor);
+PROCEDURE ImageAlphaMask(VAR Image: PImage; AlphaMask: TImage);
+PROCEDURE ImageAlphaPremultiply(VAR Image: PImage);
+PROCEDURE ImageBlurGaussian(VAR Image: PImage; BlurSize: INTEGER);
+PROCEDURE ImageKernelConvolution(VAR Image: PImage; Kernel: PSHORTREAL; KernelSize: INTEGER);
+PROCEDURE ImageResize(VAR Image: PImage; NewWidth, NewHeight: INTEGER);
+PROCEDURE ImageResizeNN(VAR Image: PImage; NewWidth, NewHeight: INTEGER);
+PROCEDURE ImageResizeCanvas(VAR Image: PImage; NewWidth, NewHeight, OffsetX, OffsetY: INTEGER;
+                            Fill: TColor);
+PROCEDURE ImageMipmaps(VAR Image: PImage);
+PROCEDURE ImageDither(VAR Image: PImage; RBpp, GBpp, BBpp, ABpp: INTEGER);
+PROCEDURE ImageFlipVertical(VAR Image: PImage);
+PROCEDURE ImageFlipHorizontal(VAR Image: PImage);
+PROCEDURE ImageRotate(VAR Image: PImage; Degrees: INTEGER);
+PROCEDURE ImageRotateCW(VAR Image: PImage);
+PROCEDURE ImageRotateCCW(VAR Image: PImage);
+PROCEDURE ImageColorTint(VAR Image: PImage; Color: TColor);
+PROCEDURE ImageColorInvert(VAR Image: PImage);
+PROCEDURE ImageColorGrayscale(VAR Image: PImage);
+PROCEDURE ImageColorContrast(VAR Image: PImage; Contrast: SHORTREAL);
+PROCEDURE ImageColorBrightness(VAR Image: PImage; Brightness: INTEGER);
+PROCEDURE ImageColorReplace(VAR Image: PImage; Color, Replace: TColor);
+PROCEDURE LoadImageColors(VAR Image: TImage): PColor;
+PROCEDURE LoadImagePalette(VAR Image: TImage; MaxPaletteSize: INTEGER;
+                           VAR ColorCount: PINTEGER): PColor;
+PROCEDURE UnloadImageColors(VAR Colors: PColor);
+PROCEDURE UnloadImagePalette(VAR Colors: PColor);
+PROCEDURE GetImageAlphaBorder(Image: TImage; Threshold: SHORTREAL): TRectangle;
+PROCEDURE GetImageColor(Image: TImage; X, Y: INTEGER): TColor;
+
+(* image drawing procedures *)
+PROCEDURE ImageClearBackground(VAR Dst: PImage; Color: TColor);
+PROCEDURE ImageDrawPixel(VAR Dst: PImage; PosX, PosY: INTEGER; Color: TColor);
+PROCEDURE ImageDrawPixelV(VAR Dst: PImage; Position: TVector2; Color: TColor);
+PROCEDURE ImageDrawLine(VAR Dst: PImage; StartPosX, StartPosY, EndPosX, EndPosY: INTEGER;
+                        Color: TColor);
+PROCEDURE ImageDrawLineV(VAR Dst: PImage; Start, End: TVector2; Color: TColor);
+PROCEDURE ImageDrawLineEx(VAR Dst: PImage; Start, End: TVector2; Thick: INTEGER; Color: TColor);
+PROCEDURE ImageDrawCircle(VAR Dst: PImage; CenterX, CenterY, Radius: INTEGER; Color: TColor);
+PROCEDURE ImageDrawCircleV(VAR Dst: PImage; Center: TVector2; Radius: INTEGER; Color: TColor);
+PROCEDURE ImageDrawCircleLines(VAR Dst: PImage; CenterX, CenterY, Radius: INTEGER; Color: TColor);
+PROCEDURE ImageDrawCircleLinesV(VAR Dst: PImage; Center: TVector2; Radius: INTEGER; Color: TColor);
+PROCEDURE ImageDrawRectangle(VAR Dst: PImage; PosX, PosY, Width, Height: INTEGER; Color: TColor);
+PROCEDURE ImageDrawRectangleV(VAR Dst: PImage; Position, Size: TVector2; Color: TColor);
+PROCEDURE ImageDrawRectangleRec(VAR Dst: PImage; Rec: TRectangle; Color: TColor);
+PROCEDURE ImageDrawRectangleLines(VAR Dst: PImage; Rec: TRectangle; Thick: INTEGER; Color: TColor);
+PROCEDURE ImageDrawTriangle(VAR Dst: PImage; V1, V2, V3: TVector2; Color: TColor);
+PROCEDURE ImageDrawTriangleEx(VAR Dst: PImage; V1, V2, V3: TVector2; C1, C2, C3: TColor);
+PROCEDURE ImageDrawTriangleLines(VAR Dst: PImage; V1, V2, V3: TVector2; Color: TColor);
+PROCEDURE ImageDrawTriangleFan(VAR Dst: PImage; VAR Points: PVector2; PointCount: INTEGER;
+                               Color: TColor);
+PROCEDURE ImageDrawTriangleStrip(VAR Dst: PImage; VAR Points: PVector2; PointCount: INTEGER;
+                                 Color: TColor);
+PROCEDURE ImageDraw(VAR Dst: PImage; Src: TImage; SrcRec, DstRec: TRectangle; Tint: TColor);
+PROCEDURE ImageDrawText(VAR Dst: PImage; Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER;
+                        Color: TColor);
+PROCEDURE ImageDrawTextEx(VAR Dst: PImage; Font: TFont; Text: ARRAY OF CHAR; Position: TVector3;
+                          FontSize, Spacing: SHORTREAL; Tint: TColor);
+
+(* texture loading procedure *)
+PROCEDURE LoadTexture(FileName: ARRAY OF CHAR): TTexture2D;
+PROCEDURE LoadTextureFromImage(Image: TImage): TTexture2D;
+PROCEDURE LoadTextureCubemap(Image: TImage; Layout: INTEGER): TTextureCubemap;
+PROCEDURE LoadRenderTexture(Width, Height: INTEGER): TRenderTexture2D;
+PROCEDURE IsTextureValid(Texture: TTexture2D): BOOLEAN;
+PROCEDURE UnloadTexture(Texture: TTexture2D);
+PROCEDURE IsRenderTextureValid(Target: TRenderTexture2D): BOOLEAN;
+PROCEDURE UnloadRenderTexture(Target: TRenderTexture2D);
+PROCEDURE UpdateTexture(Texture: TTexture2D; Pixels: ADDRESS);
+PROCEDURE UpdateTextureRec(Texture: TTexture2D; Rec: TRectangle; Pixels: ADDRESS);
+
+(* texture configuration procedure *)
+PROCEDURE GenTextureMipmaps(VAR Texture: PTexture2D);
+PROCEDURE SetTextureFilter(Texture: TTexture2D; Filter: INTEGER);
+PROCEDURE SetTextureWrap(Texture: TTexture2D; Wrap: INTEGER);
+
+(* texture drawing procedures *)
+PROCEDURE DrawTexture(Texture: TTexture2D; PosX, PosY: INTEGER; Tint: TColor);
+PROCEDURE DrawTextureV(Texture: TTexture2D; Position: TVector2; Tint: TColor);
+PROCEDURE DrawTextureEx(Texture: TTexture2D; Position: TVector2; Rotation, Scale: SHORTREAL;
+                        Tint: TColor);
+PROCEDURE DrawTextureRec(Texture: TTexture2D; Source: TRectangle; Position: TVector2; Tint: TColor);
+PROCEDURE DrawTexturePro(Texture: TTexture2D; Source, Dest: TRectangle; Origin: TVector2;
+                         Rotation: SHORTREAL; Tint: TColor);
+PROCEDURE DrawTextureNPatch(Texture: TTexture2D; NPatchInfo: TNPatchInfo; Dest: TRectangle;
+                            Origin: TVector2; Rotation: SHORTREAL; Tint: TColor);
+
+(* color/pixel related procedures *)
+PROCEDURE ColorIsEqual(Col1, Col2: TColor): BOOLEAN;
+PROCEDURE Fade(Color: TColor; Alpha: SHORTREAL): TColor;
+PROCEDURE ColorToInt(Color: TColor): INTEGER;
+PROCEDURE ColorNormalize(Color: TColor): TVector4;
+PROCEDURE ColorFromNormalized(Normalized: TVector4): TColor;
+PROCEDURE ColorToHSV(Color: TColor): TVector3;
+PROCEDURE ColorFromHSV(Hue, Saturation, Value: SHORTREAL): TColor;
+PROCEDURE ColorTint(Color, Tint: TColor): TColor;
+PROCEDURE ColorBrightness(Color: TColor; Factor: SHORTREAL): TColor;
+PROCEDURE ColorContrast(Color: TColor; Contrast: SHORTREAL): TColor;
+PROCEDURE ColorAlpha(Color: TColor; Alpha: SHORTREAL): TColor;
+PROCEDURE ColorAlphaBlend(Dst, Src, Tint: TColor): TColor;
+PROCEDURE ColorLerp(Color1, Color2: TColor; Factor: SHORTREAL): TColor;
+PROCEDURE GetColor(HexValue: CARDINAL): TColor;
+PROCEDURE GetPixelColor(VAR SrcPtr: ADDRESS; Format: INTEGER): TColor;
+PROCEDURE SetPixelColor(VAR DstPtr: ADDRESS; Color: TColor; Format: INTEGER);
+PROCEDURE GetPixelDataSize(Width, Height, Format: INTEGER): INTEGER;
+
+(* font loading/unloading procedures *)
+PROCEDURE GetFontDefault(): TFont;
+PROCEDURE LoadFont(FileName: ARRAY OF CHAR): TFont;
+PROCEDURE LoadFontEx(FileName: ARRAY OF CHAR; FontSize: INTEGER; VAR Codepoints: PINTEGER;
+                     CodepointCount: INTEGER): TFont;
+PROCEDURE LoadFontFromImage(Image: TImage; Key: TColor; FirstChar: INTEGER): TFont;
+PROCEDURE LoadFontFromMemory(FileType: ARRAY OF CHAR; FileData: ADDRESS;
+                             DataSize, FontSize: INTEGER; Codepoints: PINTEGER;
+                             CodepointCount: INTEGER): TFont;
+PROCEDURE IsFontValid(Font: TFont): BOOLEAN;
+PROCEDURE LoadFontData(DileData: ADDRESS; DataSize, FontSize: INTEGER; VAR Codepoints: PINTEGER;
+                       CodepointCount, Type: INTEGER): PGlyphInfo;
+PROCEDURE GenImageFontAtlas(Glyphs: PGlyphInfo; VAR GlyphRecs: PRectangle;
+                            GlyphCount, FontSize, Padding, PackMethod: INTEGER): TImage;
+PROCEDURE UnloadFontData(Glyphs: PGlyphInfo; GlyphCount: INTEGER);
+PROCEDURE UnloadFont(Font: TFont);
+PROCEDURE ExportFontAsCode(Font: TFont; FileName: ARRAY OF CHAR): BOOLEAN;
+
+(* text drawing procedure *)
+PROCEDURE DrawFPS(PosX, PosY: INTEGER);
+PROCEDURE DrawText(Text: ARRAY OF CHAR; PosX, PosY, FontSize: INTEGER; Color: TColor);
+PROCEDURE DrawTextEx(Font: TFont; Text: ARRAY OF CHAR; Position: TVector2;
+                     FontSize, Spacing: SHORTREAL; Tint: TColor);
+PROCEDURE DrawTextPro(Font: TFont; Text: ARRAY OF CHAR; Position, Origin: TVector2;
+                      Rotation, FontSize, Spacing: SHORTREAL; Tint: TColor);
+PROCEDURE DrawTextCodepoint(Font: TFont; Codepoint: INTEGER; Position: TVector3;
+                            FontSize: SHORTREAL; Tint: TColor);
+PROCEDURE DrawTextCodepoints(Font: TFont; Codepoints: PINTEGER; CodepointCount: INTEGER;
+                             Position: TVector2; FontSize, Spacing: SHORTREAL; Tint: TColor);
+
+(* text font info procedures *)
+PROCEDURE SetTextLineSpacing(Spacing: INTEGER);
+PROCEDURE MeasureText(Text: ARRAY OF CHAR; FontSize: INTEGER): INTEGER;
+PROCEDURE MeasureTextEx(Font: TFont; Text: ARRAY OF CHAR; FontSize, Spacing: SHORTREAL): TVector2;
+PROCEDURE GetGlyphIndex(Font: TFont; Codepoint: INTEGER): INTEGER;
+PROCEDURE GetGlyphInfo(Font: TFont; Codepoint: INTEGER): TGlyphInfo;
+PROCEDURE GetGlyphAtlasRec(Font: TFont; Codepoint: INTEGER): TRectangle;
+
+(* text codepoints management procedures *)
+PROCEDURE LoadUTF8(Codepoints: PINTEGER; Length: INTEGER): ADDRESS;
+PROCEDURE UnloadUTF8(VAR Text: ARRAY OF CHAR);
+PROCEDURE LoadCodepoints(Text: ARRAY OF CHAR; VAR Count: PINTEGER): PINTEGER;
+PROCEDURE UnloadCodepoints(Codepoints: PINTEGER);
+PROCEDURE GetCodepointCount(Text: ARRAY OF CHAR): INTEGER;
+PROCEDURE GetCodepoint(Text: ARRAY OF CHAR; VAR CodepointSize: PINTEGER): INTEGER;
+PROCEDURE GetCodepointNext(Text: ARRAY OF CHAR; VAR CodepointSize: PINTEGER): INTEGER;
+PROCEDURE GetCodepointPrevious(Text: ARRAY OF CHAR; VAR CodepointSize: PINTEGER): INTEGER;
+PROCEDURE CodepointToUTF8(Codepoint: INTEGER; VAR Utf8Size: PINTEGER): ADDRESS;
+
+(* text strings management procedure *)
+PROCEDURE TextCopy(VAR Dst: ARRAY OF CHAR; Src: ARRAY OF CHAR): INTEGER;
+PROCEDURE TextIsEqual(Text1, Text2: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE TextLength(Text: ARRAY OF CHAR): CARDINAL;
+PROCEDURE TextFormat(Text: ARRAY OF CHAR; ...): ADDRESS;
+PROCEDURE TextSubtext(Text: ARRAY OF CHAR; Position, Length: INTEGER): ADDRESS;
+PROCEDURE TextReplace(Text, Replace, By: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextInsert(Text, Insert: ARRAY OF CHAR; Position: INTEGER): ADDRESS;
+PROCEDURE TextJoin(TextList: ADDRESS; Count: INTEGER; Delimiter: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextSplit(Text: ARRAY OF CHAR; Delimiter: CHAR; VAR Count: PINTEGER): ADDRESS;
+PROCEDURE TextAppend(VAR Text: ARRAY OF CHAR; Appen: ARRAY OF CHAR; Position: PINTEGER);
+PROCEDURE TextFindIndex(Text, Find: ARRAY OF CHAR): INTEGER;
+PROCEDURE TextToUpper(Text: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextToLower(Text: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextToPascal(Text: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextToSnake(Text: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextToCamel(Text: ARRAY OF CHAR): ADDRESS;
+PROCEDURE TextToInteger(Text: ARRAY OF CHAR): INTEGER;
+PROCEDURE TextToFloat(Text: ARRAY OF CHAR): SHORTREAL;
+
+(* basic geometric 3d shapes drawing procedures *)
+PROCEDURE DrawLine3D(StartPos, EndPos: TVector3; Color: TColor);
+PROCEDURE DrawPoint3D(Position: TVector3; Color: TColor);
+PROCEDURE DrawCircle3D(Center: TVector3; Radius: SHORTREAL; RotationAxis: TVector3;
+                       RotationAngle: SHORTREAL; Color: TColor);
+PROCEDURE DrawTriangle3D(V1, V2, V3: TVector3; Color: TColor);
+PROCEDURE DrawTriangleStrip3D(Points: PVector3; PointCount: TVector3; Color: TColor);
+PROCEDURE DrawCube(Position: TVector3; Width, Height, Length: SHORTREAL; Color: TColor);
+PROCEDURE DrawCubeV(Position, Size: TVector3; Color: TColor);
+PROCEDURE DrawCubeWires(Position: TVector3; Width, Height, Length: SHORTREAL; Color: TColor);
+PROCEDURE DrawCubeWiresV(Position, Size: TVector3; Color: TColor);
+PROCEDURE DrawSphere(CenterPos: TVector3; Radius: SHORTREAL; Color: TColor);
+PROCEDURE DrawSphereEx(CenterPos: TVector3; Radius: SHORTREAL; Rings, Slices: INTEGER;
+                       Color: TColor);
+PROCEDURE DrawSphereWires(CenterPos: TVector3; Radius: SHORTREAL; Rings, Slices: INTEGER;
+                          Color: TColor);
+PROCEDURE DrawCylinder(Position: TVector3; RadiusTop, RadiusBottom, Height: SHORTREAL;
+                       Slices: INTEGER; Color: TColor);
+PROCEDURE DrawCylinderEx(StartPos, EndPos: TVector3; StartRadius, EndRadius: SHORTREAL;
+                         Sides: INTEGER; Color: TColor);
+PROCEDURE DrawCylinderWires(Position: TVector3; RadiusTop, RadiusBottom, Height: SHORTREAL;
+                            Slices: INTEGER; Color: TColor);
+PROCEDURE DrawCylinderWiresEx(StartPos, EndPos: TVector3; StartRadius, EndRadius: TVector3;
+                              Sides: INTEGER; Color: TColor);
+PROCEDURE DrawCapsule(StartPos, EndPos: TVector3; Radius: SHORTREAL; Slices, Rings: INTEGER;
+                      Color: TColor);
+PROCEDURE DrawCapsuleWires(StartPos, EndPos: TVector3; Radius: SHORTREAL; Slices, Rings: INTEGER;
+                           Color: TColor);
+PROCEDURE DrawPlane(CenterPos: TVector3; Size: TVector2; Color: TColor);
+PROCEDURE DrawRay(Ray: TRay; Color: TColor);
+PROCEDURE DrawGrid(Slices: INTEGER; Spacing: SHORTREAL);
+
+(* model management procedures *)
+PROCEDURE LoadModel(FileName: ARRAY OF CHAR): TModel;
+PROCEDURE LoadModelFromMesh(Mesh: TMesh): TModel;
+PROCEDURE IsModelValid(Model: TModel): BOOLEAN;
+PROCEDURE UnloadModel(Model: TModel): BOOLEAN;
+PROCEDURE GetModelBoundingBox(Model: TModel): TBoundingBox;
+
+(* model drawing procedures *)
+PROCEDURE DrawModel(Model: TModel; Position: TVector3; Scale: SHORTREAL; Tint: TColor);
+PROCEDURE DrawModelEx(Model: TModel; Position, RotationAxis: TVector3; RotationAngle: SHORTREAL;
+                      Scale: TVector3; Tint: TColor);
+PROCEDURE DrawModelWires(Model: TModel; Position: TVector3; Scale: SHORTREAL; Tint: TColor);
+PROCEDURE DrawModelWiresEx(Model: TModel; Position, RotationAxis: TVector3;
+                           RotationAngle: SHORTREAL; Scale: TVector3; Tint: TColor);
+PROCEDURE DrawModelPoints(Model: TModel; Position: TVector3; Scale: SHORTREAL; Tint: TColor);
+PROCEDURE DrawModelPointsEx(Model: TModel; Position, RotationAxis: TVector3;
+                            RotationAngle: SHORTREAL; Scale: TVector3; Tint: TColor);
+PROCEDURE DrawBoundingBox(Box: TBoundingBox; Color: TColor);
+PROCEDURE DrawBillboard(Camera: TCamera; Texture: TTexture2D; Position: TVector3; Scale: SHORTREAL;
+                        Tint: TColor);
+PROCEDURE DrawBillboardRec(Camera: TCamera; Texture: TTexture2D; Source: TRectangle;
+                           Position: TVector3; Size: TVector2; Tint: TColor);
+PROCEDURE DrawBillboardPro(Camera: TCamera; Texture: TTexture2D; Source: TRectangle;
+                           Position, Up, Size, Origin: TVector3; Rotation: SHORTREAL; Tint: TColor);
+
+(* mesh management procedures *)
+PROCEDURE UploadMesh(VAR Mesh: PMesh; Dynamic: BOOLEAN);
+PROCEDURE UpdateMeshBuffer(Mesh: TMesh; Index: INTEGER; Data: ADDRESS; DataSize, Offset: INTEGER);
+PROCEDURE UnloadMesh(Mesh: TMesh);
+PROCEDURE DrawMesh(Mesh: TMesh; Material: TMaterial; Transform: TMatrix);
+PROCEDURE DrawMeshInstanced(Mesh: TMesh; Material: TMaterial; Transforms: PMatrix;
+                            Instances: INTEGER);
+PROCEDURE GetMeshBoundingBox(Mesh: TMesh): TBoundingBox;
+PROCEDURE GenMeshTangents(VAR Mesh: PMesh);
+PROCEDURE ExportMesh(Mesh: TMesh; FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE ExportMeshAsCode(Mesh: TMesh; FileName: ARRAY OF CHAR): BOOLEAN;
+
+(* mesh generation procedures *)
+PROCEDURE GenMeshPoly(Sides: INTEGER; Radius: SHORTREAL): TMesh;
+PROCEDURE GenMeshPlane(Width, Length: SHORTREAL; ResX, ResZ: INTEGER): TMesh;
+PROCEDURE GenMeshCube(Width, Height, Length: SHORTREAL): TMesh;
+PROCEDURE GenMeshSphere(Radius: SHORTREAL; Rings, Slices: INTEGER): TMesh;
+PROCEDURE GenMeshHemiSphere(Radius: SHORTREAL; Rings, Slices: INTEGER): TMesh;
+PROCEDURE GenMeshCylinder(Radius, Height: SHORTREAL; Slices: INTEGER): TMesh;
+PROCEDURE GenMeshCone(Radius, Height: SHORTREAL; Slices: INTEGER): TMesh;
+PROCEDURE GenMeshTorus(Radius, Size: SHORTREAL; RadSeg, Sides: INTEGER): TMesh;
+PROCEDURE GenMeshKnot(Radius, Size: SHORTREAL; RadSeg, Sides: INTEGER): TMesh;
+PROCEDURE GenMeshHeightmap(Heightmap: TImage; Size: TVector3): TMesh;
+PROCEDURE GenMeshCubicmap(Cubicmap: TImage; CubeSize: TVector3): TMesh;
+
+(* material loading/unloading procedures *)
+PROCEDURE LoadMaterials(FileName: ARRAY OF CHAR; VAR MaterialCount: PINTEGER): PMaterial;
+PROCEDURE LoadMaterialDefault(): TMaterial;
+PROCEDURE IsMaterialValid(Material: TMaterial): BOOLEAN;
+PROCEDURE UnloadMaterial(Material: TMaterial);
+PROCEDURE SetMaterialTexture(VAR Material: PMaterial; MapType: INTEGER; Texture: TTexture2D);
+PROCEDURE SetModelMeshMaterial(VAR Model: PModel; MeshId, MaterialId: INTEGER);
+
+(* model animations loading/unloading procedures *)
+PROCEDURE LoadModelAnimations(FileName: ARRAY OF CHAR; VAR AnimCount: PINTEGER): PModelAnimation;
+PROCEDURE UpdateModelAnimation(Model: TModel; Anim: TModelAnimation; Frame: INTEGER);
+PROCEDURE UpdateModelAnimationBones(Model: TModel; Anim: TModelAnimation; Frame: INTEGER);
+PROCEDURE UnloadModelAnimation(Anim: TModelAnimation);
+PROCEDURE UnloadModelAnimations(VAR Animations: PModelAnimation; AnimCount: INTEGER);
+PROCEDURE IsModelAnimationValid(Model: TModel; Anim: TModelAnimation): BOOLEAN;
+
+(* collision detection procedures *)
+PROCEDURE CheckCollisionSpheres(Center1: TVector3; Radius1: SHORTREAL; Center2: TVector3;
+                                Radius2: SHORTREAL): BOOLEAN;
+PROCEDURE CheckCollisionBoxes(Box1, Box2: TBoundingBox): BOOLEAN;
+PROCEDURE CheckCollisionBoxSphere(Box: TBoundingBox; Center: TVector3; Radius: SHORTREAL): BOOLEAN;
+PROCEDURE GetRayCollisionSphere(Ray: TRay; Center: TVector3; Radius: SHORTREAL): TRayCollision;
+PROCEDURE GetRayCollisionBox(Ray: TRay; Box: TBoundingBox): TRayCollision;
+PROCEDURE GetRayCollisionMesh(Ray: TRay; Mesh: TMesh; Transform: TMatrix): TRayCollision;
+PROCEDURE GetRayCollisionTriangle(Ray: TRay; P1, P2, P3: TVector3): TRayCollision;
+PROCEDURE GetRayCollisionQuad(Ray: TRay; P1, P2, P3, P4: TVector3): TRayCollision;
+
+(* audio device management procedures *)
+PROCEDURE InitAudioDevice;
+PROCEDURE CloseAudioDevice;
+PROCEDURE IsAudioDeviceReady(): BOOLEAN;
+PROCEDURE SetMasterVolume(Volume: SHORTREAL);
+PROCEDURE GetMasterVolume(): SHORTREAL;
+
+(* wave/sound loading/unloading procedures *)
+PROCEDURE LoadWave(FileName: ARRAY OF CHAR): TWave;
+PROCEDURE LoadWaveFromMemory(FileType: ARRAY OF CHAR; FileData: ADDRESS; DataSize: INTEGER): TWave;
+PROCEDURE IsWaveValid(Wave: TWave): BOOLEAN;
+PROCEDURE LoadSound(FileName: ARRAY OF CHAR): TSound;
+PROCEDURE LoadSoundFromWave(Wave: TWave): TSound;
+PROCEDURE LoadSoundAlias(Source: TSound): TSound;
+PROCEDURE IsSoundValid(Sound: TSound): BOOLEAN;
+PROCEDURE UpdateSound(Sound: TSound; Data: ADDRESS; SampleCount: INTEGER);
+PROCEDURE UnloadWave(Wave: TWave);
+PROCEDURE UnloadSound(Sound: TSound);
+PROCEDURE UnloadSoundAlias(Alias: TSound);
+PROCEDURE ExportWave(Wave: TWave; FileName: ARRAY OF CHAR): BOOLEAN;
+PROCEDURE ExportWaveAsCode(Wave: TWave; FileName: ARRAY OF CHAR): BOOLEAN;
+
+(* wave/sound management procedures *)
+PROCEDURE PlaySound(Sound: TSound);
+PROCEDURE StopSound(Sound: TSound);
+PROCEDURE PauseSound(Sound: TSound);
+PROCEDURE ResumeSound(Sound: TSound);
+PROCEDURE IsSoundPlaying(Sound: TSound): BOOLEAN;
+PROCEDURE SetSoundVolume(Sound: TSound; Volume: SHORTREAL);
+PROCEDURE SetSoundPitch(Sound: TSound; Pitch: SHORTREAL);
+PROCEDURE SetSoundPan(Sound: TSound; Pan: SHORTREAL);
+PROCEDURE WaveCopy(Wave: TWave): TWave;
+PROCEDURE WaveCrop(VAR Wave: PWave; InitFrame, FinalFrame: INTEGER);
+PROCEDURE WaveFormat(VAR Wave: PWave; SampleRate, SampleSize, Channels: INTEGER);
+PROCEDURE LoadWaveSamples(Wave: TWave): PSHORTREAL;
+PROCEDURE UnloadWaveSamples(VAR Samples: PSHORTREAL);
+
+(* music management procedures *)
+PROCEDURE LoadMusicStream(FileName: ARRAY OF CHAR): TMusic;
+PROCEDURE LoadMusicStreamFromMemory(FileType: ARRAY OF CHAR; Data: ADDRESS;
+                                    DataSize: INTEGER): TMusic;
+PROCEDURE IsMusicValid(Music: TMusic): BOOLEAN;
+PROCEDURE UnloadMusicStream(Music: TMusic);
+PROCEDURE PlayMusicStream(Music: TMusic);
+PROCEDURE IsMusicStreamPlaying(Music: TMusic): BOOLEAN;
+PROCEDURE UpdateMusicStream(Music: TMusic);
+PROCEDURE StopMusicStream(Music: TMusic);
+PROCEDURE PauseMusicStream(Music: TMusic);
+PROCEDURE ResumeMusicStream(Music: TMusic);
+PROCEDURE SeekMusicStream(Music: TMusic; Position: SHORTREAL);
+PROCEDURE SetMusicVolume(Music: TMusic; Volume: SHORTREAL);
+PROCEDURE SetMusicPitch(Music: TMusic; Pitch: SHORTREAL);
+PROCEDURE SetMusicPan(Music: TMusic; Pan: SHORTREAL);
+PROCEDURE GetMusicTimeLength(Music: TMusic): SHORTREAL;
+PROCEDURE GetMusicTimePlayed(Music: TMusic): SHORTREAL;
+
+(* audiostream management procedures *)
+PROCEDURE LoadAudioStream(SampleRate, SampleSize, Channels: CARDINAL): TAudioStream;
+PROCEDURE IsAudioStreamValid(Stream: TAudioStream): BOOLEAN;
+PROCEDURE UnloadAudioStream(Stream: TAudioStream);
+PROCEDURE UpdateAudioStream(Stream: TAudioStream; Data: ADDRESS; FrameCount: INTEGER);
+PROCEDURE IsAudioStreamProcessed(Stream: TAudioStream): BOOLEAN;
+PROCEDURE PlayAudioStream(Stream: TAudioStream);
+PROCEDURE PauseAudioStream(Stream: TAudioStream);
+PROCEDURE ResumeAudioStream(Stream: TAudioStream);
+PROCEDURE IsAudioStreamPlaying(Stream: TAudioStream): BOOLEAN;
+PROCEDURE StopAudioStream(Stream: TAudioStream);
+PROCEDURE SetAudioStreamVolume(Stream: TAudioStream; Volume: SHORTREAL);
+PROCEDURE SetAudioStreamPitch(Stream: TAudioStream; Pitch: SHORTREAL);
+PROCEDURE SetAudioStreamPan(Stream: TAudioStream; Pan: SHORTREAL);
+PROCEDURE SetAudioStreamBufferSizeDefault(Size: INTEGER);
+PROCEDURE SetAudioStreamCallback(Stream: TAudioStream; Callback: TAudioCallback);
+PROCEDURE AttachAudioStreamProcessor(Stream: TAudioStream; Processor: TAudioCallback);
+PROCEDURE DetachAudioStreamProcessor(Stream: TAudioStream; Processor: TAudioCallback);
+PROCEDURE AttachAudioMixedProcessor(Processor: TAudioCallback);
+PROCEDURE DetachAudioMixedProcessor(Processor: TAudioCallback);
+
+END Raylib.

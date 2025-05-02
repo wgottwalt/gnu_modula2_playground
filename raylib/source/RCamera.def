@@ -1,0 +1,58 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" RCamera;
+
+FROM Raylib IMPORT TCamera, TMatrix, TVector3;
+
+EXPORT UNQUALIFIED
+  (* constants *)
+  version_major, version_minor, version_patch, version,
+
+  camera_full_distance_near, camera_full_distance_far,
+
+  camera_move_speed, camera_rotation_speed, camera_pan_speed, camera_mouse_move_sensitivity,
+  camera_orbital_speed,
+  (* procedures *)
+  GetCameraForward, GetCameraUp, GetCameraRight,
+
+  CameraMoveForward, CameraMoveUp, CameraMoveRight, CameraMoveToTarget,
+
+  CameraYaw, CameraPitch, CameraRoll, GetCameraViewMatrix, GetCameraProjectionMatrix;
+
+CONST
+  (* RCamera version *)
+  version_major = 5;
+  version_minor = 5;
+  version_patch = 0;
+  version = "5.5";
+
+  (* cull distances *)
+  camera_full_distance_near = 0.01;
+  camera_full_distance_far = 1000.0;
+
+  (* camera speed *)
+  camera_move_speed = 5.4;
+  camera_rotation_speed = 0.03;
+  camera_pan_speed = 0.2;
+  camera_mouse_move_sensitivity = 0.0003;
+  camera_orbital_speed = 0.5;
+
+(* camera getter procedures *)
+PROCEDURE GetCameraForward(VAR Camera: TCamera): TVector3;
+PROCEDURE GetCameraUp(VAR Camera: TCamera): TVector3;
+PROCEDURE GetCameraRight(VAR Camera: TCamera): TVector3;
+
+(* camera movement procedures *)
+PROCEDURE CameraMoveForward(VAR Camera: TCamera; Distance: SHORTREAL; MoveInWorldPlane: BOOLEAN);
+PROCEDURE CameraMoveUp(VAR Camera: TCamera; Distance: SHORTREAL);
+PROCEDURE CameraMoveRight(VAR Camera: TCamera; Distance: SHORTREAL; MoveInWorldPlane: BOOLEAN);
+PROCEDURE CameraMoveToTarget(VAR Camera: TCamera; Delta: SHORTREAL);
+
+(* camera rotation procedures *)
+PROCEDURE CameraYaw(VAR Camera: TCamera; Angle: SHORTREAL; RotateAroundTarget: BOOLEAN);
+PROCEDURE CameraPitch(VAR Camera: TCamera; Angle: SHORTREAL; LockView, RotateAroundTarget,
+                      RotateUp: BOOLEAN);
+PROCEDURE CameraRoll(VAR Camera: TCamera; Angle: SHORTREAL);
+PROCEDURE GetCameraViewMatrix(VAR Camera: TCamera): TMatrix;
+PROCEDURE GetCameraProjectionMatrix(VAR Camera: TCamera; Aspect: SHORTREAL): TMatrix;
+
+END RCamera.

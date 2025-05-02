@@ -1,0 +1,306 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" Rlgl;
+
+FROM SYSTEM IMPORT ADDRESS, BYTE;
+FROM Raylib IMPORT PMatrix, PINTEGER, PSHORTREAL, TMatrix;
+
+EXPORT UNQUALIFIED
+  (* types *)
+  PBYTE, PCARDINAL,
+
+  TrlVertexBuffer, PrlVertexBuffer, TrlDrawCall, PrlDrawCall, TrlRenderBatch, PrlRenderBatch,
+  (* constants *)
+  version_major, version_minor, version_patch, version,
+  (* procedures *)
+  rlMatrixMode, rlPushMatrix, rlPopMatrix, rlLoadIdentity, rlTranslatef, rlRotatef, rlScalef,
+  rlMultMatrixf, rlFrustum, rlOrtho, rlViewport, rlSetClipPlanes, rlGetCullDistanceNear,
+  rlGetCullDistanceFar,
+
+  rlBegin, rlEnd, rlVertex2i, rlVertex2f, rlVertex3f, rlTexCoord2f, rlNormal3f, rlColor4ub,
+  rlColor3f, rlColor4f,
+
+  rlEnableVertexArray, rlDisableVertexArray, rlEnableVertexBuffer, rlDisableVertexBuffer,
+  rlEnableVertexBufferElement, rlDisableVertexBufferElement, rlEnableVertexAttribute,
+  rlDisableVertexAttribute, rlEnableStatePointer, rlDisableStatePointer,
+
+  rlActiveTextureSlot, rlEnableTexture, rlDisableTexture, rlEnableTextureCubemap,
+  rlDisableTextureCubemap, rlTextureParameters, rlCubemapParameters,
+
+  rlEnableShader, rlDisableShader,
+
+  rlEnableFramebuffer, rlDisableFramebuffer, rlGetActiveFramebuffer, rlActiveDrawBuffers,
+  rlBlitFramebuffer, rlBindFramebuffer,
+
+  rlEnableColorBlend, rlDisableColorBlend, rlEnableDepthTest, rlDisableDepthTest, rlEnableDepthMask,
+  rlDisableDepthMask, rlEnableBackfaceCulling, rlDisableBackfaceCulling, rlColorMask, rlSetCullFace,
+  rlEnableScissorTest, rlDisableScissorTest, rlScissor, rlEnableWireMode, rlEnablePointMode,
+  rlDisableWireMode, rlSetLineWidth, rlGetLineWidth, rlEnableSmoothLines, rlDisableSmoothLines,
+  rlEnableStereoRender, rlDisableStereoRender, rlIsStereoRenderEnabled, rlClearColor,
+  rlClearScreenBuffers, rlCheckErrors, rlSetBlendMode, rlSetBlendFactors, rlSetBlendFactorsSeparate,
+
+  rlglInit, rlglClose, rlLoadExtensions, rlGetVersion, rlSetFramebufferWidth, rlGetFramebufferWidth,
+  rlSetFramebufferHeight, rlGetFramebufferHeight, rlGetTextureIdDefault, rlGetShaderIdDefault,
+  rlGetShaderLocsDefault,
+
+  rlLoadRenderBatch, rlUnloadRenderBatch, rlDrawRenderBatch, rlSetRenderBatchActive,
+  rlDrawRenderBatchActive, rlCheckRenderBatchLimit, rlSetTexture,
+
+  rlLoadVertexArray, rlLoadVertexBuffer, rlLoadVertexBufferElement, rlUpdateVertexBuffer,
+  rlUpdateVertexBufferElements, rlUnloadVertexArray, rlUnloadVertexBuffer, rlSetVertexAttribute,
+  rlSetVertexAttributeDivisor, rlSetVertexAttributeDefault, rlDrawVertexArray,
+  rlDrawVertexArrayElements, rlDrawVertexArrayInstanced, rlDrawVertexArrayElementsInstanced,
+
+  rlLoadFramebuffer, rlFramebufferAttach, rlFramebufferComplete, rlUnloadFramebuffer,
+
+  rlLoadShaderCode, rlCompileShader, rlLoadShaderProgram, rlUnloadShaderProgram,
+  rlGetLocationUniform, rlGetLocationAttrib, rlSetUniform, rlSetUniformMatrix, rlSetUniformMatrices,
+  rlSetUniformSampler, rlSetShader,
+
+  rlLoadComputeShaderProgram, rlComputeShaderDispatch,
+
+  rlLoadShaderBuffer, rlUnloadShaderBuffer, rlUpdateShaderBuffer, rlBindShaderBuffer,
+  rlReadShaderBuffer, rlCopyShaderBuffer, rlGetShaderBufferSize,
+
+  rlBindImageTexture,
+
+  rlGetMatrixModelview, rlGetMatrixProjection, rlGetMatrixTransform, rlGetMatrixProjectionStereo,
+  rlGetMatrixViewOffsetStereo, rlSetMatrixProjection, rlSetMatrixModelview,
+  rlSetMatrixProjectionStereo, rlSetMatrixViewOffsetStereo,
+
+  rlLoadDrawCube, rlLoadDrawQuad;
+
+TYPE
+  PBYTE = POINTER TO BYTE;
+  PCARDINAL = POINTER TO CARDINAL;
+
+  TrlVertexBuffer = RECORD
+    ElementCount: INTEGER;
+    Vertices, Texcoords, Normals: PSHORTREAL;
+    Colors: PBYTE;
+    Indicies: ADDRESS; (* PSHORTCARD or PCARDINAL *)
+    VaoId: CARDINAL;
+    VboId: ARRAY[0..4] OF CARDINAL;
+  END;
+  PrlVertexBuffer = POINTER TO TrlVertexBuffer;
+
+  TrlDrawCall = RECORD
+    Mode, VertexCount, VertexAlignment: INTEGER;
+    TextureId: CARDINAL;
+  END;
+  PrlDrawCall = POINTER TO TrlDrawCall;
+
+  TrlRenderBatch = RECORD
+    BufferCount, CurrentBuffer: INTEGER;
+    VertexBuffer: PrlVertexBuffer;
+    Draws: PrlDrawCall;
+    DrawCounter: INTEGER;
+    CurrentDepth: SHORTREAL;
+  END;
+  PrlRenderBatch = POINTER TO TrlRenderBatch;
+
+CONST
+  (* Rlgl version *)
+  version_major = 5;
+  version_minor = 0;
+  version_patch = 0;
+  version = "5.0";
+
+(* matrix operation procedures *)
+PROCEDURE rlMatrixMode(Mode: INTEGER);
+PROCEDURE rlPushMatrix;
+PROCEDURE rlPopMatrix;
+PROCEDURE rlLoadIdentity;
+PROCEDURE rlTranslatef(X, Y, Z: SHORTREAL);
+PROCEDURE rlRotatef(Angle, X, Y, Z: SHORTREAL);
+PROCEDURE rlScalef(X, Y, Z: SHORTREAL);
+PROCEDURE rlMultMatrixf(MatF: PSHORTREAL);
+PROCEDURE rlFrustum(Left, Right, Bottom, Top, ZNear, ZFar: REAL);
+PROCEDURE rlOrtho(Left, Right, Bottom, Top, ZNear, ZFar: REAL);
+PROCEDURE rlViewport(X, Y, Width, Height: INTEGER);
+PROCEDURE rlSetClipPlanes(NearPlane, FarPlane: REAL);
+PROCEDURE rlGetCullDistanceNear(): REAL;
+PROCEDURE rlGetCullDistanceFar(): REAL;
+
+(* vertex level operation procedures *)
+PROCEDURE rlBegin(Mode: INTEGER);
+PROCEDURE rlEnd;
+PROCEDURE rlVertex2i(X, Y: INTEGER);
+PROCEDURE rlVertex2f(X, Y: SHORTREAL);
+PROCEDURE rlVertex3f(X, Y, Z: SHORTREAL);
+PROCEDURE rlTexCoord2f(X, Y: SHORTREAL);
+PROCEDURE rlNormal3f(X, Y, Z: SHORTREAL);
+PROCEDURE rlColor4ub(R, G, B, A: BYTE);
+PROCEDURE rlColor3f(X, Y, Z: SHORTREAL);
+PROCEDURE rlColor4f(X, Y, Z, W: SHORTREAL);
+
+(* vertex buffer state procedures *)
+PROCEDURE rlEnableVertexArray(VaoId: CARDINAL): BOOLEAN;
+PROCEDURE rlDisableVertexArray;
+PROCEDURE rlEnableVertexBuffer(Id: CARDINAL);
+PROCEDURE rlDisableVertexBuffer;
+PROCEDURE rlEnableVertexBufferElement(Id: CARDINAL);
+PROCEDURE rlDisableVertexBufferElement;
+PROCEDURE rlEnableVertexAttribute(Index: CARDINAL);
+PROCEDURE rlDisableVertexAttribute(Index: CARDINAL);
+PROCEDURE rlEnableStatePointer(VertexAttribType: INTEGER; VAR Buffer: ADDRESS);
+PROCEDURE rlDisableStatePointer(VertexAttribType: INTEGER);
+
+(* texture state procedures *)
+PROCEDURE rlActiveTextureSlot(Slot: INTEGER);
+PROCEDURE rlEnableTexture(Id: CARDINAL);
+PROCEDURE rlDisableTexture;
+PROCEDURE rlEnableTextureCubemap(Id: CARDINAL);
+PROCEDURE rlDisableTextureCubemap;
+PROCEDURE rlTextureParameters(Id: CARDINAL; Param, Value: INTEGER);
+PROCEDURE rlCubemapParameters(Id: CARDINAL; Param, Value: INTEGER);
+
+(* shader state procedures *)
+PROCEDURE rlEnableShader(Id: CARDINAL);
+PROCEDURE rlDisableShader;
+
+(* framebuffer state procedures *)
+PROCEDURE rlEnableFramebuffer(Id: CARDINAL);
+PROCEDURE rlDisableFramebuffer;
+PROCEDURE rlGetActiveFramebuffer(): CARDINAL;
+PROCEDURE rlActiveDrawBuffers(Count: INTEGER);
+PROCEDURE rlBlitFramebuffer(SrcX, SrcY, SrcWidth, SrcHeight, DstX, DstY, DstWidth,
+                            DstHeight, BufferMask: INTEGER);
+PROCEDURE rlBindFramebuffer(Target, Framebuffer: CARDINAL);
+
+(* general render state procedures *)
+PROCEDURE rlEnableColorBlend;
+PROCEDURE rlDisableColorBlend;
+PROCEDURE rlEnableDepthTest;
+PROCEDURE rlDisableDepthTest;
+PROCEDURE rlEnableDepthMask;
+PROCEDURE rlDisableDepthMask;
+PROCEDURE rlEnableBackfaceCulling;
+PROCEDURE rlDisableBackfaceCulling;
+PROCEDURE rlColorMask(R, G, B, A: BOOLEAN);
+PROCEDURE rlSetCullFace(Mode: INTEGER);
+PROCEDURE rlEnableScissorTest;
+PROCEDURE rlDisableScissorTest;
+PROCEDURE rlScissor(X, Y, Width, Height: INTEGER);
+PROCEDURE rlEnableWireMode;
+PROCEDURE rlEnablePointMode;
+PROCEDURE rlDisableWireMode;
+PROCEDURE rlSetLineWidth(Width: SHORTREAL);
+PROCEDURE rlGetLineWidth(): SHORTREAL;
+PROCEDURE rlEnableSmoothLines;
+PROCEDURE rlDisableSmoothLines;
+PROCEDURE rlEnableStereoRender;
+PROCEDURE rlDisableStereoRender;
+PROCEDURE rlIsStereoRenderEnabled(): BOOLEAN;
+PROCEDURE rlClearColor(R, G, B, A: BYTE);
+PROCEDURE rlClearScreenBuffers;
+PROCEDURE rlCheckErrors;
+PROCEDURE rlSetBlendMode(Mode: INTEGER);
+PROCEDURE rlSetBlendFactors(GlSrcFactor, GlDstFactor, GlEquation: INTEGER);
+PROCEDURE rlSetBlendFactorsSeparate(GlSrcRGB, GlDstRGB, GlSrcAlpha, GlDstAlpha, GlEqRGB,
+                                    GlEqAlpha: INTEGER);
+
+(* rlgl initialization procedures *)
+PROCEDURE rlglInit(Width, Height: INTEGER);
+PROCEDURE rlglClose;
+PROCEDURE rlLoadExtensions(VAR Loader: ADDRESS);
+PROCEDURE rlGetVersion(): INTEGER;
+PROCEDURE rlSetFramebufferWidth(Width: INTEGER);
+PROCEDURE rlGetFramebufferWidth(): INTEGER;
+PROCEDURE rlSetFramebufferHeight(Height: INTEGER);
+PROCEDURE rlGetFramebufferHeight(): INTEGER;
+PROCEDURE rlGetTextureIdDefault(): CARDINAL;
+PROCEDURE rlGetShaderIdDefault(): CARDINAL;
+PROCEDURE rlGetShaderLocsDefault(): PINTEGER;
+
+(* render batch management procedures *)
+PROCEDURE rlLoadRenderBatch(NumBuffers, BufferElements: INTEGER): TrlRenderBatch;
+PROCEDURE rlUnloadRenderBatch(Batch: TrlRenderBatch);
+PROCEDURE rlDrawRenderBatch(VAR Batch: PrlRenderBatch);
+PROCEDURE rlSetRenderBatchActive(VAR Batch: PrlRenderBatch);
+PROCEDURE rlDrawRenderBatchActive;
+PROCEDURE rlCheckRenderBatchLimit(VCount: INTEGER): BOOLEAN;
+PROCEDURE rlSetTexture(Id: CARDINAL);
+
+(* vertex buffers management procedures *)
+PROCEDURE rlLoadVertexArray(): CARDINAL;
+PROCEDURE rlLoadVertexBuffer(Buffer: ADDRESS; Size: INTEGER; Dynamic: BOOLEAN): CARDINAL;
+PROCEDURE rlLoadVertexBufferElement(Buffer: ADDRESS; Size: INTEGER; Dynamic: BOOLEAN): CARDINAL;
+PROCEDURE rlUpdateVertexBuffer(BufferId: CARDINAL; Data: ADDRESS; DataSize, Offset: INTEGER);
+PROCEDURE rlUpdateVertexBufferElements(Id: CARDINAL; Data: ADDRESS; DataSize, Offset: INTEGER);
+PROCEDURE rlUnloadVertexArray(VaoId: CARDINAL);
+PROCEDURE rlUnloadVertexBuffer(VboId: CARDINAL);
+PROCEDURE rlSetVertexAttribute(Index: CARDINAL; CompSize, Type: INTEGER; Normalized: BOOLEAN;
+                               Stride, Offset: INTEGER);
+PROCEDURE rlSetVertexAttributeDivisor(Index: CARDINAL; Divisor: INTEGER);
+PROCEDURE rlSetVertexAttributeDefault(LocIndex: INTEGER; Value: ADDRESS;
+                                      AttribType, Count: INTEGER);
+PROCEDURE rlDrawVertexArray(Offset, Count: INTEGER);
+PROCEDURE rlDrawVertexArrayElements(Offset, Count: INTEGER; Buffer: ADDRESS);
+PROCEDURE rlDrawVertexArrayInstanced(Offset, Count, Instances: INTEGER);
+PROCEDURE rlDrawVertexArrayElementsInstanced(Offset, Count: INTEGER; Buffer: ADDRESS;
+                                             Instances: INTEGER);
+
+(* texture management procedures *)
+PROCEDURE rlLoadTexture(Data: ADDRESS; Width, Height, Format, MipmapCount: INTEGER): CARDINAL;
+PROCEDURE rlLoadTextureDepth(Width, Height: INTEGER; UseRenderBuffer: BOOLEAN): CARDINAL;
+PROCEDURE rlLoadTextureCubemap(Data: ADDRESS; Size, Format, MipmapCount: INTEGER): CARDINAL;
+PROCEDURE rlUpdateTexture(Id: CARDINAL; OffsetX, OffsetY, Width, Height, Format: INTEGER;
+                          Data: ADDRESS);
+PROCEDURE rlGetGlTextureFormats(Format: INTEGER; GlInternalFormat, GlFormat, GlType: PCARDINAL);
+PROCEDURE rlGetPixelFormatName(Format: CARDINAL): ADDRESS;
+PROCEDURE rlUnloadTexture(Id: CARDINAL);
+PROCEDURE rlGenTextureMipmaps(Id: CARDINAL; Width, Height, Format: INTEGER; VAR Mipmaps: PINTEGER);
+PROCEDURE rlReadTexturePixels(Id: CARDINAL; Width, Height, Format: INTEGER): ADDRESS;
+PROCEDURE rlReadScreenPixels(Width, Height: INTEGER): ADDRESS;
+
+(* framebuffer management procedures *)
+PROCEDURE rlLoadFramebuffer(): CARDINAL;
+PROCEDURE rlFramebufferAttach(FboId, TexId: CARDINAL; AtttachType, TexType, MipLevel: INTEGER);
+PROCEDURE rlFramebufferComplete(Id: CARDINAL): BOOLEAN;
+PROCEDURE rlUnloadFramebuffer(Id: CARDINAL);
+
+(* shader management procedures *)
+PROCEDURE rlLoadShaderCode(VsCode, FsCode: ARRAY OF CHAR): CARDINAL;
+PROCEDURE rlCompileShader(ShaderCode: ARRAY OF CHAR; Type: INTEGER): CARDINAL;
+PROCEDURE rlLoadShaderProgram(VShaderid, FShaderId: CARDINAL): CARDINAL;
+PROCEDURE rlUnloadShaderProgram(Id: CARDINAL);
+PROCEDURE rlGetLocationUniform(ShaderId: CARDINAL; UniformName: ARRAY OF CHAR): INTEGER;
+PROCEDURE rlGetLocationAttrib(ShaderId: CARDINAL; AttribName: ARRAY OF CHAR): INTEGER;
+PROCEDURE rlSetUniform(LocIndex: INTEGER; Value: ADDRESS; UniformType, Count: INTEGER);
+PROCEDURE rlSetUniformMatrix(LocIndex: INTEGER; Mat: TMatrix);
+PROCEDURE rlSetUniformMatrices(LocIndex: INTEGER; Mat: PMatrix; Count: INTEGER);
+PROCEDURE rlSetUniformSampler(LocIndex: INTEGER; TextureId: CARDINAL);
+PROCEDURE rlSetShader(Id: CARDINAL; VAR Locs: PINTEGER);
+
+(* compute shader management procedures *)
+PROCEDURE rlLoadComputeShaderProgram(ShaderId: CARDINAL): CARDINAL;
+PROCEDURE rlComputeShaderDispatch(GroupX, GroupY, GroupZ: CARDINAL);
+
+(* shader buffer storage object management procedures *)
+PROCEDURE rlLoadShaderBuffer(Size: CARDINAL; Data: ADDRESS; UsageHint: INTEGER): CARDINAL;
+PROCEDURE rlUnloadShaderBuffer(Ssboid: CARDINAL);
+PROCEDURE rlUpdateShaderBuffer(Id: CARDINAL; Data: ADDRESS; DataSize, Offset: CARDINAL);
+PROCEDURE rlBindShaderBuffer(Id, Index: CARDINAL);
+PROCEDURE rlReadShaderBuffer(Id: CARDINAL; VAR Dest: ADDRESS; Count, Offset: CARDINAL);
+PROCEDURE rlCopyShaderBuffer(DestId, SrcId, DestOffset, SrcOffset, Count: CARDINAL);
+PROCEDURE rlGetShaderBufferSize(Id: CARDINAL): CARDINAL;
+
+(* buffer management procedures *)
+PROCEDURE rlBindImageTexture(Id, Index: CARDINAL; Format: INTEGER; Readonly: BOOLEAN);
+
+(* matrix state management procedures *)
+PROCEDURE rlGetMatrixModelview(): TMatrix;
+PROCEDURE rlGetMatrixProjection(): TMatrix;
+PROCEDURE rlGetMatrixTransform(): TMatrix;
+PROCEDURE rlGetMatrixProjectionStereo(Eye: INTEGER): TMatrix;
+PROCEDURE rlGetMatrixViewOffsetStereo(Eye: INTEGER): TMatrix;
+PROCEDURE rlSetMatrixProjection(Proj: TMatrix);
+PROCEDURE rlSetMatrixModelview(View: TMatrix);
+PROCEDURE rlSetMatrixProjectionStereo(Right, Left: TMatrix);
+PROCEDURE rlSetMatrixViewOffsetStereo(Right, Left: TMatrix);
+
+(* quick and dirty cube/quad buffers procedures *)
+PROCEDURE rlLoadDrawCube();
+PROCEDURE rlLoadDrawQuad();
+
+END Rlgl.
