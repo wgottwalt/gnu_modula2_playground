@@ -73,17 +73,16 @@ every coroutine or you run into very hard to understand runtime errors.
 
 -- raylib --
 
-Just some example code about how to use the really nice GNU Modula-2 clib
-interfacing mechanics to play around with the famous raylib. For now the Raylib
-is incomplete and in the most cases will only provide what is needed to get the
-examples running. But I plan to complete this, because I really enjoy how well
-that works. (Just to mention it: I also work on Xlib, libpci and SDL2 wrapper
-code, but they are far more complex.) I will provide a complete Raylib wrapper,
-it is just a matter of time. Some parts won't be a wrapper but native Modula-2
-implementations, because some parts of Raylib are just macros and these are not
-possible in Modula-2. And there are all the basic vector math stuff where it
-does not make much sense to "wrap". Doing that natively in Modula-2 may also
-yield a slightly better performance.
+This is a wrapper around all components of Raylib 5.5, Raygui is missing. It
+can be considered to be complete. Though, there may be some small bugs
+especially about wrapping c-based pointers. Most problematic are functions
+which return c-strings. That can not really mapped to Modula-2, because Modula-2
+has a somewhat stricter type system. And Raylib does something really odd about
+returning c-strings, they all point to internal buffers. You can cast them, and
+this is what I do in the examples, but this is actually safe in threading or
+async scenarios. The Raylib wrapper provides constants about the sizes of these
+internal buffer which can be used for casting. Example 005 and 006 demonstrate
+that.
 
 -- libpciaccess --
 
