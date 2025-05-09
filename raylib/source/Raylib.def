@@ -550,7 +550,7 @@ TYPE
 
   TFilePathList = RECORD
     Capacity, Count: CARDINAL;
-    Paths: POINTER TO CHAR;
+    Paths: ADDRESS; (* c-array of c-strings *)
   END;
   PFilePathList = POINTER TO TFilePathList;
 
@@ -562,7 +562,7 @@ TYPE
 
   TAutomationEventList = RECORD
     Capacity, Count: CARDINAL;
-    Events: PAutomationEvent;
+    Events: ADDRESS; (* c-array of TAutomationEvent *)
   END;
   PAutomationEventList = POINTER TO TAutomationEventList;
 
@@ -1141,7 +1141,7 @@ PROCEDURE ComputeSHA1(VAR Data: ADDRESS; DataSize: INTEGER): PSha1Sum;
 PROCEDURE LoadAutomationEventList(FileName: ARRAY OF CHAR): TAutomationEventList;
 PROCEDURE UnloadAutomationEventList(List: TAutomationEventList);
 PROCEDURE ExportAutomationEventList(List: TAutomationEventList; FileName: ARRAY OF CHAR): BOOLEAN;
-PROCEDURE SetAutomationEventList(VAR List: PAutomationEventList);
+PROCEDURE SetAutomationEventList(VAR List: TAutomationEventList);
 PROCEDURE SetAutomationEventBaseFrame(Frame: INTEGER);
 PROCEDURE StartAutomationEventRecording;
 PROCEDURE StopAutomationEventRecording;
