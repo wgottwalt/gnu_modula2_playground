@@ -1,8 +1,17 @@
 M2C = $(CROSS_COMPILE)gm2
 
-BINARIES = 000_basic_window 001_title_screen 002_2d_camera 003_2d_camera_mouse_zoom \
-           004_2d_camera_platformer 005_2d_camera_split_screen 006_3d_camera_first_person \
-           007_initialize_3d_camera_free 008_initialize_3d_camera_mode 009_3d_camera_split_screen
+BINARIES = 000_basic_window \
+           001_title_screen \
+           002_2d_camera \
+           003_2d_camera_mouse_zoom \
+           004_2d_camera_platformer \
+           005_2d_camera_split_screen \
+           006_3d_camera_first_person \
+           007_initialize_3d_camera_free \
+           008_initialize_3d_camera_mode \
+           009_3d_camera_split_screen \
+           010_picking_in_3d_mode \
+           011_automation_events
 SRC_DIR = source
 OBJ_DIR = .obj
 
