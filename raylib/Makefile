@@ -11,7 +11,9 @@ BINARIES = 000_basic_window \
            008_initialize_3d_camera_mode \
            009_3d_camera_split_screen \
            010_picking_in_3d_mode \
-           011_automation_events
+           011_automation_events \
+           012_custom_frame_control
+
 SRC_DIR = source
 OBJ_DIR = .obj
 
