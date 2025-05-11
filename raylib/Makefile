@@ -13,7 +13,8 @@ BINARIES = 000_basic_window \
            009_3d_camera_split_screen \
            010_picking_in_3d_mode \
            011_automation_events \
-           012_custom_frame_control
+           012_custom_frame_control \
+           013_custom_logging
 
 SRC_DIR = source
 OBJ_DIR = .obj

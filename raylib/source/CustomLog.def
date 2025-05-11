@@ -1,0 +1,10 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE FOR "C" CustomLog;
+
+EXPORT UNQUALIFIED
+  (* procedures *)
+  CustomLog;
+
+PROCEDURE CustomLog(MsgType: INTEGER; Text: ARRAY OF CHAR; ...);
+
+END CustomLog.
