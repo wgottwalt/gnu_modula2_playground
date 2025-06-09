@@ -34,7 +34,7 @@ EXPORT UNQUALIFIED
 
   TMd5Sum, PMd5Sum, TSha1Sum, PSha1Sum,
   (* constants *)
-  version_major, version_minor, version_patch, version,
+  version_major, version_minor, version_patch, version, commit,
 
   max_filepath_capacity, max_filepath_length, max_text_buffer_length, max_text_split_count,
 
@@ -112,7 +112,7 @@ EXPORT UNQUALIFIED
   pixelformat_compressed_pvrt_rgb, pixelformat_compressed_pvrt_rgba,
   pixelformat_compressed_astc_4x4_rgba, pixelformat_compressed_astc_8x8_rgba,
 
-  texture_filter_point, texture_filter_bilinear, texture_filter_trilinier,
+  texture_filter_point, texture_filter_bilinear, texture_filter_triliniear,
   texture_filter_anisotropic_4x, texture_filter_anisotropic_8x, texture_filter_anisotropic_16x,
 
   texture_wrap_repeat, texture_wrap_clamp, texture_wrap_mirror_repeat, texture_wrap_mirror_clamp,
@@ -584,6 +584,7 @@ CONST
   version_minor = 5;
   version_patch = 0;
   version = "5.5";
+  commit = "14d3bbbb8629cc6d1a837b7b22ffbdff1b5f9e1d";
 
   (* Raylib internal buffers *)
   max_filepath_capacity = 8192;
@@ -891,7 +892,7 @@ CONST
   (* texture parameters filter mode *)
   texture_filter_point = 0;
   texture_filter_bilinear = 1;
-  texture_filter_trilinier = 2;
+  texture_filter_triliniear = 2;
   texture_filter_anisotropic_4x = 3;
   texture_filter_anisotropic_8x = 4;
   texture_filter_anisotropic_16x = 5;
