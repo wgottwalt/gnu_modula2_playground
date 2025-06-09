@@ -15,8 +15,9 @@ reasons for this.
    cxxlib, gcclib and the libs you add on your own.
 3. In GCC 13 the gm2 frontend behaves a bit odd which makes using globing
    mechanisms in makefiles quite annoying.
-4. Avoid small size optimizations (-Os). These result in very odd errors,
-   especially if combined with wrappers around libs (libc.def).
+4. Avoid small size optimizations (-Os, -Oz). These result in very odd errors
+   (at least in the early Modula-2 support -> GCC 13/14), especially if combined
+   with wrappers around libs (libc.def).
 5. Do not use SHORTREAL (aka float) with the c-runtime wrapped printf function
    and the %f placeholder. In C %f is meant for doubles but also works with
    floats. This is not true for Modula-2. Here every variable assigned to the %f
@@ -82,7 +83,9 @@ returning c-strings, they all point to internal buffers. You can cast them, and
 this is what I do in the examples, but this is actually not safe in threading or
 async scenarios. The Raylib wrapper provides constants about the sizes of these
 internal buffer which can be used for casting. Example 005 and 006 show how to
-deal with these functions and casting the internal buffers.
+deal with these functions and casting the internal buffers. You should not use
+my snapshot GCC 16 for this. Looks like there is a regression where nested
+modules are not supported anymore or just broken. GCC 15 is fine so far.
 
 -- libpciaccess --
 
