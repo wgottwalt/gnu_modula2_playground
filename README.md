@@ -27,9 +27,15 @@ reasons for this.
    (SIMD).
 6. If you can use the c-runtime (libc.def), do so and avoid Modula-2 lib
    functions. They are slow, really really horrible slow.
+7. Keep in mind that all memory-dealing in the Modula-2 runtime libs is done
+   via the CARDINAL type, not the 32/64 bit aware types CSIZE_T and CSSIZE_T.
+   This means that even on 64 bit, Modula-2 only supports a 32 bit address
+   space.
 
-If you are on Arch Linux you could use my GCC 15 snapshot packages to get the
+If you are on Arch Linux you could use my GCC snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
+Though, just sticking with GCC 15 is fine, there Modula-2 support is quite
+mature.
 
 I am also a developer contributing to GCC and are able to bring code upstream.
 If you encounter odd issues in the Modula-2 frontend, you can contact me here
