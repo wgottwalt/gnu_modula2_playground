@@ -31,6 +31,10 @@ reasons for this.
    via the CARDINAL type, not the 32/64 bit aware types CSIZE_T and CSSIZE_T.
    This means that even on 64 bit, Modula-2 only supports a 32 bit address
    space.
+8. Do not use "POINTER TO" types as procedure parameters in C wrappers for
+   passing pointers. It just results in very odd behavior. If you need to pass
+   a POINTER, always go for SYSTEM.ADDRESS. It is a pity, because it kills the
+   strong type system of Modula-2 to some degree.
 
 If you are on Arch Linux you could use my GCC snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
