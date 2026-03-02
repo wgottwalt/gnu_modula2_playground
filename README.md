@@ -1,7 +1,7 @@
 This is my playground for the GNU Modula-2 GCC frontend introduced in GCC 13.
 
-This code is written against GCC 14 snapshot 20240421 and up. There are several
-reasons for this.
+This code is written against my GCC snapshot compiler. There are several reasons
+for this.
 1. The Modula-2 frontend in GCC 13 still has some odd issues which I
    encountered during playing around with this. They are basically all fixed in
    the GCC 14 snapshots.
@@ -35,6 +35,14 @@ reasons for this.
    passing pointers. It just results in very odd behavior. If you need to pass
    a POINTER, always go for SYSTEM.ADDRESS. It is a pity, because it kills the
    strong type system of Modula-2 to some degree.
+9. The current implementation (GCC 13, 14, 15, 16) of the Modula-2 has a
+   serious design flaw in the Storage module (dynamich memory handling). It
+   implements tracking for amounts of allocated memory (maybe a garbage
+   collector will be added later, it looks like the base of a simple gc).
+   Though, the amount of memory is handled by the CARDINAL type, means, it is
+   32 bit only, even in a 64 bit Linux. Worse, all other Modula-2 libs dealing
+   with dynamic memory use that Storage module. This means, the biggest chunk
+   of memory you can deal with is limited to a maximum of 4 GiB.
 
 If you are on Arch Linux you could use my GCC snapshot packages to get the
 latest Modula-2 support. (https://aur.archlinux.org/packages/gcc-snapshot)
