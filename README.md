@@ -125,8 +125,8 @@ feature. I'm pretty sure that this will not work with other Modula-2 compilers.
 
 -- game of life --
 
-Just a simple implementation of Conways Game of Life algorithm as an console
-version using simple printing and ANSI Escape sequences to make the field stay
+Just a simple implementation of Conways Game of Life algorithm as a console
+version using simple printing and ANSI escape sequences to make the field stay
 in position. I noticed some really odd behavior in the Storage class of the
 Modula-2s own libs. ALLOCATE/DEALLOCATE do not work correctly and reports odd
 errors from time to time. I went for the basic malloc/free clib functions. I
