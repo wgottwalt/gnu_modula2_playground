@@ -1,0 +1,55 @@
+(*!m2iso*)
+DEFINITION MODULE Field;
+
+EXPORT QUALIFIED
+  (* types *)
+  PField, TDisplaySet, TDisplayMode,
+  (* constants *)
+  maxWidth, maxHeight, defDelayMS, defAliveSymbol, defDeadSymbol,
+  (* procedures *)
+  Init, Destroy,
+  Width, Height, Steps, CycleDelayMs, AliveSymbol, DeadSymbol, BorderSymbol, PerfMeasuring,
+  PerfInNanoSeconds, CellsAlive, CellsDead, Cell, Print,
+  Reset, Step, SetCell, SetCycleDelayMs, SetAliveSymbol, SetDeadSymbol, SetBorderSymbol,
+  SetPerfMeasuring;
+
+TYPE
+  PField;
+  TDisplaySet = PACKEDSET OF TDisplayMode;
+  TDisplayMode = (field, border, header);
+
+CONST
+  maxWidth = 256;
+  maxHeight = 256;
+  defDelayMS = 100;
+  defAliveSymbol = 'o';
+  defDeadSymbol = '.';
+  defBorderSymbol = '#';
+
+PROCEDURE Init(VAR Field: PField; Width, Height: CARDINAL; [Random: BOOLEAN = FALSE]): [BOOLEAN];
+PROCEDURE Destroy(VAR Field: PField): [BOOLEAN];
+
+PROCEDURE Width(Field: PField; VAR Width: CARDINAL): [BOOLEAN];
+PROCEDURE Height(Field: PField; VAR Height: CARDINAL): [BOOLEAN];
+PROCEDURE Steps(Field: PField; VAR Steps: CARDINAL): [BOOLEAN];
+PROCEDURE CycleDelayMs(Field: PField; VAR Delay: CARDINAL): [BOOLEAN];
+PROCEDURE AliveSymbol(Field: PField; VAR Symbol: CHAR): [BOOLEAN];
+PROCEDURE DeadSymbol(Field: PField; VAR Symbol: CHAR): [BOOLEAN];
+PROCEDURE BorderSymbol(Field: PField; VAR Symbol: CHAR): [BOOLEAN];
+PROCEDURE PerfMeasuring(Field: PField; VAR Measure: BOOLEAN): [BOOLEAN];
+PROCEDURE PerfInNanoSeconds(Field: PField; VAR Ns: LONGCARD): [BOOLEAN];
+PROCEDURE CellsAlive(Field: PField; VAR Alive: CARDINAL): [BOOLEAN];
+PROCEDURE CellsDead(Field: PField; VAR Dead: CARDINAL): [BOOLEAN];
+PROCEDURE Cell(Field: PField; X,Y: CARDINAL; VAR Cell: BOOLEAN): [BOOLEAN];
+PROCEDURE Print(Field: PField; [Display: TDisplaySet = TDisplaySet{field}]): [BOOLEAN];
+
+PROCEDURE Reset(VAR Field: PField; [Random: BOOLEAN = FALSE]): [BOOLEAN];
+PROCEDURE Step(VAR Field: PField; [Steps: CARDINAL = 1]): [BOOLEAN];
+PROCEDURE SetCell(VAR Field: PField; X, Y: CARDINAL; [State: BOOLEAN = TRUE]): [BOOLEAN];
+PROCEDURE SetCycleDelayMs(VAR Field: PField; Delay: CARDINAL): [BOOLEAN];
+PROCEDURE SetAliveSymbol(VAR Field: PField; Symbol: CHAR): [BOOLEAN];
+PROCEDURE SetDeadSymbol(VAR Field: PField; Symbol: CHAR): [BOOLEAN];
+PROCEDURE SetBorderSymbol(VAR Field: PField; Symbol: CHAR): [BOOLEAN];
+PROCEDURE SetPerfMeasuring(VAR Field: PField; Measure: BOOLEAN): [BOOLEAN];
+
+END Field.

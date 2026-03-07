@@ -1,0 +1,22 @@
+(*!m2iso+gm2*)
+DEFINITION MODULE StopWatch;
+
+EXPORT QUALIFIED
+  (* types *)
+  PStopWatch,
+  (* procedures *)
+  Init, Destroy, ResolutionInNanoSeconds,
+  Start, Stop, DiffInNanoSeconds;
+
+TYPE
+  PStopWatch;
+
+PROCEDURE Init(VAR StopWatch: PStopWatch; [Start: BOOLEAN = FALSE]): [BOOLEAN];
+PROCEDURE Destroy(VAR StopWatch: PStopWatch): [BOOLEAN];
+PROCEDURE ResolutionInNanoSeconds(VAR Ns: LONGCARD): [BOOLEAN];
+
+PROCEDURE Start(VAR StopWatch: PStopWatch): [BOOLEAN];
+PROCEDURE Stop(VAR StopWatch: PStopWatch): [BOOLEAN];
+PROCEDURE DiffInNanoSeconds(StopWatch: PStopWatch; VAR Ns: LONGCARD): [BOOLEAN];
+
+END StopWatch.
