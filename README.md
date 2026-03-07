@@ -122,3 +122,15 @@ difficult part are C bitfields which are an extreme example of packed types. I
 had to do thourough testing and GCC code reading to understand how to deal with
 that, hence I included some testing code. The way how it is done here is a GCC
 feature. I'm pretty sure that this will not work with other Modula-2 compilers.
+
+-- game of life --
+
+Just a simple implementation of Conways Game of Life algorithm as an console
+version using simple printing and ANSI Escape sequences to make the field stay
+in position. I noticed some really odd behavior in the Storage class of the
+Modula-2s own libs. ALLOCATE/DEALLOCATE do not work correctly and reports odd
+errors from time to time. I went for the basic malloc/free clib functions. I
+made Field module (the actual game of life implementation) quite flexible for
+being able to play around and test things. It is also the first time I seriosly
+tried to use Modula-2 sets/packedsets... uhm, it is usable, but I wouldn't call
+it fun.
